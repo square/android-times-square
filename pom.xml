@@ -29,8 +29,7 @@
   <scm>
     <url>http://git.squareup.com/square/android-calendar-picker/</url>
     <connection>scm:git:git://git.squareup.com/square/android-calendar-picker.git</connection>
-    <developerConnection>scm:git:git@git.squareup.com:square/android-calendar-picker.git
-    </developerConnection>
+    <developerConnection>scm:git:git@git.squareup.com:square/android-calendar-picker.git</developerConnection>
   </scm>
 
   <licenses>
@@ -57,8 +56,6 @@
     <fest-assert.version>2.0M8</fest-assert.version>
     <junit.version>4.10</junit.version>
     <robolectric.version>1.1</robolectric.version>
-
-    <android-maven.version>3.4.1</android-maven.version>
   </properties>
 
   <dependencyManagement>
@@ -96,7 +93,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.2</version>
+          <version>3.0</version>
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
@@ -106,14 +103,13 @@
         <plugin>
           <groupId>com.jayway.maven.plugins.android.generation2</groupId>
           <artifactId>android-maven-plugin</artifactId>
-          <version>${android-maven.version}</version>
+          <version>3.4.1</version>
           <configuration>
             <sdk>
               <platform>${android.platform}</platform>
             </sdk>
             <undeployBeforeDeploy>true</undeployBeforeDeploy>
           </configuration>
-          <extensions>true</extensions>
         </plugin>
 
         <plugin>
@@ -121,9 +117,18 @@
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>2.6</version>
           <configuration>
+            <configLocation>checkstyle.xml</configLocation>
             <failsOnError>true</failsOnError>
             <consoleOutput>true</consoleOutput>
           </configuration>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -135,33 +140,6 @@
         <version>2.1</version>
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.9</version>
-        <configuration>
-          <excludes>
-            <exclude>android:android</exclude>
-            <exclude>com.google.android.maps:maps</exclude>
-          </excludes>
-          <buildOutputDirectory>bin</buildOutputDirectory>
-          <classpathContainers>
-            <classpathContainer>com.android.ide.eclipse.adt.ANDROID_FRAMEWORK</classpathContainer>
-          </classpathContainers>
-          <additionalProjectnatures>
-            <projectnature>com.android.ide.eclipse.adt.AndroidNature</projectnature>
-            <projectnature>org.eclipse.ajdt.ui.ajnature</projectnature>
-          </additionalProjectnatures>
-          <buildcommands>
-            <buildcommand>com.android.ide.eclipse.adt.ResourceManagerBuilder</buildcommand>
-            <buildcommand>com.android.ide.eclipse.adt.PreCompilerBuilder</buildcommand>
-            <buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
-            <buildcommand>com.android.ide.eclipse.adt.ApkBuilder</buildcommand>
-          </buildcommands>
-          <useProjectReferences>false</useProjectReferences>
         </configuration>
       </plugin>
     </plugins>
