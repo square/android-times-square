@@ -1,3 +1,4 @@
+// Copyright 2012 Square, Inc.
 package com.squareup.calendar;
 
 class MonthDescriptor {

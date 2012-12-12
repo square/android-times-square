@@ -1,8 +1,8 @@
+// Copyright 2012 Square, Inc.
 package com.squareup.calendar;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +86,7 @@ public class CalendarPickerView extends ListView {
       MonthDescriptor month = new MonthDescriptor(curMonth.get(MONTH), curMonth.get(YEAR),
           monthNameFormat.format(curMonth.getTime()));
       cells.add(getMonthCells(month, curMonth, selectedCal));
-      Log.d("CalendarPicker", "Adding month " + month);
+      Logr.d("Adding month " + month);
       months.add(month);
       curMonth.add(MONTH, 1);
     }
@@ -159,7 +159,7 @@ public class CalendarPickerView extends ListView {
 
     @Override public View getView(int position, View convertView, ViewGroup parent) {
       MonthView monthView = (MonthView) convertView;
-      if (convertView == null) {
+      if (monthView == null) {
         monthView = MonthView.create(parent, inflater, weekdayNameFormat, listener, today);
       }
       monthView.init(months.get(position), cells.get(position));
@@ -177,7 +177,7 @@ public class CalendarPickerView extends ListView {
     cal.add(DATE, SUNDAY - firstDayOfWeek);
     while ((cal.get(MONTH) < month.getMonth() + 1 || cal.get(YEAR) < month.getYear()) //
         && cal.get(YEAR) <= month.getYear()) {
-      Log.d("CalendarPicker", "Building week row starting at " + cal.getTime());
+      Logr.d("Building week row starting at " + cal.getTime());
       List<MonthCellDescriptor> weekCells = new ArrayList<MonthCellDescriptor>();
       cells.add(weekCells);
       for (int c = 0; c < 7; c++) {

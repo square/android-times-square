@@ -1,10 +1,10 @@
+// Copyright 2012 Square, Inc.
 package com.squareup.calendar;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -48,7 +48,7 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
     final int widthWithPadding = totalWidth + getPaddingLeft() + getPaddingRight();
     final int heightWithPadding = rowHeight + getPaddingTop() + getPaddingBottom();
     setMeasuredDimension(widthWithPadding, heightWithPadding);
-    Log.d("CalendarPicker", "Row.onMeasure " + (System.currentTimeMillis() - start) + "ms");
+    Logr.d("Row.onMeasure " + (System.currentTimeMillis() - start) + "ms");
   }
 
   @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -59,7 +59,7 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
       final View child = getChildAt(c);
       child.layout(c * cellWidth, 0, (c + 1) * cellWidth, cellHeight);
     }
-    Log.d("CalendarPicker", "Row.onLayout " + (System.currentTimeMillis() - start) + "ms");
+    Logr.d("Row.onLayout " + (System.currentTimeMillis() - start) + "ms");
   }
 
   @Override protected boolean drawChild(Canvas canvas, View child, long drawingTime) {

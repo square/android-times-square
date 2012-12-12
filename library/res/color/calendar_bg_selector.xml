@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2011 Square, Inc. -->
+<!-- Copyright 2012 Square, Inc. -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:state_selected="true">

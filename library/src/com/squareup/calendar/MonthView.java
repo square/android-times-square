@@ -1,8 +1,8 @@
+// Copyright 2012 Square, Inc.
 package com.squareup.calendar;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
@@ -45,7 +45,7 @@ public class MonthView extends LinearLayout {
   }
 
   public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells) {
-    Log.d("CalendarPicker", "Initializing MonthView for " + month);
+    Logr.d("Initializing MonthView for " + month);
     long start = System.currentTimeMillis();
     title.setText(month.getLabel());
 
@@ -73,7 +73,7 @@ public class MonthView extends LinearLayout {
         weekRow.setVisibility(GONE);
       }
     }
-    Log.d("CalendarPicker", "MonthView.init took " + (System.currentTimeMillis() - start) + "ms");
+    Logr.d("MonthView.init took " + (System.currentTimeMillis() - start) + "ms");
   }
 
   public interface Listener {

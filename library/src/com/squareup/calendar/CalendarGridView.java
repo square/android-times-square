@@ -1,10 +1,10 @@
+// Copyright 2012 Square, Inc.
 package com.squareup.calendar;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -59,7 +59,7 @@ public class CalendarGridView extends ViewGroup {
       }
     }
     setMeasuredDimension(totalWidth, totalHeight);
-    Log.d("CalendarPicker", "Grid.onMeasure " + (System.currentTimeMillis() - start) + "ms");
+    Logr.d("Grid.onMeasure " + (System.currentTimeMillis() - start) + "ms");
   }
 
   @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -71,6 +71,6 @@ public class CalendarGridView extends ViewGroup {
       child.layout(left, top, right, top + rowHeight);
       top += rowHeight;
     }
-    Log.d("CalendarPicker", "Grid.onLayout " + (System.currentTimeMillis() - start) + "ms");
+    Logr.d("Grid.onLayout " + (System.currentTimeMillis() - start) + "ms");
   }
 }
