@@ -122,6 +122,7 @@
           <version>2.6</version>
           <configuration>
             <failsOnError>true</failsOnError>
+            <consoleOutput>true</consoleOutput>
           </configuration>
         </plugin>
       </plugins>

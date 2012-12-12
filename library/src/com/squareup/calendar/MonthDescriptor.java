@@ -24,10 +24,14 @@ class MonthDescriptor {
   }
 
   @Override public String toString() {
-    return "MonthDescriptor{" +
-        "label='" + label + '\'' +
-        ", month=" + month +
-        ", year=" + year +
-        '}';
+    return "MonthDescriptor{"
+        + "label='"
+        + label
+        + '\''
+        + ", month="
+        + month
+        + ", year="
+        + year
+        + '}';
   }
 }
