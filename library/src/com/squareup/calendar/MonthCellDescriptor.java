@@ -50,13 +50,19 @@ class MonthCellDescriptor {
   }
 
   @Override public String toString() {
-    return "MonthCellDescriptor{" +
-        "date=" + date +
-        ", value=" + value +
-        ", isCurrentMonth=" + isCurrentMonth +
-        ", isSelected=" + isSelected +
-        ", isToday=" + isToday +
-        ", isSelectable=" + isSelectable +
-        '}';
+    return "MonthCellDescriptor{"
+        + "date="
+        + date
+        + ", value="
+        + value
+        + ", isCurrentMonth="
+        + isCurrentMonth
+        + ", isSelected="
+        + isSelected
+        + ", isToday="
+        + isToday
+        + ", isSelectable="
+        + isSelectable
+        + '}';
   }
 }

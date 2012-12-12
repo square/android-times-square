@@ -123,11 +123,14 @@ public class CalendarPickerView extends ListView {
   }
 
   @Override public String toString() {
-    return "CalendarPickerView{" +
-        "startDate=" + startDate +
-        ", minDate=" + minDate +
-        ", maxDate=" + maxDate +
-        '}';
+    return "CalendarPickerView{"
+        + "startDate="
+        + startDate
+        + ", minDate="
+        + minDate
+        + ", maxDate="
+        + maxDate
+        + '}';
   }
 
   private class MonthAdapter extends BaseAdapter {

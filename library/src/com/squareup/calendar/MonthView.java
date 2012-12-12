@@ -77,6 +77,6 @@ public class MonthView extends LinearLayout {
   }
 
   public interface Listener {
-    public void handleClick(MonthCellDescriptor cell);
+    void handleClick(MonthCellDescriptor cell);
   }
 }
