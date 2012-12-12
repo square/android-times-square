@@ -5,13 +5,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>sample</artifactId>
+  <artifactId>calendar-sample</artifactId>
   <name>Android-CalendarPicker Sample</name>
   <packaging>apk</packaging>
 
   <parent>
-    <groupId>com.squareup.calendar</groupId>
-    <artifactId>parent</artifactId>
+    <groupId>com.squareup</groupId>
+    <artifactId>calendar-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
@@ -24,8 +24,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.squareup.calendar</groupId>
-      <artifactId>library</artifactId>
+      <groupId>com.squareup</groupId>
+      <artifactId>android-calendar-picker</artifactId>
       <version>${project.version}</version>
       <type>apklib</type>
     </dependency>
