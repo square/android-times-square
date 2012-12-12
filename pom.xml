@@ -19,7 +19,7 @@
   <name>Android-CalendarPicker (Parent)</name>
   <description>Android component for picking a date on a calendar.</description>
   <url>https://git.squareup.com/square/android-calendar-picker</url>
-  <inceptionYear>2011</inceptionYear>
+  <inceptionYear>2012</inceptionYear>
 
   <modules>
     <module>library</module>
@@ -58,7 +58,7 @@
     <junit.version>4.10</junit.version>
     <robolectric.version>1.1</robolectric.version>
 
-    <android-maven.version>3.3.0</android-maven.version>
+    <android-maven.version>3.4.1</android-maven.version>
   </properties>
 
   <dependencyManagement>
