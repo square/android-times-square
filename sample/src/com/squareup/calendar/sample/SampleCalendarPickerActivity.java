@@ -2,14 +2,16 @@ package com.squareup.calendar.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.squareup.calendar.CalendarPickerView;
-import com.squareup.calendar.Logr;
 import java.util.Calendar;
 import java.util.Date;
 
 public class SampleCalendarPickerActivity extends Activity {
+  private static final String TAG = "SampleCalendarPickerActivity";
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.calendar_picker);
@@ -20,7 +22,7 @@ public class SampleCalendarPickerActivity extends Activity {
     View done = findViewById(R.id.done_button);
     done.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
-        Logr.d("Selected time in millis: " + calendar.getSelectedDateMillis());
+        Log.d(TAG, "Selected time in millis: " + calendar.getSelectedDateMillis());
         final String toast = "Selected: " + calendar.getSelectedDate().getTime();
         Toast.makeText(SampleCalendarPickerActivity.this, toast, Toast.LENGTH_SHORT).show();
       }
