@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <groupId>com.squareup</groupId>
+  <artifactId>calendar-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>Android-CalendarPicker (Parent)</name>
+  <description>Android component for picking a date on a calendar.</description>
+  <url>https://git.squareup.com/square/android-calendar-picker</url>
+  <inceptionYear>2011</inceptionYear>
+
+  <modules>
+    <module>library</module>
+    <module>sample</module>
+  </modules>
+
+  <scm>
+    <url>http://git.squareup.com/square/android-calendar-picker/</url>
+    <connection>scm:git:git://git.squareup.com/square/android-calendar-picker.git</connection>
+    <developerConnection>scm:git:git@git.squareup.com:square/android-calendar-picker.git
+    </developerConnection>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>Apache License Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://git.squareup.com/square/android-calendar-picker/issues</url>
+  </issueManagement>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <java.version>1.6</java.version>
+    <android.version>4.1.1.4</android.version>
+    <android.platform>16</android.platform>
+
+    <fest-assert.version>2.0M8</fest-assert.version>
+    <junit.version>4.10</junit.version>
+    <robolectric.version>1.1</robolectric.version>
+
+    <android-maven.version>3.3.0</android-maven.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.android</groupId>
+        <artifactId>android</artifactId>
+        <version>${android.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.pivotallabs</groupId>
+        <artifactId>robolectric</artifactId>
+        <version>${robolectric.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.easytesting</groupId>
+        <artifactId>fest-assert-core</artifactId>
+        <version>${fest-assert.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+          <artifactId>android-maven-plugin</artifactId>
+          <version>${android-maven.version}</version>
+          <configuration>
+            <sdk>
+              <platform>${android.platform}</platform>
+            </sdk>
+            <undeployBeforeDeploy>true</undeployBeforeDeploy>
+          </configuration>
+          <extensions>true</extensions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>2.6</version>
+          <configuration>
+            <failsOnError>true</failsOnError>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <excludes>
+            <exclude>android:android</exclude>
+            <exclude>com.google.android.maps:maps</exclude>
+          </excludes>
+          <buildOutputDirectory>bin</buildOutputDirectory>
+          <classpathContainers>
+            <classpathContainer>com.android.ide.eclipse.adt.ANDROID_FRAMEWORK</classpathContainer>
+          </classpathContainers>
+          <additionalProjectnatures>
+            <projectnature>com.android.ide.eclipse.adt.AndroidNature</projectnature>
+            <projectnature>org.eclipse.ajdt.ui.ajnature</projectnature>
+          </additionalProjectnatures>
+          <buildcommands>
+            <buildcommand>com.android.ide.eclipse.adt.ResourceManagerBuilder</buildcommand>
+            <buildcommand>com.android.ide.eclipse.adt.PreCompilerBuilder</buildcommand>
+            <buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+            <buildcommand>com.android.ide.eclipse.adt.ApkBuilder</buildcommand>
+          </buildcommands>
+          <useProjectReferences>false</useProjectReferences>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

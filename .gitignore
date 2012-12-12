@@ -2,6 +2,10 @@
 *.apk
 *.ap_
 
+# IntelliJ files
+*.iml
+.idea
+
 # files for the dex VM
 *.dex
 
@@ -11,6 +15,8 @@
 # generated files
 bin/
 gen/
+target/
+tmp/
 
 # Local configuration file (sdk path, etc)
 local.properties
