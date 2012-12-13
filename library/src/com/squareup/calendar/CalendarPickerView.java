@@ -27,6 +27,12 @@ import static java.util.Calendar.SECOND;
 import static java.util.Calendar.SUNDAY;
 import static java.util.Calendar.YEAR;
 
+/**
+ * Android component to allow picking a date from a calendar view (a list of months).  Must be
+ * initialized after inflation with {@link #init(java.util.Date, java.util.Date, java.util.Date)}.
+ * The currently selected date can be retrieved with {@link #getSelectedDate()} or {@link
+ * #getSelectedDateMillis()}.
+ */
 public class CalendarPickerView extends ListView {
   private final CalendarPickerView.MonthAdapter adapter;
   private final DateFormat monthNameFormat;
@@ -59,18 +65,33 @@ public class CalendarPickerView extends ListView {
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
   }
 
-  public void init(Date startDate, Date minDate, Date maxDate) {
-    if (startDate == null || minDate == null || maxDate == null) {
+  /**
+   * All date parameters must be non-null and their getTime() must not return 0.  Time of day will
+   * be ignored.  For instance, if you pass in minDate as 11/16/2012 5:15pm and maxDate as
+   * 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and 11/15/2013 will be the
+   * last selectable date (maxDate is exclusive).
+   *
+   * @param selectedDate The initially selected date.  Must be between minDate and maxDate.
+   * @param minDate The earliest selectable date, inclusive. Must be earlier than maxDate.
+   * @param maxDate The latest selectable date, exclusive.  Must be later than minDate.
+   */
+  public void init(Date selectedDate, Date minDate, Date maxDate) {
+    if (selectedDate == null || minDate == null || maxDate == null) {
       throw new IllegalArgumentException(
-          "All dates must be non-null.  " + dbg(startDate, minDate, maxDate));
+          "All dates must be non-null.  " + dbg(selectedDate, minDate, maxDate));
     }
-    if (startDate.getTime() == 0 || minDate.getTime() == 0 || maxDate.getTime() == 0) {
+    if (selectedDate.getTime() == 0 || minDate.getTime() == 0 || maxDate.getTime() == 0) {
       throw new IllegalArgumentException(
-          "All dates must be non-zero.  " + dbg(startDate, minDate, maxDate));
+          "All dates must be non-zero.  " + dbg(selectedDate, minDate, maxDate));
     }
     if (minDate.after(maxDate)) {
       throw new IllegalArgumentException(
-          "Min date must be before max date.  " + dbg(startDate, minDate, maxDate));
+          "Min date must be before max date.  " + dbg(selectedDate, minDate, maxDate));
+    }
+    if (selectedDate.before(minDate) || selectedDate.after(maxDate)) {
+      throw new IllegalArgumentException(
+          "selectedDate must be between minDate and maxDate.  " + dbg(selectedDate, minDate,
+              maxDate));
     }
 
     // Clear previous state.
@@ -78,7 +99,7 @@ public class CalendarPickerView extends ListView {
     months.clear();
 
     // Sanitize input: clear out the hours/minutes/seconds/millis.
-    selectedCal.setTime(startDate);
+    selectedCal.setTime(selectedDate);
     minCal.setTime(minDate);
     maxCal.setTime(maxDate);
     setMidnight(selectedCal);

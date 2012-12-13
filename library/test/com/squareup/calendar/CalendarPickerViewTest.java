@@ -236,6 +236,29 @@ public class CalendarPickerViewTest {
     }
   }
 
+  @Test
+  public void testSelectedNotInRange() throws Exception {
+    final Date minDate = today.getTime();
+    today.add(YEAR, 1);
+    final Date maxDate = today.getTime();
+    today.add(YEAR, 1);
+    Date selectedDate = today.getTime();
+    try {
+      view.init(selectedDate, minDate, maxDate);
+      fail("Should not have been able to pass in a selectedDate > maxDate");
+    } catch (Exception e) {
+      // Expected.
+    }
+    today.add(YEAR, -5);
+    selectedDate = today.getTime();
+    try {
+      view.init(selectedDate, minDate, maxDate);
+      fail("Should not have been able to pass in a selectedDate < minDate");
+    } catch (Exception e) {
+      // Expected.
+    }
+  }
+
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
       int expectedVal, boolean expectedCurrentMonth, boolean expectedSelected,
       boolean expectedToday, boolean expectedSelectable) {
