@@ -4,6 +4,7 @@ package com.squareup.calendar;
 import android.app.Activity;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import static java.util.Calendar.MONTH;
 import static java.util.Calendar.NOVEMBER;
 import static java.util.Calendar.YEAR;
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
 
 @RunWith(RobolectricTestRunner.class)
 public class CalendarPickerViewTest {
@@ -29,11 +31,13 @@ public class CalendarPickerViewTest {
     view = new CalendarPickerView(new Activity(), null);
     today = Calendar.getInstance();
     today.set(2012, NOVEMBER, 16, 0, 0);
-    view.minDate = today.getTime();
+    Date minDate = today.getTime();
     today.set(2013, NOVEMBER, 16, 0, 0);
-    view.maxDate = today.getTime();
+    Date maxDate = today.getTime();
     today.set(2012, NOVEMBER, 16, 0, 0);
-    view.today = today;
+    Date startDate = today.getTime();
+    view.today.setTime(startDate);
+    view.init(startDate, minDate, maxDate);
   }
 
   @Test
@@ -42,7 +46,7 @@ public class CalendarPickerViewTest {
     dec2012.set(2012, DECEMBER, 1);
     Calendar dec2013 = Calendar.getInstance();
     dec2013.set(2013, DECEMBER, 1);
-    view.setDates(dec2012.getTime(), dec2012.getTime(), dec2013.getTime());
+    view.init(dec2012.getTime(), dec2012.getTime(), dec2013.getTime());
     assertThat(view.months).hasSize(13);
   }
 
@@ -52,7 +56,7 @@ public class CalendarPickerViewTest {
     jan2012.set(2012, JANUARY, 1);
     Calendar jan2013 = Calendar.getInstance();
     jan2013.set(2013, JANUARY, 1);
-    view.setDates(jan2012.getTime(), jan2012.getTime(), jan2013.getTime());
+    view.init(jan2012.getTime(), jan2012.getTime(), jan2013.getTime());
     assertThat(view.months).hasSize(13);
   }
 
@@ -62,7 +66,7 @@ public class CalendarPickerViewTest {
     may2012.set(2012, MAY, 1);
     Calendar may2013 = Calendar.getInstance();
     may2013.set(2013, MAY, 1);
-    view.setDates(may2012.getTime(), may2012.getTime(), may2013.getTime());
+    view.init(may2012.getTime(), may2012.getTime(), may2013.getTime());
     assertThat(view.months).hasSize(13);
   }
 
@@ -170,6 +174,66 @@ public class CalendarPickerViewTest {
     assertCell(cells, 2, 5, 15, true, false, false, true);
     // 11/16 is not selectable because it's > maxDate (11/16/13).
     assertCell(cells, 2, 6, 16, true, false, false, false);
+  }
+
+  @Test
+  public void testNullDates() throws Exception {
+    final Date validDate = today.getTime();
+    try {
+      view.init(null, validDate, validDate);
+      fail("Should not have been able to pass in a null startDate");
+    } catch (Exception e) {
+      // Expected.
+    }
+    try {
+      view.init(validDate, null, validDate);
+      fail("Should not have been able to pass in a null minDate");
+    } catch (Exception e) {
+      // Expected.
+    }
+    try {
+      view.init(validDate, validDate, null);
+      fail("Should not have been able to pass in a null maxDate");
+    } catch (Exception e) {
+      // Expected.
+    }
+  }
+
+  @Test
+  public void testZeroDates() throws Exception {
+    final Date validDate = today.getTime();
+    final Date zeroDate = new Date(0L);
+    try {
+      view.init(zeroDate, validDate, validDate);
+      fail("Should not have been able to pass in a zero startDate");
+    } catch (Exception e) {
+      // Expected.
+    }
+    try {
+      view.init(validDate, zeroDate, validDate);
+      fail("Should not have been able to pass in a zero minDate");
+    } catch (Exception e) {
+      // Expected.
+    }
+    try {
+      view.init(validDate, validDate, zeroDate);
+      fail("Should not have been able to pass in a zero maxDate");
+    } catch (Exception e) {
+      // Expected.
+    }
+  }
+
+  @Test
+  public void testMinAndMaxMixup() throws Exception {
+    final Date minDate = today.getTime();
+    today.add(YEAR, -1);
+    final Date maxDate = today.getTime();
+    try {
+      view.init(minDate, minDate, maxDate);
+      fail("Should not have been able to pass in a maxDate < minDate");
+    } catch (Exception e) {
+      // Expected.
+    }
   }
 
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
