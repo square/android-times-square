@@ -19,7 +19,11 @@ import java.util.List;
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MILLISECOND;
+import static java.util.Calendar.MINUTE;
 import static java.util.Calendar.MONTH;
+import static java.util.Calendar.SECOND;
 import static java.util.Calendar.SUNDAY;
 import static java.util.Calendar.YEAR;
 
@@ -32,13 +36,14 @@ public class CalendarPickerView extends ListView {
   final List<List<List<MonthCellDescriptor>>> cells =
       new ArrayList<List<List<MonthCellDescriptor>>>();
 
-  private Date startDate;
-  Date minDate;
-  Date maxDate;
-  private Calendar selectedCal;
   private MonthCellDescriptor selectedCell;
-  Calendar today;
-  private MonthView.Listener listener = new CellClickedListener();
+  final Calendar today = Calendar.getInstance();
+  private final Calendar selectedCal = Calendar.getInstance();
+  private final Calendar minCal = Calendar.getInstance();
+  private final Calendar maxCal = Calendar.getInstance();
+  private final Calendar monthCounter = Calendar.getInstance();
+
+  private final MonthView.Listener listener = new CellClickedListener();
 
   public CalendarPickerView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -52,43 +57,47 @@ public class CalendarPickerView extends ListView {
     monthNameFormat = new SimpleDateFormat(context.getString(R.string.month_name_format));
     weekdayNameFormat = new SimpleDateFormat(context.getString(R.string.day_name_format));
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-    selectedCal = Calendar.getInstance();
-    today = Calendar.getInstance();
   }
 
   public void init(Date startDate, Date minDate, Date maxDate) {
-    this.startDate = startDate;
-    selectedCal.setTime(startDate);
-    setDates(startDate, minDate, maxDate);
-  }
-
-  void setDates(Date startDate, Date minDate, Date maxDate) {
     if (startDate == null || minDate == null || maxDate == null) {
-      throw new IllegalArgumentException("All dates must be non-null.  " + toString());
+      throw new IllegalArgumentException(
+          "All dates must be non-null.  " + dbg(startDate, minDate, maxDate));
     }
     if (startDate.getTime() == 0 || minDate.getTime() == 0 || maxDate.getTime() == 0) {
-      throw new IllegalArgumentException("All dates must be non-zero.  " + toString());
+      throw new IllegalArgumentException(
+          "All dates must be non-zero.  " + dbg(startDate, minDate, maxDate));
     }
     if (minDate.after(maxDate)) {
-      throw new IllegalArgumentException("Min date must be before max date.  " + toString());
+      throw new IllegalArgumentException(
+          "Min date must be before max date.  " + dbg(startDate, minDate, maxDate));
     }
-    this.minDate = minDate;
-    this.maxDate = maxDate;
-    Calendar curMonth = Calendar.getInstance();
-    curMonth.setTime(minDate);
-    Calendar maxCal = Calendar.getInstance();
+
+    // Clear previous state.
+    cells.clear();
+    months.clear();
+
+    // Sanitize input: clear out the hours/minutes/seconds/millis.
+    selectedCal.setTime(startDate);
+    minCal.setTime(minDate);
     maxCal.setTime(maxDate);
+    setMidnight(selectedCal);
+    setMidnight(minCal);
+    setMidnight(maxCal);
+
+    // Now iterate between minCal and maxCal and build up our list of months to show.
+    monthCounter.setTime(minCal.getTime());
     final int maxMonth = maxCal.get(MONTH);
     final int maxYear = maxCal.get(YEAR);
-    while ((curMonth.get(MONTH) <= maxMonth // Up to, including the month.
-        || curMonth.get(YEAR) < maxYear) // Up to the year.
-        && curMonth.get(YEAR) < maxYear + 1) { // But not > next yr.
-      MonthDescriptor month = new MonthDescriptor(curMonth.get(MONTH), curMonth.get(YEAR),
-          monthNameFormat.format(curMonth.getTime()));
-      cells.add(getMonthCells(month, curMonth, selectedCal));
+    while ((monthCounter.get(MONTH) <= maxMonth // Up to, including the month.
+        || monthCounter.get(YEAR) < maxYear) // Up to the year.
+        && monthCounter.get(YEAR) < maxYear + 1) { // But not > next yr.
+      MonthDescriptor month = new MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR),
+          monthNameFormat.format(monthCounter.getTime()));
+      cells.add(getMonthCells(month, monthCounter, selectedCal));
       Logr.d("Adding month " + month);
       months.add(month);
-      curMonth.add(MONTH, 1);
+      monthCounter.add(MONTH, 1);
     }
     adapter.notifyDataSetChanged();
   }
@@ -101,12 +110,25 @@ public class CalendarPickerView extends ListView {
     return selectedCal;
   }
 
+  /** Returns a string summarizing what the client sent us for init() params. */
+  private static String dbg(Date startDate, Date minDate, Date maxDate) {
+    return "startDate: " + startDate + "\nminDate: " + minDate + "\nmaxDate: " + maxDate;
+  }
+
+  /** Clears out the hours/minutes/seconds/millis of a Calendar. */
+  private static void setMidnight(Calendar cal) {
+    cal.set(HOUR_OF_DAY, 0);
+    cal.set(MINUTE, 0);
+    cal.set(SECOND, 0);
+    cal.set(MILLISECOND, 0);
+  }
+
   private class CellClickedListener implements MonthView.Listener {
     @Override public void handleClick(MonthCellDescriptor cell) {
-      if (!betweenDates(cell.getDate(), minDate, maxDate)) {
+      if (!betweenDates(cell.getDate(), minCal, maxCal)) {
         String errMessage =
-            getResources().getString(R.string.invalid_date, fullDateFormat.format(minDate),
-                fullDateFormat.format(maxDate));
+            getResources().getString(R.string.invalid_date, fullDateFormat.format(minCal.getTime()),
+                fullDateFormat.format(maxCal.getTime()));
         Toast.makeText(getContext(), errMessage, Toast.LENGTH_SHORT).show();
       } else {
         // De-select the currently-selected cell.
@@ -120,17 +142,6 @@ public class CalendarPickerView extends ListView {
         adapter.notifyDataSetChanged();
       }
     }
-  }
-
-  @Override public String toString() {
-    return "CalendarPickerView{"
-        + "startDate="
-        + startDate
-        + ", minDate="
-        + minDate
-        + ", maxDate="
-        + maxDate
-        + '}';
   }
 
   private class MonthAdapter extends BaseAdapter {
@@ -184,7 +195,7 @@ public class CalendarPickerView extends ListView {
         Date date = cal.getTime();
         boolean isCurrentMonth = cal.get(MONTH) == month.getMonth();
         boolean isSelected = isCurrentMonth && sameDate(cal, selectedDate);
-        boolean isSelectable = isCurrentMonth && betweenDates(cal, minDate, maxDate);
+        boolean isSelectable = isCurrentMonth && betweenDates(cal, minCal, maxCal);
         boolean isToday = sameDate(cal, today);
         int value = cal.get(DAY_OF_MONTH);
         MonthCellDescriptor cell =
@@ -199,19 +210,20 @@ public class CalendarPickerView extends ListView {
     return cells;
   }
 
-  private static boolean betweenDates(Calendar cal, Date minDate, Date maxDate) {
-    final Date date = cal.getTime();
-    return betweenDates(date, minDate, maxDate);
-  }
-
   private static boolean sameDate(Calendar cal, Calendar selectedDate) {
     return cal.get(MONTH) == selectedDate.get(MONTH)
         && cal.get(YEAR) == selectedDate.get(YEAR)
         && cal.get(DAY_OF_MONTH) == selectedDate.get(DAY_OF_MONTH);
   }
 
-  static boolean betweenDates(Date date, Date minDate, Date maxDate) {
-    return (date.equals(minDate) || date.after(minDate)) // >= minDate
-        && date.before(maxDate); // && < maxDate
+  private static boolean betweenDates(Calendar cal, Calendar minCal, Calendar maxCal) {
+    final Date date = cal.getTime();
+    return betweenDates(date, minCal, maxCal);
+  }
+
+  static boolean betweenDates(Date date, Calendar minCal, Calendar maxCal) {
+    final Date min = minCal.getTime();
+    return (date.equals(min) || date.after(min)) // >= minCal
+        && date.before(maxCal.getTime()); // && < maxCal
   }
 }
