@@ -45,14 +45,15 @@ public class MonthView extends LinearLayout {
   }
 
   public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells) {
-    Logr.d("Initializing MonthView for " + month);
+    Logr.d("Initializing MonthView for %s", month);
     long start = System.currentTimeMillis();
     title.setText(month.getLabel());
 
+    final int numRows = cells.size();
     for (int i = 0; i < 6; i++) {
       CalendarRowView weekRow = (CalendarRowView) grid.getChildAt(i + 1);
       weekRow.setListener(listener);
-      if (i < cells.size()) {
+      if (i < numRows) {
         weekRow.setVisibility(VISIBLE);
         List<MonthCellDescriptor> week = cells.get(i);
         for (int c = 0; c < week.size(); c++) {
@@ -73,7 +74,7 @@ public class MonthView extends LinearLayout {
         weekRow.setVisibility(GONE);
       }
     }
-    Logr.d("MonthView.init took " + (System.currentTimeMillis() - start) + "ms");
+    Logr.d("MonthView.init took %d ms", System.currentTimeMillis() - start);
   }
 
   public interface Listener {

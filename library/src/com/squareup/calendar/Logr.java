@@ -9,4 +9,10 @@ final class Logr {
       Log.d("CalendarPicker", message);
     }
   }
+
+  public static void d(String message, Object... args) {
+    if (BuildConfig.DEBUG) {
+      d(String.format(message, args));
+    }
+  }
 }

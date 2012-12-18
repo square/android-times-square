@@ -25,10 +25,26 @@ public class CalendarGridView extends ViewGroup {
   }
 
   @Override public void addView(View child, int index, ViewGroup.LayoutParams params) {
-    if (getChildCount() > 0) {
-      ((CalendarRowView) child).setDividerPaint(dividerPaint);
+    if (getChildCount() == 0) {
+      ((CalendarRowView) child).setIsHeaderRow(true);
     }
     super.addView(child, index, params);
+  }
+
+  @Override protected void dispatchDraw(Canvas canvas) {
+    super.dispatchDraw(canvas);
+    final ViewGroup row = (ViewGroup) getChildAt(1);
+    int top = row.getTop();
+    int bottom = getBottom();
+    // Left side border.
+    final int left = row.getChildAt(0).getLeft() + getLeft();
+    canvas.drawLine(left, top, left, bottom, dividerPaint);
+
+    // Each cell's right-side border.
+    for (int c = 0; c < 7; c++) {
+      int x = left + row.getChildAt(c).getRight() - 1;
+      canvas.drawLine(x, top, x, bottom, dividerPaint);
+    }
   }
 
   @Override protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
@@ -58,8 +74,9 @@ public class CalendarGridView extends ViewGroup {
         totalHeight += child.getMeasuredHeight();
       }
     }
-    setMeasuredDimension(totalWidth, totalHeight);
-    Logr.d("Grid.onMeasure " + (System.currentTimeMillis() - start) + "ms");
+    final int measuredWidth = totalWidth + 2; // Fudge factor to make the borders show up right.
+    setMeasuredDimension(measuredWidth, totalHeight);
+    Logr.d("Grid.onMeasure %d ms", System.currentTimeMillis() - start);
   }
 
   @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -71,6 +88,6 @@ public class CalendarGridView extends ViewGroup {
       child.layout(left, top, right, top + rowHeight);
       top += rowHeight;
     }
-    Logr.d("Grid.onLayout " + (System.currentTimeMillis() - start) + "ms");
+    Logr.d("Grid.onLayout %d ms", System.currentTimeMillis() - start);
   }
 }
