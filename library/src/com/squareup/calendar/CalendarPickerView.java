@@ -117,7 +117,7 @@ public class CalendarPickerView extends ListView {
       MonthDescriptor month = new MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR),
           monthNameFormat.format(monthCounter.getTime()));
       cells.add(getMonthCells(month, monthCounter, selectedCal));
-      Logr.d("Adding month " + month);
+      Logr.d("Adding month %s", month);
       months.add(month);
       monthCounter.add(MONTH, 1);
     }
@@ -210,7 +210,7 @@ public class CalendarPickerView extends ListView {
     cal.add(DATE, SUNDAY - firstDayOfWeek);
     while ((cal.get(MONTH) < month.getMonth() + 1 || cal.get(YEAR) < month.getYear()) //
         && cal.get(YEAR) <= month.getYear()) {
-      Logr.d("Building week row starting at " + cal.getTime());
+      Logr.d("Building week row starting at %s", cal.getTime());
       List<MonthCellDescriptor> weekCells = new ArrayList<MonthCellDescriptor>();
       cells.add(weekCells);
       for (int c = 0; c < 7; c++) {
