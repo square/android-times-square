@@ -67,13 +67,14 @@ public class CalendarPickerView extends ListView {
 
   /**
    * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
-   * return 0.  Time of day will be ignored.  For instance, if you pass in minDate as 11/16/2012
-   * 5:15pm and maxDate as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
-   * 11/15/2013 will be the last selectable date (maxDate is exclusive).
+   * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
+   * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
+   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
    *
-   * @param selectedDate The initially selected date.  Must be between minDate and maxDate.
-   * @param minDate The earliest selectable date, inclusive. Must be earlier than maxDate.
-   * @param maxDate The latest selectable date, exclusive.  Must be later than minDate.
+   * @param selectedDate Initially selected date.  Must be between {@code minDate} and
+  *                      {@code maxDate}.
+   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
+   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
   public void init(Date selectedDate, Date minDate, Date maxDate) {
     if (selectedDate == null || minDate == null || maxDate == null) {
