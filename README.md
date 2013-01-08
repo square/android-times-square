@@ -34,8 +34,7 @@ CalendarPickerView calendar = (CalendarPickerView) findViewById(R.id.calendar_vi
 calendar.init(new Date(), new Date(), nextYear.getTime());
 ```
 
-To retrieve the currently selected date, call `getSelectedDate()` on the view. You can also fetch
-the selected date in milliseconds since the Epoch by calling `getSelectedDateMillis()`.
+To retrieve the currently selected date, call `getSelectedDate()` on the view.
 
 
 
