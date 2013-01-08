@@ -182,20 +182,17 @@ public class CalendarPickerViewTest {
     try {
       view.init(null, validDate, validDate);
       fail("Should not have been able to pass in a null startDate");
-    } catch (Exception e) {
-      // Expected.
+    } catch (IllegalArgumentException expected) {
     }
     try {
       view.init(validDate, null, validDate);
       fail("Should not have been able to pass in a null minDate");
-    } catch (Exception e) {
-      // Expected.
+    } catch (IllegalArgumentException expected) {
     }
     try {
       view.init(validDate, validDate, null);
       fail("Should not have been able to pass in a null maxDate");
-    } catch (Exception e) {
-      // Expected.
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -206,20 +203,17 @@ public class CalendarPickerViewTest {
     try {
       view.init(zeroDate, validDate, validDate);
       fail("Should not have been able to pass in a zero startDate");
-    } catch (Exception e) {
-      // Expected.
+    } catch (IllegalArgumentException expected) {
     }
     try {
       view.init(validDate, zeroDate, validDate);
       fail("Should not have been able to pass in a zero minDate");
-    } catch (Exception e) {
-      // Expected.
+    } catch (IllegalArgumentException expected) {
     }
     try {
       view.init(validDate, validDate, zeroDate);
       fail("Should not have been able to pass in a zero maxDate");
-    } catch (Exception e) {
-      // Expected.
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -231,8 +225,7 @@ public class CalendarPickerViewTest {
     try {
       view.init(minDate, minDate, maxDate);
       fail("Should not have been able to pass in a maxDate < minDate");
-    } catch (Exception e) {
-      // Expected.
+    } catch (IllegalArgumentException expected) {
     }
   }
 
@@ -246,16 +239,24 @@ public class CalendarPickerViewTest {
     try {
       view.init(selectedDate, minDate, maxDate);
       fail("Should not have been able to pass in a selectedDate > maxDate");
-    } catch (Exception e) {
-      // Expected.
+    } catch (IllegalArgumentException expected) {
     }
     today.add(YEAR, -5);
     selectedDate = today.getTime();
     try {
       view.init(selectedDate, minDate, maxDate);
       fail("Should not have been able to pass in a selectedDate < minDate");
-    } catch (Exception e) {
-      // Expected.
+    } catch (IllegalArgumentException expected) {
+    }
+  }
+
+  @Test
+  public void testNotCallingInit() throws Exception {
+    view = new CalendarPickerView(new Activity(), null);
+    try {
+      view.onMeasure(0, 0);
+      fail("Should have thrown an IllegalStateException!");
+    } catch (IllegalStateException expected) {
     }
   }
 

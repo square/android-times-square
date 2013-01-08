@@ -65,13 +65,13 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
-   * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
-   * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
-   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
+   * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not return
+   * 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012
+   * 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date
+   * and 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
    *
-   * @param selectedDate Initially selected date.  Must be between {@code minDate} and
-  *                      {@code maxDate}.
+   * @param selectedDate Initially selected date.  Must be between {@code minDate} and {@code
+   * maxDate}.
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
@@ -121,6 +121,14 @@ public class CalendarPickerView extends ListView {
       monthCounter.add(MONTH, 1);
     }
     adapter.notifyDataSetChanged();
+  }
+
+  @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    if (months.isEmpty()) {
+      throw new IllegalStateException(
+          "Must have at least one month to display.  Did you forget to call init()?");
+    }
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
   }
 
   public Date getSelectedDate() {
