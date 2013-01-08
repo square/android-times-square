@@ -27,7 +27,7 @@ public class SampleCalendarPickerActivity extends Activity {
 
     findViewById(R.id.done_button).setOnClickListener(new OnClickListener() {
       @Override public void onClick(View view) {
-        Log.d(TAG, "Selected time in millis: " + calendar.getSelectedDateMillis());
+        Log.d(TAG, "Selected time in millis: " + calendar.getSelectedDate().getTime());
         String toast = "Selected: " + calendar.getSelectedDate().getTime();
         Toast.makeText(SampleCalendarPickerActivity.this, toast, LENGTH_SHORT).show();
       }
