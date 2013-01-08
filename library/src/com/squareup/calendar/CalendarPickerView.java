@@ -30,8 +30,7 @@ import static java.util.Calendar.YEAR;
 /**
  * Android component to allow picking a date from a calendar view (a list of months).  Must be
  * initialized after inflation with {@link #init(java.util.Date, java.util.Date, java.util.Date)}.
- * The currently selected date can be retrieved with {@link #getSelectedDate()} or {@link
- * #getSelectedDateMillis()}.
+ * The currently selected date can be retrieved with {@link #getSelectedDate()}.
  */
 public class CalendarPickerView extends ListView {
   private final CalendarPickerView.MonthAdapter adapter;
@@ -124,12 +123,8 @@ public class CalendarPickerView extends ListView {
     adapter.notifyDataSetChanged();
   }
 
-  public long getSelectedDateMillis() {
-    return getSelectedDate().getTimeInMillis();
-  }
-
-  public Calendar getSelectedDate() {
-    return selectedCal;
+  public Date getSelectedDate() {
+    return selectedCal.getTime();
   }
 
   /** Returns a string summarizing what the client sent us for init() params. */
