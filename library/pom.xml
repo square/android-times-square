@@ -7,13 +7,13 @@
 
   <parent>
     <groupId>com.squareup</groupId>
-    <artifactId>calendar-parent</artifactId>
+    <artifactId>times-square-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>android-calendar-picker</artifactId>
-  <name>Android-CalendarPicker</name>
+  <artifactId>android-times-square</artifactId>
+  <name>Android-TimesSquare</name>
   <packaging>apklib</packaging>
 
   <dependencies>

@@ -1,5 +1,5 @@
 // Copyright 2012 Square, Inc.
-package com.squareup.calendar;
+package com.squareup.timessquare;
 
 import android.app.Activity;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
@@ -274,8 +274,9 @@ public class CalendarPickerViewTest {
   private List<List<MonthCellDescriptor>> getCells(int month, int year,
       Calendar selectedDate) {
     Calendar cal = Calendar.getInstance();
-    cal.set(MONTH, month);
+    cal.set(DAY_OF_MONTH, 1);
     cal.set(YEAR, year);
+    cal.set(MONTH, month);
     return view.getMonthCells(new MonthDescriptor(month, year, "January 2012"), cal, selectedDate);
   }
 }
