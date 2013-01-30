@@ -12,13 +12,13 @@
   </parent>
 
   <groupId>com.squareup</groupId>
-  <artifactId>calendar-parent</artifactId>
+  <artifactId>times-square-parent</artifactId>
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
 
-  <name>Android-CalendarPicker (Parent)</name>
+  <name>Android-TimesSquare (Parent)</name>
   <description>Android component for picking a date on a calendar.</description>
-  <url>https://git.squareup.com/square/android-calendar-picker</url>
+  <url>https://github.com/square/android-times-square</url>
   <inceptionYear>2012</inceptionYear>
 
   <modules>
@@ -27,9 +27,9 @@
   </modules>
 
   <scm>
-    <url>http://git.squareup.com/square/android-calendar-picker/</url>
-    <connection>scm:git:git://git.squareup.com/square/android-calendar-picker.git</connection>
-    <developerConnection>scm:git:git@git.squareup.com:square/android-calendar-picker.git</developerConnection>
+    <url>http://github.com/square/android-times-square</url>
+    <connection>scm:git:git://github.com/square/android-times-square.git</connection>
+    <developerConnection>scm:git:git@github.com:square/android-times-square.git</developerConnection>
   </scm>
 
   <licenses>
@@ -42,7 +42,7 @@
 
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://git.squareup.com/square/android-calendar-picker/issues</url>
+    <url>https://github.com/square/android-times-square/issues</url>
   </issueManagement>
 
   <properties>

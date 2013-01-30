@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.squareup.calendar.sample"
+    package="com.squareup.timessquare.sample"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -9,11 +9,11 @@
         android:targetSdkVersion="16" />
 
     <application
-        android:label="CalendarPicker Sample"
+        android:label="TimesSquare Sample"
         android:icon="@drawable/icon">
 
         <activity
-            android:name=".SampleCalendarPickerActivity"
+            android:name=".SampleTimesSquareActivity"
             android:label="Calendar Picker Sample">
 
             <intent-filter>

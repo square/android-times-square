@@ -1,4 +1,4 @@
-Android Calendar Picker
+TimesSquare for Android
 ==========================
 
 Standalone Android widget for picking a single date from a calendar view.
@@ -11,7 +11,7 @@ Usage
 Include `CalendarPickerView` in your layout XML.
 
 ```xml
-<com.squareup.calendar.CalendarPickerView
+<com.squareup.timessquare.CalendarPickerView
     android:id="@+id/calendar_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -50,7 +50,7 @@ You can also depend on the library through Maven:
 ```xml
 <dependency>
     <groupId>com.squareup</groupId>
-    <artifactId>android-calendar-picker</artifactId>
+    <artifactId>android-times-square</artifactId>
     <version>(insert latest version)</version>
     <type>apklib</type>
 </dependency>
@@ -77,4 +77,4 @@ License
 
 
 
- [zip]: https://github.com/square/android-calendar-picker/archive/master.zip
+ [zip]: https://github.com/square/android-times-square/archive/master.zip
