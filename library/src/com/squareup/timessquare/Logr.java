@@ -1,4 +1,4 @@
-package com.squareup.calendar;
+package com.squareup.timessquare;
 
 import android.util.Log;
 
@@ -6,7 +6,7 @@ import android.util.Log;
 final class Logr {
   public static void d(String message) {
     if (BuildConfig.DEBUG) {
-      Log.d("CalendarPicker", message);
+      Log.d("TimesSquare", message);
     }
   }
 

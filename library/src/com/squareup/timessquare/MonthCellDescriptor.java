@@ -1,5 +1,5 @@
 // Copyright 2012 Square, Inc.
-package com.squareup.calendar;
+package com.squareup.timessquare;
 
 import java.util.Date;
 
