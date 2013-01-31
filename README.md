@@ -3,7 +3,7 @@ TimesSquare for Android
 
 Standalone Android widget for picking a single date from a calendar view.
 
-
+[Screenshot](timesSquareScreenshot.png)
 
 Usage
 -----
