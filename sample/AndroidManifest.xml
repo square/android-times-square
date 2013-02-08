@@ -10,11 +10,15 @@
 
     <application
         android:label="TimesSquare Sample"
-        android:icon="@drawable/icon">
+        android:icon="@drawable/icon"
+        android:debuggable="true"
+        >
 
         <activity
             android:name=".SampleTimesSquareActivity"
-            android:label="Calendar Picker Sample">
+            android:label="Calendar Picker Sample"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
