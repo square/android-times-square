@@ -15,6 +15,8 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
   private boolean isHeaderRow;
   private MonthView.Listener listener;
   private int cellSize;
+  private int oldWidthMeasureSpec;
+  private int oldHeightMeasureSpec;
 
   public CalendarRowView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -26,7 +28,7 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
   }
 
   @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    if (getMeasuredHeight() > 0 && getMeasuredWidth() > 0) {
+    if (oldWidthMeasureSpec == widthMeasureSpec && oldHeightMeasureSpec == heightMeasureSpec) {
       Logr.d("SKIP Row.onMeasure");
       setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight());
       return;
@@ -50,6 +52,8 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
     final int heightWithPadding = rowHeight + getPaddingTop() + getPaddingBottom();
     setMeasuredDimension(widthWithPadding, heightWithPadding);
     Logr.d("Row.onMeasure %d ms", System.currentTimeMillis() - start);
+    oldWidthMeasureSpec = widthMeasureSpec;
+    oldHeightMeasureSpec = heightMeasureSpec;
   }
 
   @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
