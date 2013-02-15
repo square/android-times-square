@@ -105,6 +105,9 @@ public class CalendarPickerView extends ListView {
     setMidnight(selectedCal);
     setMidnight(minCal);
     setMidnight(maxCal);
+    // maxDate is exclusive: bump back to the previous day so if maxDate is the first of a month,
+    // we don't accidentally include that month in the view.
+    maxCal.add(MINUTE, -1);
 
     // Now iterate between minCal and maxCal and build up our list of months to show.
     monthCounter.setTime(minCal.getTime());
