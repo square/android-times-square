@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.0.2 *(2012-02-15)*
+----------------------------
+
+ * Fix: Months with no selectable dates are no longer displayed.
+
+
 Version 1.0.1 *(2012-02-13)*
 ----------------------------
 
