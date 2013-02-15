@@ -14,6 +14,7 @@ import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DECEMBER;
 import static java.util.Calendar.FEBRUARY;
 import static java.util.Calendar.JANUARY;
+import static java.util.Calendar.MARCH;
 import static java.util.Calendar.MAY;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.NOVEMBER;
@@ -47,7 +48,7 @@ public class CalendarPickerViewTest {
     Calendar dec2013 = Calendar.getInstance();
     dec2013.set(2013, DECEMBER, 1);
     view.init(dec2012.getTime(), dec2012.getTime(), dec2013.getTime());
-    assertThat(view.months).hasSize(13);
+    assertThat(view.months).hasSize(12);
   }
 
   @Test
@@ -57,7 +58,7 @@ public class CalendarPickerViewTest {
     Calendar jan2013 = Calendar.getInstance();
     jan2013.set(2013, JANUARY, 1);
     view.init(jan2012.getTime(), jan2012.getTime(), jan2013.getTime());
-    assertThat(view.months).hasSize(13);
+    assertThat(view.months).hasSize(12);
   }
 
   @Test
@@ -67,7 +68,7 @@ public class CalendarPickerViewTest {
     Calendar may2013 = Calendar.getInstance();
     may2013.set(2013, MAY, 1);
     view.init(may2012.getTime(), may2012.getTime(), may2013.getTime());
-    assertThat(view.months).hasSize(13);
+    assertThat(view.months).hasSize(12);
   }
 
   @Test
@@ -258,6 +259,16 @@ public class CalendarPickerViewTest {
       fail("Should have thrown an IllegalStateException!");
     } catch (IllegalStateException expected) {
     }
+  }
+
+  @Test
+  public void testShowingOnlyOneMonth() throws Exception {
+    Calendar feb1 = Calendar.getInstance();
+    feb1.set(2013, FEBRUARY, 1);
+    Calendar mar1 = Calendar.getInstance();
+    mar1.set(2013, MARCH, 1);
+    view.init(feb1.getTime(), feb1.getTime(), mar1.getTime());
+    assertThat(view.months).hasSize(1);
   }
 
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
