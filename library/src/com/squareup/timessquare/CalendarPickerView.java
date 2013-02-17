@@ -50,6 +50,8 @@ public class CalendarPickerView extends ListView {
 
   private final MonthView.Listener listener = new CellClickedListener();
 
+  private OnDateSelectedListener mOnDateSelectedListener;
+
   public CalendarPickerView(Context context, AttributeSet attrs) {
     super(context, attrs);
     adapter = new MonthAdapter();
@@ -185,6 +187,9 @@ public class CalendarPickerView extends ListView {
         selectedCal.setTime(cell.getDate());
         // Update the adapter.
         adapter.notifyDataSetChanged();
+
+        if(mOnDateSelectedListener != null)
+            mOnDateSelectedListener.onDateSelected(cell.getDate());
       }
     }
   }
@@ -270,5 +275,13 @@ public class CalendarPickerView extends ListView {
     final Date min = minCal.getTime();
     return (date.equals(min) || date.after(min)) // >= minCal
         && date.before(maxCal.getTime()); // && < maxCal
+  }
+
+  public void setOnDateSelectedListener(OnDateSelectedListener listener) {
+      mOnDateSelectedListener = listener;
+  }
+
+  public static interface OnDateSelectedListener {
+      public void onDateSelected(Date date);
   }
 }
