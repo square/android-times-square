@@ -113,6 +113,9 @@ public class CalendarPickerView extends ListView {
     monthCounter.setTime(minCal.getTime());
     final int maxMonth = maxCal.get(MONTH);
     final int maxYear = maxCal.get(YEAR);
+    final int selectedYear = selectedCal.get(YEAR);
+    final int selectedMonth = selectedCal.get(MONTH);
+    int selectedIndex = 0;
     while ((monthCounter.get(MONTH) <= maxMonth // Up to, including the month.
         || monthCounter.get(YEAR) < maxYear) // Up to the year.
         && monthCounter.get(YEAR) < maxYear + 1) { // But not > next yr.
@@ -120,10 +123,24 @@ public class CalendarPickerView extends ListView {
           monthNameFormat.format(monthCounter.getTime()));
       cells.add(getMonthCells(month, monthCounter, selectedCal));
       Logr.d("Adding month %s", month);
+      if (selectedMonth == month.getMonth() && selectedYear == month.getYear()) {
+        selectedIndex = months.size();
+      }
       months.add(month);
       monthCounter.add(MONTH, 1);
     }
     adapter.notifyDataSetChanged();
+    if (selectedIndex != 0) {
+      scrollToSelectedMonth(selectedIndex);
+    }
+  }
+
+  private void scrollToSelectedMonth(final int selectedIndex) {
+    post(new Runnable() {
+      @Override public void run() {
+        smoothScrollToPosition(selectedIndex);
+      }
+    });
   }
 
   @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
