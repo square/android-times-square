@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.0.3 *(2012-02-25)*
+----------------------------
+
+ * Fix: scroll to selected date after init.
+
 Version 1.0.2 *(2012-02-15)*
 ----------------------------
 
