@@ -9,14 +9,14 @@
         android:targetSdkVersion="16" />
 
     <application
-        android:label="TimesSquare Sample"
+        android:label="@string/app_name"
         android:icon="@drawable/icon"
         android:debuggable="true"
         >
 
         <activity
             android:name=".SampleTimesSquareActivity"
-            android:label="Calendar Picker Sample"
+            android:label="@string/app_name"
             android:configChanges="orientation|screenSize|keyboardHidden"
             >
 
