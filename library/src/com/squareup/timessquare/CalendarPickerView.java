@@ -278,11 +278,11 @@ public class CalendarPickerView extends ListView {
         && date.before(maxCal.getTime()); // && < maxCal
   }
 
-  void setOnDateSelectedListener(OnDateSelectedListener listener) {
+  public void setOnDateSelectedListener(OnDateSelectedListener listener) {
       dateListener = listener;
   }
 
-  interface OnDateSelectedListener {
+  public interface OnDateSelectedListener {
       void onDateSelected(Date date);
   }
 }
