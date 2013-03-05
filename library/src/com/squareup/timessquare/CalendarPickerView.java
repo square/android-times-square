@@ -283,6 +283,6 @@ public class CalendarPickerView extends ListView {
   }
 
   interface OnDateSelectedListener {
-      public void onDateSelected(Date date);
+      void onDateSelected(Date date);
   }
 }
