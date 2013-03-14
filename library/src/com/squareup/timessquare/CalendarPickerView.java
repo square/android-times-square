@@ -49,7 +49,8 @@ public class CalendarPickerView extends ListView {
   private final Calendar monthCounter = Calendar.getInstance();
 
   private final MonthView.Listener listener = new CellClickedListener();
-
+  private IActivityHook mActivity;
+  
   public CalendarPickerView(Context context, AttributeSet attrs) {
     super(context, attrs);
     adapter = new MonthAdapter();
@@ -62,6 +63,8 @@ public class CalendarPickerView extends ListView {
     monthNameFormat = new SimpleDateFormat(context.getString(R.string.month_name_format));
     weekdayNameFormat = new SimpleDateFormat(context.getString(R.string.day_name_format));
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+    
+  
   }
 
   /**
@@ -75,7 +78,7 @@ public class CalendarPickerView extends ListView {
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
-  public void init(Date selectedDate, Date minDate, Date maxDate) {
+  public void init(Date selectedDate, Date minDate, Date maxDate,IActivityHook mActivity) {
     if (selectedDate == null || minDate == null || maxDate == null) {
       throw new IllegalArgumentException(
           "All dates must be non-null.  " + dbg(selectedDate, minDate, maxDate));
@@ -97,6 +100,9 @@ public class CalendarPickerView extends ListView {
     // Clear previous state.
     cells.clear();
     months.clear();
+    
+    //hook the calling activity to the calendar so it can receive the selected date event
+    this.mActivity = mActivity;
 
     // Sanitize input: clear out the hours/minutes/seconds/millis.
     selectedCal.setTime(selectedDate);
@@ -185,6 +191,8 @@ public class CalendarPickerView extends ListView {
         selectedCal.setTime(cell.getDate());
         // Update the adapter.
         adapter.notifyDataSetChanged();
+        
+        mActivity.newDateSelected(getSelectedDate());
       }
     }
   }
