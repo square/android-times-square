@@ -23,9 +23,10 @@ public class MonthView extends LinearLayout {
 
     final int originalDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
 
+    int firstDayOfWeek = today.getFirstDayOfWeek();
     final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
     for (int c = Calendar.SUNDAY; c <= Calendar.SATURDAY; c++) {
-      today.set(Calendar.DAY_OF_WEEK, c);
+      today.set(Calendar.DAY_OF_WEEK, firstDayOfWeek + c - 1);
       final TextView textView = (TextView) headerRow.getChildAt(c - 1);
       textView.setText(weekdayNameFormat.format(today.getTime()));
     }
