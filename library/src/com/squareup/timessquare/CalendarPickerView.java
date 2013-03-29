@@ -236,7 +236,7 @@ public class CalendarPickerView extends ListView {
     List<List<MonthCellDescriptor>> cells = new ArrayList<List<MonthCellDescriptor>>();
     cal.set(DAY_OF_MONTH, 1);
     int firstDayOfWeek = cal.get(DAY_OF_WEEK);
-    cal.add(DATE, SUNDAY - firstDayOfWeek);
+    cal.add(DATE, cal.getFirstDayOfWeek() - firstDayOfWeek);
     while ((cal.get(MONTH) < month.getMonth() + 1 || cal.get(YEAR) < month.getYear()) //
         && cal.get(YEAR) <= month.getYear()) {
       Logr.d("Building week row starting at %s", cal.getTime());
