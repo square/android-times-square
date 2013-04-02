@@ -24,7 +24,6 @@ import static java.util.Calendar.MILLISECOND;
 import static java.util.Calendar.MINUTE;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.SECOND;
-import static java.util.Calendar.SUNDAY;
 import static java.util.Calendar.YEAR;
 
 /**
@@ -70,7 +69,8 @@ public class CalendarPickerView extends ListView {
    * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
    * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
    * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
-   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
+   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is
+   * exclusive).
    *
    * @param selectedDate Initially selected date.  Must be between {@code minDate} and {@code
    * maxDate}.
