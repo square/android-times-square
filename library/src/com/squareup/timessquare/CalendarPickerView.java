@@ -139,10 +139,10 @@ public class CalendarPickerView extends ListView {
 
   private void scrollToSelectedMonth(final int selectedIndex) {
     post(new Runnable() {
-        @Override
-        public void run() {
-            smoothScrollToPosition(selectedIndex);
-        }
+      @Override
+      public void run() {
+        smoothScrollToPosition(selectedIndex);
+      }
     });
   }
 

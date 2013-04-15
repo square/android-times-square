@@ -276,21 +276,19 @@ public class CalendarPickerViewTest {
   @Test
   public void selectDateReturnsFalseForDatesOutOfRange() {
     view.init(today.getTime(), minDate, maxDate);
-    Calendar jumpToCal=Calendar.getInstance();
-    jumpToCal.add(MONTH,1);
-    if (!view.setSelectedDate(jumpToCal.getTime())) {
-      fail("should be able to select this date");
-    }
+    Calendar jumpToCal = Calendar.getInstance();
+    jumpToCal.add(MONTH, 1);
+    boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
+    assertThat(wasAbleToSetDate).isTrue();
   }
 
   @Test
   public void selectDateReturnsTrueForDateInRange() {
     view.init(today.getTime(), minDate, maxDate);
-    Calendar jumpToCal=Calendar.getInstance();
-    jumpToCal.add(YEAR,2);
-    if (view.setSelectedDate(jumpToCal.getTime())) {
-      fail("should not be able to select this date");
-    }
+    Calendar jumpToCal = Calendar.getInstance();
+    jumpToCal.add(YEAR, 2);
+    boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
+    assertThat(wasAbleToSetDate).isFalse();
   }
 
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
