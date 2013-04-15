@@ -2,13 +2,13 @@
 package com.squareup.timessquare;
 
 import android.app.Activity;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DECEMBER;
