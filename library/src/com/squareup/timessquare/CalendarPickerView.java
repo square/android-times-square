@@ -12,9 +12,11 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
@@ -36,13 +38,14 @@ public class CalendarPickerView extends ListView {
   private final DateFormat monthNameFormat;
   private final DateFormat weekdayNameFormat;
   private final DateFormat fullDateFormat;
+  private boolean multiSelect;
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
   final List<List<List<MonthCellDescriptor>>> cells =
       new ArrayList<List<List<MonthCellDescriptor>>>();
 
-  private MonthCellDescriptor selectedCell;
+  private final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
   final Calendar today = Calendar.getInstance();
-  private final Calendar selectedCal = Calendar.getInstance();
+  private final List<Calendar> selectedCals = new ArrayList<Calendar>();
   private final Calendar minCal = Calendar.getInstance();
   private final Calendar maxCal = Calendar.getInstance();
   private final Calendar monthCounter = Calendar.getInstance();
@@ -66,6 +69,40 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
+   * Gets a value indicating whether the user can select several dates or only
+   * a single one.
+   *
+   * @return true to select mutiple dates, false to select only one date
+   */
+  public boolean getMultiSelect() {
+    return multiSelect;
+  }
+
+  /**
+   * Sets a value indicating whether the user can select several dates or only
+   * a single one.
+   *
+   * @param value true to select mutiple dates, false to select only one date
+   */
+  public void setMultiSelect(boolean value) {
+    multiSelect = value;
+  }
+
+  /**
+   * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
+   * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
+   * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
+   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is
+   * exclusive).
+   *
+   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
+   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
+   */
+  public void init(Date minDate, Date maxDate) {
+    initialize(null, minDate, maxDate);
+  }
+
+  /**
    * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
    * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
    * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
@@ -78,35 +115,72 @@ public class CalendarPickerView extends ListView {
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
   public void init(Date selectedDate, Date minDate, Date maxDate) {
-    if (selectedDate == null || minDate == null || maxDate == null) {
+    setMultiSelect(false);
+    initialize(Arrays.asList(selectedDate), minDate, maxDate);
+  }
+
+  /**
+   * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
+   * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
+   * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
+   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is
+   * exclusive).
+   *
+   * @param selectedDates Initially selected dates.  Must be between {@code minDate} and {@code
+   * maxDate}.
+   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
+   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
+   */
+  public void init(Iterable<Date> selectedDates, Date minDate, Date maxDate) {
+    setMultiSelect(true);
+    initialize(selectedDates, minDate, maxDate);
+  }
+
+  private void initialize(Iterable<Date> selectedDates, Date minDate, Date maxDate) {
+    if (minDate == null || maxDate == null) {
       throw new IllegalArgumentException(
-          "All dates must be non-null.  " + dbg(selectedDate, minDate, maxDate));
-    }
-    if (selectedDate.getTime() == 0 || minDate.getTime() == 0 || maxDate.getTime() == 0) {
-      throw new IllegalArgumentException(
-          "All dates must be non-zero.  " + dbg(selectedDate, minDate, maxDate));
+          "minDate and maxDate must be non-null.  " + dbg(selectedDates, minDate, maxDate));
     }
     if (minDate.after(maxDate)) {
       throw new IllegalArgumentException(
-          "Min date must be before max date.  " + dbg(selectedDate, minDate, maxDate));
+          "Min date must be before max date.  " + dbg(selectedDates, minDate, maxDate));
     }
-    if (selectedDate.before(minDate) || selectedDate.after(maxDate)) {
+    if (minDate.getTime() == 0 || maxDate.getTime() == 0) {
       throw new IllegalArgumentException(
-          "selectedDate must be between minDate and maxDate.  " + dbg(selectedDate, minDate,
-              maxDate));
+          "minDate and maxDate must be non-zero.  " + dbg(selectedDates, minDate, maxDate));
+    }
+
+    selectedCals.clear();
+    selectedCells.clear();
+    if (selectedDates != null) {
+      for (Date selectedDate : selectedDates) {
+        if (selectedDate.getTime() == 0) {
+          throw new IllegalArgumentException(
+              "All dates must be non-zero.  " + dbg(selectedDates, minDate, maxDate));
+        }
+
+        if (selectedDate.before(minDate) || selectedDate.after(maxDate)) {
+          throw new IllegalArgumentException(
+              "selectedDate must be between minDate and maxDate.  " + dbg(selectedDates, minDate,
+                  maxDate));
+        }
+
+        Calendar selectedCal = Calendar.getInstance();
+        selectedCals.add(selectedCal);
+        // Sanitize input: clear out the hours/minutes/seconds/millis.
+        selectedCal.setTime(selectedDate);
+        setMidnight(selectedCal);
+      }
     }
 
     // Clear previous state.
     cells.clear();
     months.clear();
-
-    // Sanitize input: clear out the hours/minutes/seconds/millis.
-    selectedCal.setTime(selectedDate);
     minCal.setTime(minDate);
     maxCal.setTime(maxDate);
-    setMidnight(selectedCal);
     setMidnight(minCal);
     setMidnight(maxCal);
+
     // maxDate is exclusive: bump back to the previous day so if maxDate is the first of a month,
     // we don't accidentally include that month in the view.
     maxCal.add(MINUTE, -1);
@@ -115,25 +189,36 @@ public class CalendarPickerView extends ListView {
     monthCounter.setTime(minCal.getTime());
     final int maxMonth = maxCal.get(MONTH);
     final int maxYear = maxCal.get(YEAR);
-    final int selectedYear = selectedCal.get(YEAR);
-    final int selectedMonth = selectedCal.get(MONTH);
+    int selectedYear;
+    int selectedMonth;
     int selectedIndex = 0;
+    int todayIndex = 0;
+    Calendar today = Calendar.getInstance();
     while ((monthCounter.get(MONTH) <= maxMonth // Up to, including the month.
         || monthCounter.get(YEAR) < maxYear) // Up to the year.
         && monthCounter.get(YEAR) < maxYear + 1) { // But not > next yr.
       MonthDescriptor month = new MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR),
           monthNameFormat.format(monthCounter.getTime()));
-      cells.add(getMonthCells(month, monthCounter, selectedCal));
+      cells.add(getMonthCells(month, monthCounter, selectedCals));
       Logr.d("Adding month %s", month);
-      if (selectedMonth == month.getMonth() && selectedYear == month.getYear()) {
-        selectedIndex = months.size();
+      if (selectedIndex == 0) {
+        for (Calendar selectedCal : selectedCals) {
+          if (sameMonth(selectedCal, month)) {
+            selectedIndex = months.size();
+            break;
+          }
+        }
+        if (selectedIndex == 0 && todayIndex == 0 && sameMonth(today, month)) {
+          todayIndex = months.size();
+        }
       }
       months.add(month);
       monthCounter.add(MONTH, 1);
     }
+
     adapter.notifyDataSetChanged();
-    if (selectedIndex != 0) {
-      scrollToSelectedMonth(selectedIndex);
+    if (selectedIndex != 0 || todayIndex != 0) {
+      scrollToSelectedMonth(selectedIndex != 0 ? selectedIndex : todayIndex);
     }
   }
 
@@ -154,12 +239,29 @@ public class CalendarPickerView extends ListView {
   }
 
   public Date getSelectedDate() {
-    return selectedCal.getTime();
+    return (selectedCals.size() > 0 ? selectedCals.get(0).getTime() : null);
+  }
+
+  public Iterable<Date> getSelectedDates() {
+    List<Date> selectedDates = new ArrayList<Date>();
+    for (Calendar cal : selectedCals) {
+      selectedDates.add(cal.getTime());
+    }
+    return selectedDates;
   }
 
   /** Returns a string summarizing what the client sent us for init() params. */
-  private static String dbg(Date startDate, Date minDate, Date maxDate) {
-    return "startDate: " + startDate + "\nminDate: " + minDate + "\nmaxDate: " + maxDate;
+  private static String dbg(Iterable<Date> selectedDates, Date minDate, Date maxDate) {
+    String dbgString = "minDate: " + minDate + "\nmaxDate: " + maxDate;
+    if (selectedDates == null) {
+      dbgString += "\nselectedDates: null";
+    } else {
+      dbgString += "\nselectedDates: ";
+      for (Date selectedDate : selectedDates) {
+        dbgString += selectedDate + "; ";
+      }
+    }
+    return dbgString;
   }
 
   /** Clears out the hours/minutes/seconds/millis of a Calendar. */
@@ -178,18 +280,47 @@ public class CalendarPickerView extends ListView {
                 fullDateFormat.format(maxCal.getTime()));
         Toast.makeText(getContext(), errMessage, Toast.LENGTH_SHORT).show();
       } else {
-        // De-select the currently-selected cell.
-        selectedCell.setSelected(false);
-        // Select the new cell.
-        selectedCell = cell;
-        selectedCell.setSelected(true);
-        // Track the currently selected date value.
-        selectedCal.setTime(cell.getDate());
+        Date selectedDate = cell.getDate();
+        Calendar selectedCal = Calendar.getInstance();
+        selectedCal.setTime(selectedDate);
+
+        if (getMultiSelect()) {
+          for (MonthCellDescriptor selectedCell : selectedCells) {
+            if (selectedCell.getDate().equals(selectedDate)) {
+              // De-select the currently-selected cell.
+              selectedCell.setSelected(false);
+              selectedCells.remove(selectedCell);
+              selectedDate = null;
+              break;
+            }
+          }
+          for (Calendar cal : selectedCals) {
+            if (sameDate(cal, selectedCal)) {
+              selectedCals.remove(cal);
+              break;
+            }
+          }
+        } else {
+          for (MonthCellDescriptor selectedCell : selectedCells) {
+            // De-select the currently-selected cell.
+            selectedCell.setSelected(false);
+          }
+          selectedCells.clear();
+          selectedCals.clear();
+        }
+
+        if (selectedDate != null) {
+          // Select a new cell
+          selectedCells.add(cell);
+          cell.setSelected(true);
+          selectedCals.add(selectedCal);
+        }
+
         // Update the adapter.
         adapter.notifyDataSetChanged();
 
-        if (dateListener != null) {
-          dateListener.onDateSelected(cell.getDate());
+        if (selectedDate != null && dateListener != null) {
+          dateListener.onDateSelected(selectedDate);
         }
       }
     }
@@ -230,7 +361,7 @@ public class CalendarPickerView extends ListView {
   }
 
   List<List<MonthCellDescriptor>> getMonthCells(MonthDescriptor month, Calendar startCal,
-      Calendar selectedDate) {
+      Iterable<Calendar> selectedDates) {
     Calendar cal = Calendar.getInstance();
     cal.setTime(startCal.getTime());
     List<List<MonthCellDescriptor>> cells = new ArrayList<List<MonthCellDescriptor>>();
@@ -245,20 +376,29 @@ public class CalendarPickerView extends ListView {
       for (int c = 0; c < 7; c++) {
         Date date = cal.getTime();
         boolean isCurrentMonth = cal.get(MONTH) == month.getMonth();
-        boolean isSelected = isCurrentMonth && sameDate(cal, selectedDate);
+        boolean isSelected = isCurrentMonth && containsDate(selectedCals, cal);
         boolean isSelectable = isCurrentMonth && betweenDates(cal, minCal, maxCal);
         boolean isToday = sameDate(cal, today);
         int value = cal.get(DAY_OF_MONTH);
         MonthCellDescriptor cell =
             new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday, value);
         if (isSelected) {
-          selectedCell = cell;
+          selectedCells.add(cell);
         }
         weekCells.add(cell);
         cal.add(DATE, 1);
       }
     }
     return cells;
+  }
+
+  private static boolean containsDate(Iterable<Calendar> selectedCals, Calendar cal) {
+    for (Calendar selectedCal : selectedCals) {
+      if (sameDate(cal, selectedCal)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static boolean sameDate(Calendar cal, Calendar selectedDate) {
@@ -276,6 +416,10 @@ public class CalendarPickerView extends ListView {
     final Date min = minCal.getTime();
     return (date.equals(min) || date.after(min)) // >= minCal
         && date.before(maxCal.getTime()); // && < maxCal
+  }
+
+  private static boolean sameMonth(Calendar cal, MonthDescriptor month) {
+    return (cal.get(MONTH) == month.getMonth() && cal.get(YEAR) == month.getYear());
   }
 
   public void setOnDateSelectedListener(OnDateSelectedListener listener) {
