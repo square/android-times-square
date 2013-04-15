@@ -26,15 +26,17 @@ import static org.fest.assertions.api.Assertions.fail;
 public class CalendarPickerViewTest {
   private CalendarPickerView view;
   private Calendar today;
+  private Date maxDate;
+  private Date minDate;
 
   @Before
   public void setUp() throws Exception {
     view = new CalendarPickerView(new Activity(), null);
     today = Calendar.getInstance();
     today.set(2012, NOVEMBER, 16, 0, 0);
-    Date minDate = today.getTime();
+    minDate = today.getTime();
     today.set(2013, NOVEMBER, 16, 0, 0);
-    Date maxDate = today.getTime();
+    maxDate = today.getTime();
     today.set(2012, NOVEMBER, 16, 0, 0);
     Date startDate = today.getTime();
     view.today.setTime(startDate);
@@ -269,6 +271,24 @@ public class CalendarPickerViewTest {
     mar1.set(2013, MARCH, 1);
     view.init(feb1.getTime(), feb1.getTime(), mar1.getTime());
     assertThat(view.months).hasSize(1);
+  }
+
+  @Test
+  public void selectDateReturnsFalseForDatesOutOfRange() {
+    view.init(today.getTime(), minDate, maxDate);
+    Calendar jumpToCal = Calendar.getInstance();
+    jumpToCal.add(MONTH, 1);
+    boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
+    assertThat(wasAbleToSetDate).isTrue();
+  }
+
+  @Test
+  public void selectDateReturnsTrueForDateInRange() {
+    view.init(today.getTime(), minDate, maxDate);
+    Calendar jumpToCal = Calendar.getInstance();
+    jumpToCal.add(YEAR, 2);
+    boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
+    assertThat(wasAbleToSetDate).isFalse();
   }
 
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
