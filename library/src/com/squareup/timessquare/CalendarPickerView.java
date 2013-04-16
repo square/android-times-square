@@ -202,9 +202,9 @@ public class CalendarPickerView extends ListView {
    */
   public boolean setSelectedDate(Date date) {
     MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
-      if (monthCellWithMonthIndex == null) {
-        return false;
-      }
+    if (monthCellWithMonthIndex == null) {
+      return false;
+    }
 
     selectedCell.setSelected(false);
     monthCellWithMonthIndex.getCell().setSelected(true);
@@ -217,7 +217,7 @@ public class CalendarPickerView extends ListView {
     return true;
   }
 
-  /** hold a cell with a month-index **/
+  /** hold a cell with a month-index * */
   private class MonthCellWithMonthIndex {
     private MonthCellDescriptor mCell;
     private int mMonthIndex;
@@ -238,6 +238,7 @@ public class CalendarPickerView extends ListView {
 
   /**
    * return cell and month-index ( for scrolling there ) for a given Date
+   *
    * @param date the date to be selected
    * @return the selected cell with the month-index
    */
@@ -259,8 +260,6 @@ public class CalendarPickerView extends ListView {
     }
     return null;
   }
-
-
 
   private class MonthAdapter extends BaseAdapter {
     private final LayoutInflater inflater;
