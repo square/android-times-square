@@ -156,7 +156,7 @@ public class CalendarPickerView extends ListView {
       for (Date selectedDate : selectedDates) {
         if (selectedDate.getTime() == 0) {
           throw new IllegalArgumentException(
-              "All dates must be non-zero.  " + dbg(selectedDates, minDate, maxDate));
+              "Selected date must be non-zero.  " + dbg(selectedDates, minDate, maxDate));
         }
 
         if (selectedDate.before(minDate) || selectedDate.after(maxDate)) {
@@ -189,8 +189,6 @@ public class CalendarPickerView extends ListView {
     monthCounter.setTime(minCal.getTime());
     final int maxMonth = maxCal.get(MONTH);
     final int maxYear = maxCal.get(YEAR);
-    int selectedYear;
-    int selectedMonth;
     int selectedIndex = 0;
     int todayIndex = 0;
     Calendar today = Calendar.getInstance();
@@ -199,7 +197,7 @@ public class CalendarPickerView extends ListView {
         && monthCounter.get(YEAR) < maxYear + 1) { // But not > next yr.
       MonthDescriptor month = new MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR),
           monthNameFormat.format(monthCounter.getTime()));
-      cells.add(getMonthCells(month, monthCounter, selectedCals));
+      cells.add(getMonthCells(month, monthCounter));
       Logr.d("Adding month %s", month);
       if (selectedIndex == 0) {
         for (Calendar selectedCal : selectedCals) {
@@ -360,8 +358,7 @@ public class CalendarPickerView extends ListView {
     }
   }
 
-  List<List<MonthCellDescriptor>> getMonthCells(MonthDescriptor month, Calendar startCal,
-      Iterable<Calendar> selectedDates) {
+  List<List<MonthCellDescriptor>> getMonthCells(MonthDescriptor month, Calendar startCal) {
     Calendar cal = Calendar.getInstance();
     cal.setTime(startCal.getTime());
     List<List<MonthCellDescriptor>> cells = new ArrayList<List<MonthCellDescriptor>>();
