@@ -198,7 +198,7 @@ public class CalendarPickerView extends ListView {
 
   /**
    * @param date - the date that should be set as selected in the calendar
-   * @return - weather we where able to set the date
+   * @return - whether we where able to set the date
    */
   public boolean setSelectedDate(Date date) {
     MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
@@ -207,37 +207,30 @@ public class CalendarPickerView extends ListView {
     }
 
     selectedCell.setSelected(false);
-    monthCellWithMonthIndex.getCell().setSelected(true);
-    selectedCell = monthCellWithMonthIndex.getCell();
-    if (monthCellWithMonthIndex.getmMonthIndex() != 0) {
-      scrollToSelectedMonth(monthCellWithMonthIndex.getmMonthIndex());
+    monthCellWithMonthIndex.cell.setSelected(true);
+    selectedCell = monthCellWithMonthIndex.cell;
+    if (monthCellWithMonthIndex.monthIndex != 0) {
+      scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex);
     }
 
     adapter.notifyDataSetChanged();
     return true;
   }
 
-  /** hold a cell with a month-index * */
-  private class MonthCellWithMonthIndex {
-    private MonthCellDescriptor mCell;
-    private int mMonthIndex;
+  /** Hold a cell with a month-index. */
+  private static class MonthCellWithMonthIndex {
+    public MonthCellDescriptor cell;
+    public int monthIndex;
 
     public MonthCellWithMonthIndex(MonthCellDescriptor cell, int monthIndex) {
-      mCell = cell;
-      mMonthIndex = monthIndex;
+      this.cell = cell;
+      this.monthIndex = monthIndex;
     }
 
-    public MonthCellDescriptor getCell() {
-      return mCell;
-    }
-
-    public int getmMonthIndex() {
-      return mMonthIndex;
-    }
   }
 
   /**
-   * return cell and month-index ( for scrolling there ) for a given Date
+   * Return cell and month-index ( for scrolling there ) for a given Date.
    *
    * @param date the date to be selected
    * @return the selected cell with the month-index
