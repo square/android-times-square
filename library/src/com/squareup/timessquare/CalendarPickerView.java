@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -245,6 +246,7 @@ public class CalendarPickerView extends ListView {
     for (Calendar cal : selectedCals) {
       selectedDates.add(cal.getTime());
     }
+    Collections.sort(selectedDates);
     return selectedDates;
   }
 
@@ -308,7 +310,7 @@ public class CalendarPickerView extends ListView {
         }
 
         if (selectedDate != null) {
-          // Select a new cell
+          // Select a new cell.
           selectedCells.add(cell);
           cell.setSelected(true);
           selectedCals.add(selectedCal);
