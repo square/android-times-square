@@ -37,6 +37,7 @@ public class CalendarPickerView extends ListView {
   private final DateFormat monthNameFormat;
   private final DateFormat weekdayNameFormat;
   private final DateFormat fullDateFormat;
+  private enum SelectionMode {SINGLE, MULTI, PERIOD}
   private SelectionMode selectionMode;
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
   final List<List<List<MonthCellDescriptor>>> cells =
@@ -285,43 +286,43 @@ public class CalendarPickerView extends ListView {
         selectedCal.setTime(selectedDate);
 
         switch (getSelectionMode()) {
-        case PERIOD:
-          if (selectedCells.size() >= 2) {
-            assert(selectedCals.size() == selectedCals.size());
-            if (selectedCals.get(0).compareTo(selectedCals.get(1)) != 0) {
-              selectedCells.get(0).setSelected(false);
+          case PERIOD:
+            if (selectedCells.size() >= 2) {
+              assert (selectedCals.size() == selectedCals.size());
+              if (selectedCals.get(0).compareTo(selectedCals.get(1)) != 0) {
+                selectedCells.get(0).setSelected(false);
+              }
+              selectedCells.remove(0);
+              selectedCals.remove(0);
             }
-            selectedCells.remove(0);
-            selectedCals.remove(0);
-          }
-          break;
-
-        case MULTI:
-          for (MonthCellDescriptor selectedCell : selectedCells) {
-            if (selectedCell.getDate().equals(selectedDate)) {
+            break;
+  
+          case MULTI:
+            for (MonthCellDescriptor selectedCell : selectedCells) {
+              if (selectedCell.getDate().equals(selectedDate)) {
+                // De-select the currently-selected cell.
+                selectedCell.setSelected(false);
+                selectedCells.remove(selectedCell);
+                selectedDate = null;
+                break;
+              }
+            }
+            for (Calendar cal : selectedCals) {
+              if (sameDate(cal, selectedCal)) {
+                selectedCals.remove(cal);
+                break;
+              }
+            }
+            break;
+  
+          default:
+            for (MonthCellDescriptor selectedCell : selectedCells) {
               // De-select the currently-selected cell.
               selectedCell.setSelected(false);
-              selectedCells.remove(selectedCell);
-              selectedDate = null;
-              break;
             }
-          }
-          for (Calendar cal : selectedCals) {
-            if (sameDate(cal, selectedCal)) {
-              selectedCals.remove(cal);
-              break;
-            }
-          }
-          break;
-
-        default:
-          for (MonthCellDescriptor selectedCell : selectedCells) {
-            // De-select the currently-selected cell.
-            selectedCell.setSelected(false);
-          }
-          selectedCells.clear();
-          selectedCals.clear();
-          break;
+            selectedCells.clear();
+            selectedCals.clear();
+            break;
         }
 
         if (selectedDate != null) {
