@@ -37,7 +37,7 @@ public class CalendarPickerView extends ListView {
   private final DateFormat monthNameFormat;
   private final DateFormat weekdayNameFormat;
   private final DateFormat fullDateFormat;
-  private enum SelectionMode {SINGLE, MULTI, PERIOD}
+  public enum SelectionMode {SINGLE, MULTI, PERIOD, SELECTEDPERIOD}
   private SelectionMode selectionMode;
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
   final List<List<List<MonthCellDescriptor>>> cells =
@@ -69,11 +69,14 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * Gets the SelectionMode indicating whether the user can select several dates, exactly two dates
-   * or only a single one.
-   *
-   * @return MULTI to select multiple dates, PERIOD to select up to two dates,
-   * SINGLE to select only one date
+   * Gets the SelectionMode indicating whether the user can select several
+   * dates, exactly two dates or only a single one.
+   * 
+   * @return MULTI to select multiple dates, 
+   *         PERIOD to select up to two dates,
+   *         SELECTEDPERIOD same as PERIOD but with selection of all days in
+   *         between 
+   *         SINGLE to select only one date
    */
   public SelectionMode getSelectionMode() {
     return selectionMode;
@@ -83,8 +86,11 @@ public class CalendarPickerView extends ListView {
    * Sets the SelectionMode indicating whether the user can select several dates, exactly two or only
    * a single one.
    *
-   * @param MULTI to select multiple dates, PERIOD to select up to two dates,
-   * SINGLE to select only one date
+   * @return MULTI to select multiple dates, 
+   *         PERIOD to select up to two dates,
+   *         SELECTEDPERIOD same as PERIOD but with selection of all days in
+   *         between 
+   *         SINGLE to select only one date
    */
   public void setSelectionMode(SelectionMode mode) {
     selectionMode = mode;
@@ -243,9 +249,15 @@ public class CalendarPickerView extends ListView {
   }
 
   public Iterable<Date> getSelectedDates() {
-    List<Date> selectedDates = new ArrayList<Date>();
+    List<Date> selectedDates = new ArrayList<Date>();    
     for (Calendar cal : selectedCals) {
       selectedDates.add(cal.getTime());
+    }
+    if (getSelectionMode() == SelectionMode.SELECTEDPERIOD) {
+      // add all days in between the period
+      for (int i = 2; i < selectedCells.size(); i++) {
+        selectedDates.add(selectedCells.get(i).getDate());
+      }
     }
     Collections.sort(selectedDates);
     return selectedDates;
@@ -286,7 +298,15 @@ public class CalendarPickerView extends ListView {
         selectedCal.setTime(selectedDate);
 
         switch (getSelectionMode()) {
-          case PERIOD:
+          case SELECTEDPERIOD: {
+            // clear additionally selected cells
+            while (selectedCells.size() > 2) {
+              selectedCells.get(2).setSelected(false);
+              selectedCells.remove(2);
+            }
+          }
+          case PERIOD:            
+            // keep cell selected if this was both start and end date
             if (selectedCells.size() >= 2) {
               assert (selectedCals.size() == selectedCals.size());
               if (selectedCals.get(0).compareTo(selectedCals.get(1)) != 0) {
@@ -330,6 +350,33 @@ public class CalendarPickerView extends ListView {
           selectedCells.add(cell);
           cell.setSelected(true);
           selectedCals.add(selectedCal);
+          
+          if (getSelectionMode() == SelectionMode.SELECTEDPERIOD) {
+            // select all days in between start and end
+            Date start;
+            Date end;
+            if (selectedCells.get(0).getDate().after(selectedCells.get(1).getDate())) {
+              start = selectedCells.get(1).getDate();
+              end = selectedCells.get(0).getDate();
+            } else {
+              start = selectedCells.get(0).getDate();
+              end = selectedCells.get(1).getDate();
+            }
+            // TODO: optimize the following loops
+            for (List<List<MonthCellDescriptor>> monthlist : cells) {
+              for (List<MonthCellDescriptor> week : monthlist) {
+                for (MonthCellDescriptor singleCell : week) {
+                  if (singleCell.getDate().after(start)
+                      && singleCell.getDate().before(end)) {
+                    if (singleCell.isSelectable()) {
+                      singleCell.setSelected(true);
+                      selectedCells.add(singleCell);                      
+                    }
+                  }
+                }                
+              }
+            }
+          }
         }
 
         // Update the adapter.
