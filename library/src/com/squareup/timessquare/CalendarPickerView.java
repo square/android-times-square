@@ -17,8 +17,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;
@@ -39,7 +37,7 @@ public class CalendarPickerView extends ListView {
   private final DateFormat monthNameFormat;
   private final DateFormat weekdayNameFormat;
   private final DateFormat fullDateFormat;
-  private boolean multiSelect;
+  private SelectionMode selectionMode;
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
   final List<List<List<MonthCellDescriptor>>> cells =
       new ArrayList<List<List<MonthCellDescriptor>>>();
@@ -70,23 +68,25 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * Gets a value indicating whether the user can select several dates or only
-   * a single one.
+   * Gets the SelectionMode indicating whether the user can select several dates, exactly two dates
+   * or only a single one.
    *
-   * @return true to select mutiple dates, false to select only one date
+   * @return MULTI to select multiple dates, PERIOD to select up to two dates,
+   * SINGLE to select only one date
    */
-  public boolean getMultiSelect() {
-    return multiSelect;
+  public SelectionMode getSelectionMode() {
+    return selectionMode;
   }
 
   /**
-   * Sets a value indicating whether the user can select several dates or only
+   * Sets the SelectionMode indicating whether the user can select several dates, exactly two or only
    * a single one.
    *
-   * @param value true to select mutiple dates, false to select only one date
+   * @param MULTI to select multiple dates, PERIOD to select up to two dates,
+   * SINGLE to select only one date
    */
-  public void setMultiSelect(boolean value) {
-    multiSelect = value;
+  public void setSelectionMode(SelectionMode mode) {
+    selectionMode = mode;
   }
 
   /**
@@ -116,7 +116,7 @@ public class CalendarPickerView extends ListView {
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
   public void init(Date selectedDate, Date minDate, Date maxDate) {
-    setMultiSelect(false);
+    setSelectionMode(SelectionMode.SINGLE);
     initialize(Arrays.asList(selectedDate), minDate, maxDate);
   }
 
@@ -133,7 +133,7 @@ public class CalendarPickerView extends ListView {
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
   public void init(Iterable<Date> selectedDates, Date minDate, Date maxDate) {
-    setMultiSelect(true);
+    setSelectionMode(SelectionMode.MULTI);
     initialize(selectedDates, minDate, maxDate);
   }
 
@@ -284,7 +284,19 @@ public class CalendarPickerView extends ListView {
         Calendar selectedCal = Calendar.getInstance();
         selectedCal.setTime(selectedDate);
 
-        if (getMultiSelect()) {
+        switch (getSelectionMode()) {
+        case PERIOD:
+          if (selectedCells.size() >= 2) {
+            assert(selectedCals.size() == selectedCals.size());
+            if (selectedCals.get(0).compareTo(selectedCals.get(1)) != 0) {
+              selectedCells.get(0).setSelected(false);
+            }
+            selectedCells.remove(0);
+            selectedCals.remove(0);
+          }
+          break;
+
+        case MULTI:
           for (MonthCellDescriptor selectedCell : selectedCells) {
             if (selectedCell.getDate().equals(selectedDate)) {
               // De-select the currently-selected cell.
@@ -300,13 +312,16 @@ public class CalendarPickerView extends ListView {
               break;
             }
           }
-        } else {
+          break;
+
+        default:
           for (MonthCellDescriptor selectedCell : selectedCells) {
             // De-select the currently-selected cell.
             selectedCell.setSelected(false);
           }
           selectedCells.clear();
           selectedCals.clear();
+          break;
         }
 
         if (selectedDate != null) {
