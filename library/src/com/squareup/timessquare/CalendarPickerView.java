@@ -30,8 +30,8 @@ import static java.util.Calendar.YEAR;
 
 /**
  * Android component to allow picking a date from a calendar view (a list of months).  Must be
- * initialized after inflation with {@link #init(java.util.Date, java.util.Date, java.util.Date)}.
- * The currently selected date can be retrieved with {@link #getSelectedDate()}.
+ * initialized after inflation with one of the init() methods.  The currently selected date can be
+ * retrieved with {@link #getSelectedDate()}.
  */
 public class CalendarPickerView extends ListView {
   private final CalendarPickerView.MonthAdapter adapter;
@@ -68,22 +68,12 @@ public class CalendarPickerView extends ListView {
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
   }
 
-  /**
-   * Gets a value indicating whether the user can select several dates or only
-   * a single one.
-   *
-   * @return true to select mutiple dates, false to select only one date
-   */
-  public boolean getMultiSelect() {
+  /** Returns whether the user can select several dates or only a single one. */
+  public boolean isMultiSelect() {
     return multiSelect;
   }
 
-  /**
-   * Sets a value indicating whether the user can select several dates or only
-   * a single one.
-   *
-   * @param value true to select mutiple dates, false to select only one date
-   */
+  /** Indicate whether the user can select several dates or only a single one. */
   public void setMultiSelect(boolean value) {
     multiSelect = value;
   }
@@ -288,7 +278,7 @@ public class CalendarPickerView extends ListView {
         Calendar selectedCal = Calendar.getInstance();
         selectedCal.setTime(selectedDate);
 
-        if (getMultiSelect()) {
+        if (isMultiSelect()) {
           for (MonthCellDescriptor selectedCell : selectedCells) {
             if (selectedCell.getDate().equals(selectedDate)) {
               // De-select the currently-selected cell.
@@ -340,9 +330,13 @@ public class CalendarPickerView extends ListView {
       return false;
     }
 
-    selectedCell.setSelected(false);
+    selectedCells.clear();
     monthCellWithMonthIndex.cell.setSelected(true);
-    selectedCell = monthCellWithMonthIndex.cell;
+    selectedCells.add(monthCellWithMonthIndex.cell);
+    selectedCals.clear();
+    Calendar selectedCal = Calendar.getInstance();
+    selectedCal.setTime(monthCellWithMonthIndex.cell.getDate());
+    selectedCals.add(selectedCal);
     if (monthCellWithMonthIndex.monthIndex != 0) {
       scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex);
     }
@@ -360,25 +354,20 @@ public class CalendarPickerView extends ListView {
       this.cell = cell;
       this.monthIndex = monthIndex;
     }
-
   }
 
-  /**
-   * Return cell and month-index ( for scrolling there ) for a given Date.
-   *
-   * @param date the date to be selected
-   * @return the selected cell with the month-index
-   */
+  /** Return cell and month-index (for scrolling) for a given Date. */
   private MonthCellWithMonthIndex getMonthCellWithIndexByDate(Date date) {
-    selectedCal.setTime(date);
     int index = 0;
+    Calendar searchCal = Calendar.getInstance();
+    searchCal.setTime(date);
     Calendar actCal = Calendar.getInstance();
 
     for (List<List<MonthCellDescriptor>> monthCells : cells) {
       for (List<MonthCellDescriptor> weekCells : monthCells) {
         for (MonthCellDescriptor actCell : weekCells) {
           actCal.setTime(actCell.getDate());
-          if (sameDate(actCal, selectedCal)) {
+          if (sameDate(actCal, searchCal)) {
             return new MonthCellWithMonthIndex(actCell, index);
           }
         }
