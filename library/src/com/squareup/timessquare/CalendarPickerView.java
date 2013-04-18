@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
@@ -46,7 +45,7 @@ public class CalendarPickerView extends ListView {
 
   private final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
   final Calendar today = Calendar.getInstance();
-  private final List<Calendar> selectedCals = new ArrayList<Calendar>();
+  final List<Calendar> selectedCals = new ArrayList<Calendar>();
   private final Calendar minCal = Calendar.getInstance();
   private final Calendar maxCal = Calendar.getInstance();
   private final Calendar monthCounter = Calendar.getInstance();
@@ -155,6 +154,10 @@ public class CalendarPickerView extends ListView {
     selectedCells.clear();
     if (selectedDates != null) {
       for (Date selectedDate : selectedDates) {
+        if (selectedDate == null) {
+          throw new IllegalArgumentException(
+              "Selected date must be non-null.  " + dbg(selectedDates, minDate, maxDate));
+        }
         if (selectedDate.getTime() == 0) {
           throw new IllegalArgumentException(
               "Selected date must be non-zero.  " + dbg(selectedDates, minDate, maxDate));
