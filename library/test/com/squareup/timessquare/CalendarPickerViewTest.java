@@ -302,8 +302,7 @@ public class CalendarPickerViewTest {
     assertThat(cell.isSelectable()).isEqualTo(expectedSelectable);
   }
 
-  private List<List<MonthCellDescriptor>> getCells(int month, int year,
-      Calendar selectedDate) {
+  private List<List<MonthCellDescriptor>> getCells(int month, int year, Calendar selectedDate) {
     view.selectedCals.clear();
     view.selectedCals.add(selectedDate);
     Calendar cal = Calendar.getInstance();
