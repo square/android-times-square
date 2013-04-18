@@ -226,7 +226,8 @@ public class CalendarPickerView extends ListView {
 
   private void scrollToSelectedMonth(final int selectedIndex) {
     post(new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         smoothScrollToPosition(selectedIndex);
       }
     });
@@ -327,6 +328,64 @@ public class CalendarPickerView extends ListView {
         }
       }
     }
+  }
+
+  /**
+   * @param date - the date that should be set as selected in the calendar
+   * @return - whether we where able to set the date
+   */
+  public boolean setSelectedDate(Date date) {
+    MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
+    if (monthCellWithMonthIndex == null) {
+      return false;
+    }
+
+    selectedCell.setSelected(false);
+    monthCellWithMonthIndex.cell.setSelected(true);
+    selectedCell = monthCellWithMonthIndex.cell;
+    if (monthCellWithMonthIndex.monthIndex != 0) {
+      scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex);
+    }
+
+    adapter.notifyDataSetChanged();
+    return true;
+  }
+
+  /** Hold a cell with a month-index. */
+  private static class MonthCellWithMonthIndex {
+    public MonthCellDescriptor cell;
+    public int monthIndex;
+
+    public MonthCellWithMonthIndex(MonthCellDescriptor cell, int monthIndex) {
+      this.cell = cell;
+      this.monthIndex = monthIndex;
+    }
+
+  }
+
+  /**
+   * Return cell and month-index ( for scrolling there ) for a given Date.
+   *
+   * @param date the date to be selected
+   * @return the selected cell with the month-index
+   */
+  private MonthCellWithMonthIndex getMonthCellWithIndexByDate(Date date) {
+    selectedCal.setTime(date);
+    int index = 0;
+    Calendar actCal = Calendar.getInstance();
+
+    for (List<List<MonthCellDescriptor>> monthCells : cells) {
+      for (List<MonthCellDescriptor> weekCells : monthCells) {
+        for (MonthCellDescriptor actCell : weekCells) {
+          actCal.setTime(actCell.getDate());
+          if (sameDate(actCal, selectedCal)) {
+            return new MonthCellWithMonthIndex(actCell, index);
+          }
+        }
+      }
+      index++;
+    }
+    return null;
   }
 
   private class MonthAdapter extends BaseAdapter {
