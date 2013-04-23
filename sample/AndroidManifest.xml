@@ -12,6 +12,7 @@
         android:label="@string/app_name"
         android:icon="@drawable/icon"
         android:debuggable="true"
+        android:supportsRtl="true"
         >
 
         <activity
