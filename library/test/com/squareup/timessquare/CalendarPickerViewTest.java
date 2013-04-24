@@ -291,6 +291,17 @@ public class CalendarPickerViewTest {
     assertThat(wasAbleToSetDate).isFalse();
   }
 
+  @Test
+  public void selectDateDoesntSelectDisabledCell() {
+    view.init(today.getTime(), minDate, maxDate);
+    Calendar jumpToCal = Calendar.getInstance();
+    jumpToCal.add(MONTH, 2);
+    jumpToCal.set(DAY_OF_MONTH, 1);
+    boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
+    assertThat(wasAbleToSetDate).isTrue();
+    assertThat(view.selectedCells.get(0).isSelectable()).isTrue();
+  }
+
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
       int expectedVal, boolean expectedCurrentMonth, boolean expectedSelected,
       boolean expectedToday, boolean expectedSelectable) {
