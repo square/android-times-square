@@ -43,7 +43,7 @@ public class CalendarPickerView extends ListView {
   final List<List<List<MonthCellDescriptor>>> cells =
       new ArrayList<List<List<MonthCellDescriptor>>>();
 
-  private final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
+  final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
   final Calendar today = Calendar.getInstance();
   final List<Calendar> selectedCals = new ArrayList<Calendar>();
   private final Calendar minCal = Calendar.getInstance();
@@ -367,7 +367,7 @@ public class CalendarPickerView extends ListView {
       for (List<MonthCellDescriptor> weekCells : monthCells) {
         for (MonthCellDescriptor actCell : weekCells) {
           actCal.setTime(actCell.getDate());
-          if (sameDate(actCal, searchCal)) {
+          if (sameDate(actCal, searchCal) && actCell.isSelectable()) {
             return new MonthCellWithMonthIndex(actCell, index);
           }
         }
