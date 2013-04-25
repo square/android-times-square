@@ -139,8 +139,8 @@ public class CalendarPickerView extends ListView {
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
-  public void init(Iterable<Date> selectedDates, Date minDate, Date maxDate) {
-    setSelectionMode(SelectionMode.MULTI);
+  public void init(Iterable<Date> selectedDates, Date minDate, Date maxDate, SelectionMode mode) {
+    setSelectionMode(mode);
     initialize(selectedDates, minDate, maxDate);
   }
 
@@ -248,13 +248,13 @@ public class CalendarPickerView extends ListView {
     return (selectedCals.size() > 0 ? selectedCals.get(0).getTime() : null);
   }
 
-  public Iterable<Date> getSelectedDates() {
+  public List<Date> getSelectedDates() {
     List<Date> selectedDates = new ArrayList<Date>();    
     for (Calendar cal : selectedCals) {
       selectedDates.add(cal.getTime());
     }
     if (getSelectionMode() == SelectionMode.SELECTEDPERIOD) {
-      // add all days in between the period
+      // Add all days in the period.
       for (int i = 2; i < selectedCells.size(); i++) {
         selectedDates.add(selectedCells.get(i).getDate());
       }
@@ -299,21 +299,22 @@ public class CalendarPickerView extends ListView {
 
         switch (getSelectionMode()) {
           case SELECTEDPERIOD: {
-            // clear additionally selected cells
+            // Clear additionally selected cells. (Cals were not selected)
             while (selectedCells.size() > 2) {
               selectedCells.get(2).setSelected(false);
               selectedCells.remove(2);
             }
           }
-          case PERIOD:            
+          case PERIOD:    
             // keep cell selected if this was both start and end date
-            if (selectedCells.size() >= 2) {
-              assert (selectedCals.size() == selectedCals.size());
+            if (selectedCals.size() >= 2) {              
               if (selectedCals.get(0).compareTo(selectedCals.get(1)) != 0) {
+                assert (selectedCals.size() == selectedCells.size());
                 selectedCells.get(0).setSelected(false);
-              }
-              selectedCells.remove(0);
+                selectedCells.remove(0);
+              } 
               selectedCals.remove(0);
+              assert (selectedCals.size() == selectedCells.size());
             }
             break;
   
@@ -347,11 +348,13 @@ public class CalendarPickerView extends ListView {
 
         if (selectedDate != null) {
           // Select a new cell.
-          selectedCells.add(cell);
-          cell.setSelected(true);
+          if (selectedCells.size() == 0 || !selectedCells.get(0).equals(cell)) {
+            selectedCells.add(cell);
+            cell.setSelected(true);
+          }
           selectedCals.add(selectedCal);
           
-          if (getSelectionMode() == SelectionMode.SELECTEDPERIOD) {
+          if (getSelectionMode() == SelectionMode.SELECTEDPERIOD && selectedCells.size() > 1) {
             // select all days in between start and end
             Date start;
             Date end;
@@ -362,7 +365,7 @@ public class CalendarPickerView extends ListView {
               start = selectedCells.get(0).getDate();
               end = selectedCells.get(1).getDate();
             }
-            // TODO: optimize the following loops
+
             for (List<List<MonthCellDescriptor>> monthlist : cells) {
               for (List<MonthCellDescriptor> week : monthlist) {
                 for (MonthCellDescriptor singleCell : week) {
