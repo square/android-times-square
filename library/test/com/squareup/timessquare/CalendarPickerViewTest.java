@@ -181,7 +181,7 @@ public class CalendarPickerViewTest {
   public void testNullDates() throws Exception {
     final Date validDate = today.getTime();
     try {
-      view.init(null, validDate, validDate);
+      view.init((Date) null, validDate, validDate);
       fail("Should not have been able to pass in a null startDate");
     } catch (IllegalArgumentException expected) {
     }
@@ -284,10 +284,12 @@ public class CalendarPickerViewTest {
 
   private List<List<MonthCellDescriptor>> getCells(int month, int year,
       Calendar selectedDate) {
+    view.selectedCals.clear();
+    view.selectedCals.add(selectedDate);
     Calendar cal = Calendar.getInstance();
     cal.set(DAY_OF_MONTH, 1);
     cal.set(YEAR, year);
     cal.set(MONTH, month);
-    return view.getMonthCells(new MonthDescriptor(month, year, "January 2012"), cal, selectedDate);
+    return view.getMonthCells(new MonthDescriptor(month, year, "January 2012"), cal);
   }
 }
