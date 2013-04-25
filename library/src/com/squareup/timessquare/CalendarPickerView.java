@@ -29,8 +29,8 @@ import static java.util.Calendar.YEAR;
 
 /**
  * Android component to allow picking a date from a calendar view (a list of months).  Must be
- * initialized after inflation with {@link #init(java.util.Date, java.util.Date, java.util.Date)}.
- * The currently selected date can be retrieved with {@link #getSelectedDate()}.
+ * initialized after inflation with one of the init() methods.  The currently selected date can be
+ * retrieved with {@link #getSelectedDate()}.
  */
 public class CalendarPickerView extends ListView {
   private final CalendarPickerView.MonthAdapter adapter;
@@ -234,7 +234,8 @@ public class CalendarPickerView extends ListView {
 
   private void scrollToSelectedMonth(final int selectedIndex) {
     post(new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         smoothScrollToPosition(selectedIndex);
       }
     });
@@ -394,6 +395,63 @@ public class CalendarPickerView extends ListView {
         }
       }
     }
+  }
+
+  /**
+   * @param date - the date that should be set as selected in the calendar
+   * @return - whether we where able to set the date
+   */
+  public boolean setSelectedDate(Date date) {
+    MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
+    if (monthCellWithMonthIndex == null) {
+      return false;
+    }
+
+    selectedCells.clear();
+    monthCellWithMonthIndex.cell.setSelected(true);
+    selectedCells.add(monthCellWithMonthIndex.cell);
+    selectedCals.clear();
+    Calendar selectedCal = Calendar.getInstance();
+    selectedCal.setTime(monthCellWithMonthIndex.cell.getDate());
+    selectedCals.add(selectedCal);
+    if (monthCellWithMonthIndex.monthIndex != 0) {
+      scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex);
+    }
+
+    adapter.notifyDataSetChanged();
+    return true;
+  }
+
+  /** Hold a cell with a month-index. */
+  private static class MonthCellWithMonthIndex {
+    public MonthCellDescriptor cell;
+    public int monthIndex;
+
+    public MonthCellWithMonthIndex(MonthCellDescriptor cell, int monthIndex) {
+      this.cell = cell;
+      this.monthIndex = monthIndex;
+    }
+  }
+
+  /** Return cell and month-index (for scrolling) for a given Date. */
+  private MonthCellWithMonthIndex getMonthCellWithIndexByDate(Date date) {
+    int index = 0;
+    Calendar searchCal = Calendar.getInstance();
+    searchCal.setTime(date);
+    Calendar actCal = Calendar.getInstance();
+
+    for (List<List<MonthCellDescriptor>> monthCells : cells) {
+      for (List<MonthCellDescriptor> weekCells : monthCells) {
+        for (MonthCellDescriptor actCell : weekCells) {
+          actCal.setTime(actCell.getDate());
+          if (sameDate(actCal, searchCal)) {
+            return new MonthCellWithMonthIndex(actCell, index);
+          }
+        }
+      }
+      index++;
+    }
+    return null;
   }
 
   private class MonthAdapter extends BaseAdapter {
