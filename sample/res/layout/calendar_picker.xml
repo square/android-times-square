@@ -6,6 +6,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/button_single"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Single" />
+
+        <Button
+            android:id="@+id/button_multi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Multi" />
+
+        <Button
+            android:id="@+id/button_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Period" />
+
+        <Button
+            android:id="@+id/button_speriod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S-Period" />
+
+    </LinearLayout>
+    
   <com.squareup.timessquare.CalendarPickerView
       android:id="@+id/calendar_view"
       android:layout_width="match_parent"
