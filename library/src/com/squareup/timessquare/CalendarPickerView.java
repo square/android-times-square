@@ -66,8 +66,8 @@ public class CalendarPickerView extends ListView {
     monthNameFormat = new SimpleDateFormat(context.getString(R.string.month_name_format));
     weekdayNameFormat = new SimpleDateFormat(context.getString(R.string.day_name_format));
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-    
-    if(isInEditMode()){
+
+    if (isInEditMode()) {
       Calendar nextYear = Calendar.getInstance();
       nextYear.add(Calendar.YEAR, 1);
 
