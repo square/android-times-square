@@ -49,7 +49,7 @@
 
     <java.version>1.6</java.version>
     <android.version>4.1.1.4</android.version>
-    <android.platform>16</android.platform>
+    <android.platform>17</android.platform>
 
     <fest-assert.version>2.0M8</fest-assert.version>
     <junit.version>4.10</junit.version>
