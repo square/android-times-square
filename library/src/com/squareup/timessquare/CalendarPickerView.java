@@ -53,6 +53,7 @@ public class CalendarPickerView extends ListView {
   private final MonthView.Listener listener = new CellClickedListener();
 
   private OnDateSelectedListener dateListener;
+  private OnDateConfiguredListener dateConfiguredListener;
 
   public CalendarPickerView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -275,13 +276,14 @@ public class CalendarPickerView extends ListView {
 
   private class CellClickedListener implements MonthView.Listener {
     @Override public void handleClick(MonthCellDescriptor cell) {
-      if (!betweenDates(cell.getDate(), minCal, maxCal)) {
+      Date selectedDate = cell.getDate();
+
+      if (!betweenDates(selectedDate, minCal, maxCal) || !isDateSelectable(selectedDate)) {
         String errMessage =
             getResources().getString(R.string.invalid_date, fullDateFormat.format(minCal.getTime()),
                 fullDateFormat.format(maxCal.getTime()));
         Toast.makeText(getContext(), errMessage, Toast.LENGTH_SHORT).show();
       } else {
-        Date selectedDate = cell.getDate();
         Calendar selectedCal = Calendar.getInstance();
         selectedCal.setTime(selectedDate);
 
@@ -333,7 +335,7 @@ public class CalendarPickerView extends ListView {
    */
   public boolean setSelectedDate(Date date) {
     MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
-    if (monthCellWithMonthIndex == null) {
+    if (monthCellWithMonthIndex == null || !isDateSelectable(date)) {
       return false;
     }
 
@@ -434,7 +436,8 @@ public class CalendarPickerView extends ListView {
         Date date = cal.getTime();
         boolean isCurrentMonth = cal.get(MONTH) == month.getMonth();
         boolean isSelected = isCurrentMonth && containsDate(selectedCals, cal);
-        boolean isSelectable = isCurrentMonth && betweenDates(cal, minCal, maxCal);
+        boolean isSelectable = isCurrentMonth && betweenDates(cal, minCal, maxCal)
+            && isDateSelectable(date);
         boolean isToday = sameDate(cal, today);
         int value = cal.get(DAY_OF_MONTH);
         MonthCellDescriptor cell =
@@ -479,11 +482,45 @@ public class CalendarPickerView extends ListView {
     return (cal.get(MONTH) == month.getMonth() && cal.get(YEAR) == month.getYear());
   }
 
+  private boolean isDateSelectable(Date date) {
+    if (dateConfiguredListener == null) {
+      return true;
+    }
+    return dateConfiguredListener.isDateSelectable(date);
+  }
+
   public void setOnDateSelectedListener(OnDateSelectedListener listener) {
     dateListener = listener;
   }
 
+  /**
+   * Set a listener used to discriminate between selectable and unselectable
+   * dates. Set this to disable arbitrary dates as they are rendered.
+   *
+   * Important: set this before you call {@link init}.
+   *
+   * @param listener the date-selectability discriminator
+   */
+  public void setOnDateConfiguredListener(OnDateConfiguredListener listener) {
+    dateConfiguredListener = listener;
+  }
+
   public interface OnDateSelectedListener {
     void onDateSelected(Date date);
+  }
+
+  /**
+   * Interface used for determining the selectability of a date cell when it is
+   * configured for display on the calendar.
+   *
+   * See {@link setOnDateSelectedListener}.
+   */
+  public interface OnDateConfiguredListener {
+
+    /**
+     * @param date the date to be configured
+     * @return the selectability of the {@code Date}
+     */
+    boolean isDateSelectable(Date date);
   }
 }
