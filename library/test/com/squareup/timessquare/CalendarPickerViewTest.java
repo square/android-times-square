@@ -10,7 +10,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import com.squareup.timessquare.CalendarPickerView;
 import static java.util.Calendar.DAY_OF_MONTH;
+import static java.util.Calendar.DAY_OF_WEEK;
 import static java.util.Calendar.DECEMBER;
 import static java.util.Calendar.FEBRUARY;
 import static java.util.Calendar.JANUARY;
@@ -300,6 +302,24 @@ public class CalendarPickerViewTest {
     boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
     assertThat(wasAbleToSetDate).isTrue();
     assertThat(view.selectedCells.get(0).isSelectable()).isTrue();
+  }
+
+  @Test
+  public void testOnDateConfiguredListener() {
+    final Calendar testCal = Calendar.getInstance();    
+    view.setOnDateConfiguredListener(new CalendarPickerView.OnDateConfiguredListener() {
+      @Override public boolean isDateSelectable(Date date) {
+        testCal.setTime(date);
+        int dayOfWeek = testCal.get(DAY_OF_WEEK);
+        return dayOfWeek > 1 && dayOfWeek < 7;
+      }
+    });
+    view.init(today.getTime(), minDate, maxDate);
+    Calendar jumpToCal = Calendar.getInstance();
+    jumpToCal.add(MONTH, 2);
+    jumpToCal.set(DAY_OF_WEEK, 1);
+    boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
+    assertThat(wasAbleToSetDate).isFalse();
   }
 
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
