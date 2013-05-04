@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;
@@ -38,7 +37,8 @@ public class CalendarPickerView extends ListView {
   private final DateFormat monthNameFormat;
   private final DateFormat weekdayNameFormat;
   private final DateFormat fullDateFormat;
-  private boolean multiSelect;
+  public enum SelectionMode {SINGLE, MULTI, PERIOD, SELECTEDPERIOD}
+  private SelectionMode selectionMode;
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
   final List<List<List<MonthCellDescriptor>>> cells =
       new ArrayList<List<List<MonthCellDescriptor>>>();
@@ -76,14 +76,32 @@ public class CalendarPickerView extends ListView {
     }
   }
 
-  /** Returns whether the user can select several dates or only a single one. */
-  public boolean isMultiSelect() {
-    return multiSelect;
+  /**
+   * Gets the SelectionMode indicating whether the user can select several
+   * dates, exactly two dates or only a single one.
+   * 
+   * @return MULTI to select multiple dates, 
+   *         PERIOD to select up to two dates,
+   *         SELECTEDPERIOD same as PERIOD but with selection of all days in
+   *         between 
+   *         SINGLE to select only one date
+   */
+  public SelectionMode getSelectionMode() {
+    return selectionMode;
   }
 
-  /** Indicate whether the user can select several dates or only a single one. */
-  public void setMultiSelect(boolean value) {
-    multiSelect = value;
+  /**
+   * Sets the SelectionMode indicating whether the user can select several dates, exactly two or only
+   * a single one.
+   *
+   * @return MULTI to select multiple dates, 
+   *         PERIOD to select up to two dates,
+   *         SELECTEDPERIOD same as PERIOD but with selection of all days in
+   *         between 
+   *         SINGLE to select only one date
+   */
+  public void setSelectionMode(SelectionMode mode) {
+    selectionMode = mode;
   }
 
   /**
@@ -113,7 +131,7 @@ public class CalendarPickerView extends ListView {
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
   public void init(Date selectedDate, Date minDate, Date maxDate) {
-    setMultiSelect(false);
+    setSelectionMode(SelectionMode.SINGLE);
     initialize(Arrays.asList(selectedDate), minDate, maxDate);
   }
 
@@ -129,8 +147,8 @@ public class CalendarPickerView extends ListView {
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
-  public void init(Iterable<Date> selectedDates, Date minDate, Date maxDate) {
-    setMultiSelect(true);
+  public void init(Iterable<Date> selectedDates, Date minDate, Date maxDate, SelectionMode mode) {
+    setSelectionMode(mode);
     initialize(selectedDates, minDate, maxDate);
   }
 
@@ -243,10 +261,16 @@ public class CalendarPickerView extends ListView {
     return (selectedCals.size() > 0 ? selectedCals.get(0).getTime() : null);
   }
 
-  public Iterable<Date> getSelectedDates() {
-    List<Date> selectedDates = new ArrayList<Date>();
+  public List<Date> getSelectedDates() {
+    List<Date> selectedDates = new ArrayList<Date>();    
     for (Calendar cal : selectedCals) {
       selectedDates.add(cal.getTime());
+    }
+    if (getSelectionMode() == SelectionMode.SELECTEDPERIOD) {
+      // Add all days in the period.
+      for (int i = 2; i < selectedCells.size(); i++) {
+        selectedDates.add(selectedCells.get(i).getDate());
+      }
     }
     Collections.sort(selectedDates);
     return selectedDates;
@@ -287,36 +311,89 @@ public class CalendarPickerView extends ListView {
         Calendar selectedCal = Calendar.getInstance();
         selectedCal.setTime(selectedDate);
 
-        if (isMultiSelect()) {
-          for (MonthCellDescriptor selectedCell : selectedCells) {
-            if (selectedCell.getDate().equals(selectedDate)) {
+        switch (getSelectionMode()) {
+          case SELECTEDPERIOD: {
+            // Clear additionally selected cells. (Cals were not selected)
+            while (selectedCells.size() > 2) {
+              selectedCells.get(2).setSelected(false);
+              selectedCells.remove(2);
+            }
+          }
+          case PERIOD:    
+            // keep cell selected if this was both start and end date
+            if (selectedCals.size() >= 2) {              
+              if (selectedCals.get(0).compareTo(selectedCals.get(1)) != 0) {
+                assert (selectedCals.size() == selectedCells.size());
+                selectedCells.get(0).setSelected(false);
+                selectedCells.remove(0);
+              } 
+              selectedCals.remove(0);
+              assert (selectedCals.size() == selectedCells.size());
+            }
+            break;
+  
+          case MULTI:
+            for (MonthCellDescriptor selectedCell : selectedCells) {
+              if (selectedCell.getDate().equals(selectedDate)) {
+                // De-select the currently-selected cell.
+                selectedCell.setSelected(false);
+                selectedCells.remove(selectedCell);
+                selectedDate = null;
+                break;
+              }
+            }
+            for (Calendar cal : selectedCals) {
+              if (sameDate(cal, selectedCal)) {
+                selectedCals.remove(cal);
+                break;
+              }
+            }
+            break;
+  
+          default:
+            for (MonthCellDescriptor selectedCell : selectedCells) {
               // De-select the currently-selected cell.
               selectedCell.setSelected(false);
-              selectedCells.remove(selectedCell);
-              selectedDate = null;
-              break;
             }
-          }
-          for (Calendar cal : selectedCals) {
-            if (sameDate(cal, selectedCal)) {
-              selectedCals.remove(cal);
-              break;
-            }
-          }
-        } else {
-          for (MonthCellDescriptor selectedCell : selectedCells) {
-            // De-select the currently-selected cell.
-            selectedCell.setSelected(false);
-          }
-          selectedCells.clear();
-          selectedCals.clear();
+            selectedCells.clear();
+            selectedCals.clear();
+            break;
         }
 
         if (selectedDate != null) {
           // Select a new cell.
-          selectedCells.add(cell);
-          cell.setSelected(true);
+          if (selectedCells.size() == 0 || !selectedCells.get(0).equals(cell)) {
+            selectedCells.add(cell);
+            cell.setSelected(true);
+          }
           selectedCals.add(selectedCal);
+          
+          if (getSelectionMode() == SelectionMode.SELECTEDPERIOD && selectedCells.size() > 1) {
+            // select all days in between start and end
+            Date start;
+            Date end;
+            if (selectedCells.get(0).getDate().after(selectedCells.get(1).getDate())) {
+              start = selectedCells.get(1).getDate();
+              end = selectedCells.get(0).getDate();
+            } else {
+              start = selectedCells.get(0).getDate();
+              end = selectedCells.get(1).getDate();
+            }
+
+            for (List<List<MonthCellDescriptor>> monthlist : cells) {
+              for (List<MonthCellDescriptor> week : monthlist) {
+                for (MonthCellDescriptor singleCell : week) {
+                  if (singleCell.getDate().after(start)
+                      && singleCell.getDate().before(end)) {
+                    if (singleCell.isSelectable()) {
+                      singleCell.setSelected(true);
+                      selectedCells.add(singleCell);                      
+                    }
+                  }
+                }                
+              }
+            }
+          }
         }
 
         // Update the adapter.
