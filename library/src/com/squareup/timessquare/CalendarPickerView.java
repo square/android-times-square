@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;
@@ -33,19 +34,28 @@ import static java.util.Calendar.YEAR;
  * retrieved with {@link #getSelectedDate()}.
  */
 public class CalendarPickerView extends ListView {
+  public enum SelectionMode {
+    /** Only one date will be selectable. */
+    SINGLE,
+    /** Multiple dates will be selectable. */
+    MULTIPLE,
+    /** Up to (and no more than) two dates will be selectable. */
+    PERIOD,
+    /** Like {@link #PERIOD} but also selects all dates in between the two selected dates. */
+    SELECTED_PERIOD
+  }
+
   private final CalendarPickerView.MonthAdapter adapter;
   private final DateFormat monthNameFormat;
   private final DateFormat weekdayNameFormat;
   private final DateFormat fullDateFormat;
-  public enum SelectionMode {SINGLE, MULTI, PERIOD, SELECTEDPERIOD}
-  private SelectionMode selectionMode;
+  SelectionMode selectionMode;
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
-  final List<List<List<MonthCellDescriptor>>> cells =
-      new ArrayList<List<List<MonthCellDescriptor>>>();
-
   final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
   final Calendar today = Calendar.getInstance();
-  final List<Calendar> selectedCals = new ArrayList<Calendar>();
+  private final List<List<List<MonthCellDescriptor>>> cells =
+      new ArrayList<List<List<MonthCellDescriptor>>>();
+  private final List<Calendar> selectedCals = new ArrayList<Calendar>();
   private final Calendar minCal = Calendar.getInstance();
   private final Calendar maxCal = Calendar.getInstance();
   private final Calendar monthCounter = Calendar.getInstance();
@@ -53,7 +63,7 @@ public class CalendarPickerView extends ListView {
   private final MonthView.Listener listener = new CellClickedListener();
 
   private OnDateSelectedListener dateListener;
-  private OnDateConfiguredListener dateConfiguredListener;
+  private DateSelectableFilter dateConfiguredListener;
 
   public CalendarPickerView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -77,53 +87,15 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * Gets the SelectionMode indicating whether the user can select several
-   * dates, exactly two dates or only a single one.
-   * 
-   * @return MULTI to select multiple dates, 
-   *         PERIOD to select up to two dates,
-   *         SELECTEDPERIOD same as PERIOD but with selection of all days in
-   *         between 
-   *         SINGLE to select only one date
-   */
-  public SelectionMode getSelectionMode() {
-    return selectionMode;
-  }
-
-  /**
-   * Sets the SelectionMode indicating whether the user can select several dates, exactly two or only
-   * a single one.
-   *
-   * @return MULTI to select multiple dates, 
-   *         PERIOD to select up to two dates,
-   *         SELECTEDPERIOD same as PERIOD but with selection of all days in
-   *         between 
-   *         SINGLE to select only one date
-   */
-  public void setSelectionMode(SelectionMode mode) {
-    selectionMode = mode;
-  }
-
-  /**
    * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
    * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
    * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
    * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is
    * exclusive).
-   *
-   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
-   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
-   */
-  public void init(Date minDate, Date maxDate) {
-    initialize(null, minDate, maxDate);
-  }
-
-  /**
-   * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
-   * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
-   * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
-   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is
-   * exclusive).
+   * <p/>
+   * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
+   * want a different selection mode, use {@link #init(SelectionMode, Iterable, java.util.Date,
+   * java.util.Date)}
    *
    * @param selectedDate Initially selected date.  Must be between {@code minDate} and {@code
    * maxDate}.
@@ -131,8 +103,23 @@ public class CalendarPickerView extends ListView {
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
   public void init(Date selectedDate, Date minDate, Date maxDate) {
-    setSelectionMode(SelectionMode.SINGLE);
+    selectionMode = SelectionMode.SINGLE;
     initialize(Arrays.asList(selectedDate), minDate, maxDate);
+  }
+
+  /**
+   * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
+   * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
+   * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
+   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is
+   * exclusive).
+   *
+   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
+   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
+   */
+  public void init(SelectionMode selectionMode, Date minDate, Date maxDate) {
+    this.selectionMode = selectionMode;
+    initialize(null, minDate, maxDate);
   }
 
   /**
@@ -147,12 +134,16 @@ public class CalendarPickerView extends ListView {
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
-  public void init(Iterable<Date> selectedDates, Date minDate, Date maxDate, SelectionMode mode) {
-    setSelectionMode(mode);
+  public void init(SelectionMode selectionMode, Iterable<Date> selectedDates, Date minDate,
+      Date maxDate) {
+    this.selectionMode = selectionMode;
     initialize(selectedDates, minDate, maxDate);
   }
 
   private void initialize(Iterable<Date> selectedDates, Date minDate, Date maxDate) {
+    if (selectionMode == SelectionMode.SINGLE) {
+      throw new IllegalArgumentException("SINGLE mode cannot be used with multiple selectedDates");
+    }
     if (minDate == null || maxDate == null) {
       throw new IllegalArgumentException(
           "minDate and maxDate must be non-null.  " + dbg(selectedDates, minDate, maxDate));
@@ -262,11 +253,11 @@ public class CalendarPickerView extends ListView {
   }
 
   public List<Date> getSelectedDates() {
-    List<Date> selectedDates = new ArrayList<Date>();    
+    List<Date> selectedDates = new ArrayList<Date>();
     for (Calendar cal : selectedCals) {
       selectedDates.add(cal.getTime());
     }
-    if (getSelectionMode() == SelectionMode.SELECTEDPERIOD) {
+    if (selectionMode == SelectionMode.SELECTED_PERIOD) {
       // Add all days in the period.
       for (int i = 2; i < selectedCells.size(); i++) {
         selectedDates.add(selectedCells.get(i).getDate());
@@ -300,135 +291,154 @@ public class CalendarPickerView extends ListView {
 
   private class CellClickedListener implements MonthView.Listener {
     @Override public void handleClick(MonthCellDescriptor cell) {
-      Date selectedDate = cell.getDate();
+      Date clickedDate = cell.getDate();
 
-      if (!betweenDates(selectedDate, minCal, maxCal) || !isDateSelectable(selectedDate)) {
+      if (!betweenDates(clickedDate, minCal, maxCal) || !isDateSelectable(clickedDate)) {
         String errMessage =
             getResources().getString(R.string.invalid_date, fullDateFormat.format(minCal.getTime()),
                 fullDateFormat.format(maxCal.getTime()));
         Toast.makeText(getContext(), errMessage, Toast.LENGTH_SHORT).show();
       } else {
-        Calendar selectedCal = Calendar.getInstance();
-        selectedCal.setTime(selectedDate);
+        boolean wasSelected = doSelectDate(clickedDate, cell);
 
-        switch (getSelectionMode()) {
-          case SELECTEDPERIOD: {
-            // Clear additionally selected cells. (Cals were not selected)
-            while (selectedCells.size() > 2) {
-              selectedCells.get(2).setSelected(false);
-              selectedCells.remove(2);
-            }
-          }
-          case PERIOD:    
-            // keep cell selected if this was both start and end date
-            if (selectedCals.size() >= 2) {              
-              if (selectedCals.get(0).compareTo(selectedCals.get(1)) != 0) {
-                assert (selectedCals.size() == selectedCells.size());
-                selectedCells.get(0).setSelected(false);
-                selectedCells.remove(0);
-              } 
-              selectedCals.remove(0);
-              assert (selectedCals.size() == selectedCells.size());
-            }
-            break;
-  
-          case MULTI:
-            for (MonthCellDescriptor selectedCell : selectedCells) {
-              if (selectedCell.getDate().equals(selectedDate)) {
-                // De-select the currently-selected cell.
-                selectedCell.setSelected(false);
-                selectedCells.remove(selectedCell);
-                selectedDate = null;
-                break;
-              }
-            }
-            for (Calendar cal : selectedCals) {
-              if (sameDate(cal, selectedCal)) {
-                selectedCals.remove(cal);
-                break;
-              }
-            }
-            break;
-  
-          default:
-            for (MonthCellDescriptor selectedCell : selectedCells) {
-              // De-select the currently-selected cell.
-              selectedCell.setSelected(false);
-            }
-            selectedCells.clear();
-            selectedCals.clear();
-            break;
-        }
-
-        if (selectedDate != null) {
-          // Select a new cell.
-          if (selectedCells.size() == 0 || !selectedCells.get(0).equals(cell)) {
-            selectedCells.add(cell);
-            cell.setSelected(true);
-          }
-          selectedCals.add(selectedCal);
-          
-          if (getSelectionMode() == SelectionMode.SELECTEDPERIOD && selectedCells.size() > 1) {
-            // select all days in between start and end
-            Date start;
-            Date end;
-            if (selectedCells.get(0).getDate().after(selectedCells.get(1).getDate())) {
-              start = selectedCells.get(1).getDate();
-              end = selectedCells.get(0).getDate();
-            } else {
-              start = selectedCells.get(0).getDate();
-              end = selectedCells.get(1).getDate();
-            }
-
-            for (List<List<MonthCellDescriptor>> monthlist : cells) {
-              for (List<MonthCellDescriptor> week : monthlist) {
-                for (MonthCellDescriptor singleCell : week) {
-                  if (singleCell.getDate().after(start)
-                      && singleCell.getDate().before(end)) {
-                    if (singleCell.isSelectable()) {
-                      singleCell.setSelected(true);
-                      selectedCells.add(singleCell);                      
-                    }
-                  }
-                }                
-              }
-            }
-          }
-        }
-
-        // Update the adapter.
-        adapter.notifyDataSetChanged();
-
-        if (selectedDate != null && dateListener != null) {
-          dateListener.onDateSelected(selectedDate);
+        if (wasSelected && dateListener != null) {
+          dateListener.onDateSelected(clickedDate);
         }
       }
     }
   }
 
   /**
-   * @param date - the date that should be set as selected in the calendar
-   * @return - whether we where able to set the date
+   * Select a new date.  Respects the {@link SelectionMode} this CalendarPickerView is configured
+   * with: if you are in {@link SelectionMode#SINGLE}, the previously selected date will be
+   * un-selected.  In {@link SelectionMode#MULTIPLE}, the new date will be added to the list of
+   * selected dates.  TODO figure out the behavior in {@link SelectionMode#PERIOD} and
+   * TODO {@link SelectionMode#SELECTED_PERIOD} and document here.  Write tests for this.
+   * </p>
+   * If the selection was made (selectable date, in range), the view will scroll to the newly
+   * selected date if it's not already visible.
+   *
+   * @return - whether we were able to set the date
    */
-  public boolean setSelectedDate(Date date) {
+  public boolean selectDate(Date date) {
     MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
     if (monthCellWithMonthIndex == null || !isDateSelectable(date)) {
       return false;
     }
-
-    selectedCells.clear();
-    monthCellWithMonthIndex.cell.setSelected(true);
-    selectedCells.add(monthCellWithMonthIndex.cell);
-    selectedCals.clear();
-    Calendar selectedCal = Calendar.getInstance();
-    selectedCal.setTime(monthCellWithMonthIndex.cell.getDate());
-    selectedCals.add(selectedCal);
-    if (monthCellWithMonthIndex.monthIndex != 0) {
+    boolean wasSelected = doSelectDate(date, monthCellWithMonthIndex.cell);
+    if (wasSelected) {
       scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex);
     }
+    return wasSelected;
+  }
 
+  private boolean doSelectDate(Date date, MonthCellDescriptor cell) {
+    Calendar selectedCal = Calendar.getInstance();
+    selectedCal.setTime(date);
+
+    switch (selectionMode) {
+      case SELECTED_PERIOD: {
+        // Clear additionally selected cells (Cals were not selected).
+        while (selectedCells.size() > 2) {
+          selectedCells.get(2).setSelected(false);
+          selectedCells.remove(2);
+        }
+      }
+      // NOTE: there is no break here.  This code falls through and runs the normal PERIOD code.
+      case PERIOD:
+        // Keep cell selected if this was both start and end date.
+        if (selectedCals.size() >= 2) {
+          if (selectedCals.get(0).compareTo(selectedCals.get(1)) != 0) {
+            if (selectedCals.size() != selectedCells.size()) {
+              throw new IllegalStateException(
+                  String.format("Mismatched number of selected cells (%d)/dates (%d)",
+                      selectedCells.size(), selectedCals.size()));
+            }
+            selectedCells.get(0).setSelected(false);
+            selectedCells.remove(0);
+          }
+          selectedCals.remove(0);
+          if (selectedCals.size() != selectedCells.size()) {
+            throw new IllegalStateException(
+                String.format("Mismatched number of selected cells (%d)/dates (%d) after removal",
+                    selectedCells.size(), selectedCals.size()));
+          }
+        }
+        break;
+
+      case MULTIPLE:
+        date = applyMultiSelect(date, selectedCal);
+        break;
+
+      case SINGLE:
+        for (MonthCellDescriptor selectedCell : selectedCells) {
+          // De-select the currently-selected cell.
+          selectedCell.setSelected(false);
+        }
+        selectedCells.clear();
+        selectedCals.clear();
+        break;
+      default:
+        throw new IllegalStateException("Unknown selectionMode " + selectionMode);
+    }
+
+    if (date != null) {
+      // Select a new cell.
+      if (selectedCells.size() == 0 || !selectedCells.get(0).equals(cell)) {
+        selectedCells.add(cell);
+        cell.setSelected(true);
+      }
+      selectedCals.add(selectedCal);
+
+      if (selectionMode == SelectionMode.SELECTED_PERIOD && selectedCells.size() > 1) {
+        // Select all days in between start and end.
+        Date start;
+        Date end;
+        if (selectedCells.get(0).getDate().after(selectedCells.get(1).getDate())) {
+          start = selectedCells.get(1).getDate();
+          end = selectedCells.get(0).getDate();
+        } else {
+          start = selectedCells.get(0).getDate();
+          end = selectedCells.get(1).getDate();
+        }
+
+        for (List<List<MonthCellDescriptor>> month : cells) {
+          for (List<MonthCellDescriptor> week : month) {
+            for (MonthCellDescriptor singleCell : week) {
+              if (singleCell.getDate().after(start)
+                  && singleCell.getDate().before(end)
+                  && singleCell.isSelectable()) {
+                singleCell.setSelected(true);
+                selectedCells.add(singleCell);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Update the adapter.
     adapter.notifyDataSetChanged();
-    return true;
+    return date != null;
+  }
+
+  private Date applyMultiSelect(Date date, Calendar selectedCal) {
+    for (MonthCellDescriptor selectedCell : selectedCells) {
+      if (selectedCell.getDate().equals(date)) {
+        // De-select the currently-selected cell.
+        selectedCell.setSelected(false);
+        selectedCells.remove(selectedCell);
+        date = null;
+        break;
+      }
+    }
+    for (Calendar cal : selectedCals) {
+      if (sameDate(cal, selectedCal)) {
+        selectedCals.remove(cal);
+        break;
+      }
+    }
+    return date;
   }
 
   /** Hold a cell with a month-index. */
@@ -513,8 +523,8 @@ public class CalendarPickerView extends ListView {
         Date date = cal.getTime();
         boolean isCurrentMonth = cal.get(MONTH) == month.getMonth();
         boolean isSelected = isCurrentMonth && containsDate(selectedCals, cal);
-        boolean isSelectable = isCurrentMonth && betweenDates(cal, minCal, maxCal)
-            && isDateSelectable(date);
+        boolean isSelectable =
+            isCurrentMonth && betweenDates(cal, minCal, maxCal) && isDateSelectable(date);
         boolean isToday = sameDate(cal, today);
         int value = cal.get(DAY_OF_MONTH);
         MonthCellDescriptor cell =
@@ -571,33 +581,34 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * Set a listener used to discriminate between selectable and unselectable
-   * dates. Set this to disable arbitrary dates as they are rendered.
-   *
-   * Important: set this before you call {@link init}.
-   *
-   * @param listener the date-selectability discriminator
+   * Set a listener used to discriminate between selectable and unselectable dates. Set this to
+   * disable arbitrary dates as they are rendered.
+   * <p/>
+   * Important: set this before you call one of the init() methods.  If called after init(), it
+   * will not be consistently applied.
    */
-  public void setOnDateConfiguredListener(OnDateConfiguredListener listener) {
+  public void setDateSelectableFilter(DateSelectableFilter listener) {
     dateConfiguredListener = listener;
   }
 
+  /**
+   * Interface to be notified when a new date is selected.  This will only be called when the user
+   * initiates the date selection.  If you call {@link #selectDate(Date)} this listener will not be
+   * notified.
+   * <p/>
+   * See {@link #setOnDateSelectedListener(OnDateSelectedListener)}.
+   */
   public interface OnDateSelectedListener {
     void onDateSelected(Date date);
   }
 
   /**
-   * Interface used for determining the selectability of a date cell when it is
-   * configured for display on the calendar.
-   *
-   * See {@link setOnDateSelectedListener}.
+   * Interface used for determining the selectability of a date cell when it is configured for
+   * display on the calendar.
+   * <p/>
+   * See {@link #setDateSelectableFilter(DateSelectableFilter)}.
    */
-  public interface OnDateConfiguredListener {
-
-    /**
-     * @param date the date to be configured
-     * @return the selectability of the {@code Date}
-     */
+  public interface DateSelectableFilter {
     boolean isDateSelectable(Date date);
   }
 }

@@ -9,10 +9,10 @@ import android.widget.Button;
 import android.widget.Toast;
 import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class SampleTimesSquareActivity extends Activity {
@@ -50,8 +50,7 @@ public class SampleTimesSquareActivity extends Activity {
           today.add(Calendar.DAY_OF_MONTH, 3);
           dates.add(today.getTime());
         }
-        calendar.init(dates, new Date(), nextYear.getTime(),
-            SelectionMode.MULTI);
+        calendar.init(SelectionMode.MULTIPLE, dates, new Date(), nextYear.getTime());
       }
     });
 
@@ -66,8 +65,7 @@ public class SampleTimesSquareActivity extends Activity {
         dates.add(today.getTime());
         today.add(Calendar.DAY_OF_MONTH, 5);
         dates.add(today.getTime());
-        calendar.init(dates, new Date(), nextYear.getTime(),
-            SelectionMode.PERIOD);
+        calendar.init(SelectionMode.PERIOD, dates, new Date(), nextYear.getTime());
       }
     });
 
@@ -82,8 +80,7 @@ public class SampleTimesSquareActivity extends Activity {
         dates.add(today.getTime());
         today.add(Calendar.DAY_OF_MONTH, 5);
         dates.add(today.getTime());
-        calendar.init(dates, new Date(), nextYear.getTime(),
-            SelectionMode.SELECTEDPERIOD);
+        calendar.init(SelectionMode.SELECTED_PERIOD, dates, new Date(), nextYear.getTime());
       }
     });
 
