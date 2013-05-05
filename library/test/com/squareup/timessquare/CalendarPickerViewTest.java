@@ -2,24 +2,33 @@
 package com.squareup.timessquare;
 
 import android.app.Activity;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import org.intellij.lang.annotations.MagicConstant;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import com.squareup.timessquare.CalendarPickerView;
+import static com.squareup.timessquare.CalendarPickerView.SelectionMode.MULTIPLE;
+import static com.squareup.timessquare.CalendarPickerView.SelectionMode.SINGLE;
+import static java.util.Calendar.APRIL;
+import static java.util.Calendar.AUGUST;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;
 import static java.util.Calendar.DECEMBER;
 import static java.util.Calendar.FEBRUARY;
 import static java.util.Calendar.JANUARY;
+import static java.util.Calendar.JULY;
+import static java.util.Calendar.JUNE;
 import static java.util.Calendar.MARCH;
 import static java.util.Calendar.MAY;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.NOVEMBER;
+import static java.util.Calendar.OCTOBER;
+import static java.util.Calendar.SEPTEMBER;
 import static java.util.Calendar.YEAR;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
@@ -47,30 +56,24 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testInitDecember() throws Exception {
-    Calendar dec2012 = Calendar.getInstance();
-    dec2012.set(2012, DECEMBER, 1);
-    Calendar dec2013 = Calendar.getInstance();
-    dec2013.set(2013, DECEMBER, 1);
+    Calendar dec2012 = buildCal(2012, DECEMBER, 1);
+    Calendar dec2013 = buildCal(2013, DECEMBER, 1);
     view.init(dec2012.getTime(), dec2012.getTime(), dec2013.getTime());
     assertThat(view.months).hasSize(12);
   }
 
   @Test
   public void testInitJanuary() throws Exception {
-    Calendar jan2012 = Calendar.getInstance();
-    jan2012.set(2012, JANUARY, 1);
-    Calendar jan2013 = Calendar.getInstance();
-    jan2013.set(2013, JANUARY, 1);
+    Calendar jan2012 = buildCal(2012, JANUARY, 1);
+    Calendar jan2013 = buildCal(2013, JANUARY, 1);
     view.init(jan2012.getTime(), jan2012.getTime(), jan2013.getTime());
     assertThat(view.months).hasSize(12);
   }
 
   @Test
   public void testInitMidyear() throws Exception {
-    Calendar may2012 = Calendar.getInstance();
-    may2012.set(2012, MAY, 1);
-    Calendar may2013 = Calendar.getInstance();
-    may2013.set(2013, MAY, 1);
+    Calendar may2012 = buildCal(2012, MAY, 1);
+    Calendar may2013 = buildCal(2013, MAY, 1);
     view.init(may2012.getTime(), may2012.getTime(), may2013.getTime());
     assertThat(view.months).hasSize(12);
   }
@@ -131,10 +134,7 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testIsSelected() throws Exception {
-    Calendar nov29 = Calendar.getInstance();
-    nov29.set(YEAR, 2012);
-    nov29.set(MONTH, NOVEMBER);
-    nov29.set(DAY_OF_MONTH, 29);
+    Calendar nov29 = buildCal(2012, NOVEMBER, 29);
 
     List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2012, nov29);
     assertThat(cells).hasSize(5);
@@ -179,6 +179,19 @@ public class CalendarPickerViewTest {
     assertCell(cells, 2, 5, 15, true, false, false, true);
     // 11/16 is not selectable because it's > maxDate (11/16/13).
     assertCell(cells, 2, 6, 16, true, false, false, false);
+  }
+
+  @Test
+  public void testInitSingleWithMultipleSelections() throws Exception {
+    List<Date> multipleSelectedDates = new ArrayList<Date>();
+    multipleSelectedDates.add(minDate);
+    Calendar secondSelection = buildCal(2012, NOVEMBER, 17);
+    multipleSelectedDates.add(secondSelection.getTime());
+    try {
+      view.init(SINGLE, multipleSelectedDates, minDate, maxDate);
+      fail("Should not have been able to init() with SINGLE mode && multiple selected dates");
+    } catch (IllegalArgumentException expected) {
+    }
   }
 
   @Test
@@ -267,10 +280,8 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testShowingOnlyOneMonth() throws Exception {
-    Calendar feb1 = Calendar.getInstance();
-    feb1.set(2013, FEBRUARY, 1);
-    Calendar mar1 = Calendar.getInstance();
-    mar1.set(2013, MARCH, 1);
+    Calendar feb1 = buildCal(2013, FEBRUARY, 1);
+    Calendar mar1 = buildCal(2013, MARCH, 1);
     view.init(feb1.getTime(), feb1.getTime(), mar1.getTime());
     assertThat(view.months).hasSize(1);
   }
@@ -278,36 +289,49 @@ public class CalendarPickerViewTest {
   @Test
   public void selectDateReturnsFalseForDatesOutOfRange() {
     view.init(today.getTime(), minDate, maxDate);
-    Calendar jumpToCal = Calendar.getInstance();
-    jumpToCal.add(MONTH, 1);
-    boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
-    assertThat(wasAbleToSetDate).isTrue();
+    Calendar outOfRange = buildCal(2015, FEBRUARY, 1);
+    boolean wasAbleToSetDate = view.selectDate(outOfRange.getTime());
+    assertThat(wasAbleToSetDate).isFalse();
   }
 
   @Test
   public void selectDateReturnsTrueForDateInRange() {
     view.init(today.getTime(), minDate, maxDate);
-    Calendar jumpToCal = Calendar.getInstance();
-    jumpToCal.add(YEAR, 2);
-    boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
-    assertThat(wasAbleToSetDate).isFalse();
+    Calendar inRange = buildCal(2013, FEBRUARY, 1);
+    boolean wasAbleToSetDate = view.selectDate(inRange.getTime());
+    assertThat(wasAbleToSetDate).isTrue();
   }
 
   @Test
   public void selectDateDoesntSelectDisabledCell() {
     view.init(today.getTime(), minDate, maxDate);
-    Calendar jumpToCal = Calendar.getInstance();
-    jumpToCal.add(MONTH, 2);
-    jumpToCal.set(DAY_OF_MONTH, 1);
-    boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
+    Calendar jumpToCal = buildCal(2013, FEBRUARY, 1);
+    boolean wasAbleToSetDate = view.selectDate(jumpToCal.getTime());
     assertThat(wasAbleToSetDate).isTrue();
     assertThat(view.selectedCells.get(0).isSelectable()).isTrue();
   }
 
   @Test
+  public void testMultiselectWithNoInitialSelections() throws Exception {
+    view.init(MULTIPLE, minDate, maxDate);
+    assertThat(view.selectionMode).isEqualTo(MULTIPLE);
+    assertThat(view.getSelectedDates()).isEmpty();
+
+    view.selectDate(minDate);
+    assertThat(view.getSelectedDates()).hasSize(1);
+
+    Calendar secondSelection = buildCal(2012, NOVEMBER, 17);
+    view.selectDate(secondSelection.getTime());
+    assertThat(view.getSelectedDates()).hasSize(2);
+    assertThat(view.getSelectedDates().get(1)).hasTime(secondSelection.getTimeInMillis());
+  }
+
+  // TODO add tests for PERIOD and SELECTED_PERIOD
+
+  @Test
   public void testOnDateConfiguredListener() {
-    final Calendar testCal = Calendar.getInstance();    
-    view.setOnDateConfiguredListener(new CalendarPickerView.OnDateConfiguredListener() {
+    final Calendar testCal = Calendar.getInstance();
+    view.setDateSelectableFilter(new CalendarPickerView.DateSelectableFilter() {
       @Override public boolean isDateSelectable(Date date) {
         testCal.setTime(date);
         int dayOfWeek = testCal.get(DAY_OF_WEEK);
@@ -318,8 +342,12 @@ public class CalendarPickerViewTest {
     Calendar jumpToCal = Calendar.getInstance();
     jumpToCal.add(MONTH, 2);
     jumpToCal.set(DAY_OF_WEEK, 1);
-    boolean wasAbleToSetDate = view.setSelectedDate(jumpToCal.getTime());
+    boolean wasAbleToSetDate = view.selectDate(jumpToCal.getTime());
     assertThat(wasAbleToSetDate).isFalse();
+
+    jumpToCal.set(DAY_OF_WEEK, 2);
+    wasAbleToSetDate = view.selectDate(jumpToCal.getTime());
+    assertThat(wasAbleToSetDate).isTrue();
   }
 
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
@@ -334,12 +362,20 @@ public class CalendarPickerViewTest {
   }
 
   private List<List<MonthCellDescriptor>> getCells(int month, int year, Calendar selectedDate) {
-    view.selectedCals.clear();
-    view.selectedCals.add(selectedDate);
+    view.selectDate(selectedDate.getTime());
     Calendar cal = Calendar.getInstance();
     cal.set(DAY_OF_MONTH, 1);
     cal.set(YEAR, year);
     cal.set(MONTH, month);
     return view.getMonthCells(new MonthDescriptor(month, year, "January 2012"), cal);
+  }
+
+  private Calendar buildCal(int year, @MagicConstant(intValues = {
+      JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER,
+      DECEMBER
+  }) int month, int day) {
+    Calendar jumpToCal = Calendar.getInstance();
+    jumpToCal.set(year, month, day);
+    return jumpToCal;
   }
 }
