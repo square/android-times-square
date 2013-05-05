@@ -185,6 +185,10 @@ public class CalendarPickerViewTest {
   public void testInitSingleWithMultipleSelections() throws Exception {
     List<Date> multipleSelectedDates = new ArrayList<Date>();
     multipleSelectedDates.add(minDate);
+    // This one should work.
+    view.init(SINGLE, multipleSelectedDates, minDate, maxDate);
+
+    // Now add another date and try init'ing again in SINGLE mode.
     Calendar secondSelection = buildCal(2012, NOVEMBER, 17);
     multipleSelectedDates.add(secondSelection.getTime());
     try {
