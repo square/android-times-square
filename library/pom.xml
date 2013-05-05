@@ -36,6 +36,11 @@
       <artifactId>robolectric</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.intellij</groupId>
+      <artifactId>annotations</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

@@ -54,6 +54,7 @@
     <fest-assert.version>2.0M8</fest-assert.version>
     <junit.version>4.10</junit.version>
     <robolectric.version>2.0-alpha-2</robolectric.version>
+    <intellij.annotations.version>12.0</intellij.annotations.version>
   </properties>
 
   <dependencyManagement>
@@ -77,6 +78,11 @@
         <groupId>org.easytesting</groupId>
         <artifactId>fest-assert-core</artifactId>
         <version>${fest-assert.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.intellij</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${intellij.annotations.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
