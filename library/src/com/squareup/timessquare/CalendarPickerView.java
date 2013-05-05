@@ -87,15 +87,13 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
-   * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
-   * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
-   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is
-   * exclusive).
+   * All date parameters must be non-null and their {@link Date#getTime()} must not return 0.  Time
+   * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
+   * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
+   * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
    * <p/>
    * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
-   * want a different selection mode, use {@link #init(SelectionMode, Iterable, java.util.Date,
-   * java.util.Date)}
+   * want a different selection mode, use {@link #init(SelectionMode, List, Date, Date)}.
    *
    * @param selectedDate Initially selected date.  Must be between {@code minDate} and {@code
    * maxDate}.
@@ -108,11 +106,10 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
-   * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
-   * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
-   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is
-   * exclusive).
+   * All date parameters must be non-null and their {@link Date#getTime()} must not return 0.  Time
+   * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
+   * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
+   * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
    *
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
@@ -123,25 +120,24 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * All date parameters must be non-null and their {@link java.util.Date#getTime()} must not
-   * return 0.  Time of day will be ignored.  For instance, if you pass in {@code minDate} as
-   * 11/16/2012 5:15pm and {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first
-   * selectable date and 11/15/2013 will be the last selectable date ({@code maxDate} is
-   * exclusive).
+   * All date parameters must be non-null and their {@link Date#getTime()} must not return 0.  Time
+   * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
+   * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
+   * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
    *
    * @param selectedDates Initially selected dates.  Must be between {@code minDate} and {@code
    * maxDate}.
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
-  public void init(SelectionMode selectionMode, Iterable<Date> selectedDates, Date minDate,
+  public void init(SelectionMode selectionMode, List<Date> selectedDates, Date minDate,
       Date maxDate) {
     this.selectionMode = selectionMode;
     initialize(selectedDates, minDate, maxDate);
   }
 
-  private void initialize(Iterable<Date> selectedDates, Date minDate, Date maxDate) {
-    if (selectionMode == SelectionMode.SINGLE) {
+  private void initialize(List<Date> selectedDates, Date minDate, Date maxDate) {
+    if (selectionMode == SelectionMode.SINGLE && selectedDates.size() > 1) {
       throw new IllegalArgumentException("SINGLE mode cannot be used with multiple selectedDates");
     }
     if (minDate == null || maxDate == null) {
@@ -268,7 +264,7 @@ public class CalendarPickerView extends ListView {
   }
 
   /** Returns a string summarizing what the client sent us for init() params. */
-  private static String dbg(Iterable<Date> selectedDates, Date minDate, Date maxDate) {
+  private static String dbg(List<Date> selectedDates, Date minDate, Date maxDate) {
     String dbgString = "minDate: " + minDate + "\nmaxDate: " + maxDate;
     if (selectedDates == null) {
       dbgString += "\nselectedDates: null";
@@ -539,7 +535,7 @@ public class CalendarPickerView extends ListView {
     return cells;
   }
 
-  private static boolean containsDate(Iterable<Calendar> selectedCals, Calendar cal) {
+  private static boolean containsDate(List<Calendar> selectedCals, Calendar cal) {
     for (Calendar selectedCal : selectedCals) {
       if (sameDate(cal, selectedCal)) {
         return true;
