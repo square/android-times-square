@@ -65,6 +65,9 @@ public class CalendarPickerView extends ListView {
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
 
+  private OnInvalidDateSelectedListener invalidDateListener =
+      new DefaultOnInvalidDateSelectedListener();
+
   public CalendarPickerView(Context context, AttributeSet attrs) {
     super(context, attrs);
     adapter = new MonthAdapter();
@@ -290,10 +293,9 @@ public class CalendarPickerView extends ListView {
       Date clickedDate = cell.getDate();
 
       if (!betweenDates(clickedDate, minCal, maxCal) || !isDateSelectable(clickedDate)) {
-        String errMessage =
-            getResources().getString(R.string.invalid_date, fullDateFormat.format(minCal.getTime()),
-                fullDateFormat.format(maxCal.getTime()));
-        Toast.makeText(getContext(), errMessage, Toast.LENGTH_SHORT).show();
+        if (invalidDateListener != null) {
+          invalidDateListener.onInvalidDateSelected(clickedDate);
+        }
       } else {
         boolean wasSelected = doSelectDate(clickedDate, cell);
 
@@ -577,6 +579,15 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
+   * Set a listener to react to user selection of a disabled date.
+   *
+   * @param listener the listener to set, or null for no reaction
+   */
+  public void setOnInvalidDateSelectedListener(OnInvalidDateSelectedListener listener) {
+    invalidDateListener = listener;
+  }
+
+  /**
    * Set a listener used to discriminate between selectable and unselectable dates. Set this to
    * disable arbitrary dates as they are rendered.
    * <p/>
@@ -599,6 +610,17 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
+   * Interface to be notified when an invalid date is selected by the user. This will only be
+   * called when the user initiates the date selection. If you call {@link #selectDate(Date)} this
+   * listener will not be notified.
+   * <p/>
+   * See {@link #setOnInvalidDateSelectedListener(OnInvalidDateSelectedListener)}.
+   */
+  public interface OnInvalidDateSelectedListener {
+    void onInvalidDateSelected(Date date);
+  }
+
+  /**
    * Interface used for determining the selectability of a date cell when it is configured for
    * display on the calendar.
    * <p/>
@@ -606,5 +628,14 @@ public class CalendarPickerView extends ListView {
    */
   public interface DateSelectableFilter {
     boolean isDateSelectable(Date date);
+  }
+
+  private class DefaultOnInvalidDateSelectedListener implements OnInvalidDateSelectedListener {
+    @Override public void onInvalidDateSelected(Date date) {
+      String errMessage =
+          getResources().getString(R.string.invalid_date, fullDateFormat.format(minCal.getTime()),
+              fullDateFormat.format(maxCal.getTime()));
+      Toast.makeText(getContext(), errMessage, Toast.LENGTH_SHORT).show();
+    }
   }
 }
