@@ -73,7 +73,6 @@ public class CalendarPickerView extends ListView {
     adapter = new MonthAdapter();
     setDivider(null);
     setDividerHeight(0);
-    setAdapter(adapter);
     final int bg = getResources().getColor(R.color.calendar_bg);
     setBackgroundColor(bg);
     setCacheColorHint(bg);
@@ -140,6 +139,9 @@ public class CalendarPickerView extends ListView {
   }
 
   private void initialize(List<Date> selectedDates, Date minDate, Date maxDate) {
+    if (getAdapter() == null) {
+        setAdapter(adapter);
+    }
     if (selectionMode == SelectionMode.SINGLE && selectedDates.size() > 1) {
       throw new IllegalArgumentException("SINGLE mode cannot be used with multiple selectedDates");
     }
