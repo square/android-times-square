@@ -5,7 +5,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.text.DateFormat;
@@ -59,16 +58,15 @@ public class MonthView extends LinearLayout {
         List<MonthCellDescriptor> week = cells.get(i);
         for (int c = 0; c < week.size(); c++) {
           MonthCellDescriptor cell = week.get(c);
-          CheckedTextView cellView = (CheckedTextView) weekRow.getChildAt(c);
+          CalendarCellView cellView = (CalendarCellView) weekRow.getChildAt(c);
+
           cellView.setText(Integer.toString(cell.getValue()));
           cellView.setEnabled(cell.isCurrentMonth());
-          cellView.setChecked(!cell.isToday());
+
+          cellView.setSelectable(cell.isSelectable());
           cellView.setSelected(cell.isSelected());
-          if (cell.isSelectable()) {
-            cellView.setTextColor(getResources().getColorStateList(R.color.calendar_text_selector));
-          } else {
-            cellView.setTextColor(getResources().getColor(R.color.calendar_text_unselectable));
-          }
+          cellView.setCurrentMonth(cell.isCurrentMonth());
+          cellView.setToday(cell.isToday());
           cellView.setTag(cell);
         }
       } else {
