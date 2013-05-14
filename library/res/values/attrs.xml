@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="calendar_cell">
+    <attr name="state_selectable" format="boolean" />
+    <attr name="state_current_month" format="boolean" />
+    <attr name="state_today" format="boolean" />
+  </declare-styleable>
+</resources>
