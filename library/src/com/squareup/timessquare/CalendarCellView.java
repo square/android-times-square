@@ -77,7 +77,7 @@ public class CalendarCellView extends TextView {
   }
 
   @Override protected int[] onCreateDrawableState(int extraSpace) {
-    final int[] drawableState = super.onCreateDrawableState(extraSpace + 4);
+    final int[] drawableState = super.onCreateDrawableState(extraSpace + 6);
 
     if (isSelectable) {
       mergeDrawableStates(drawableState, STATE_SELECTABLE);
