@@ -336,6 +336,11 @@ public class CalendarPickerView extends ListView {
     Calendar selectedCal = Calendar.getInstance();
     selectedCal.setTime(date);
 
+    // Clear any remaining period state
+    for (MonthCellDescriptor selectedCell : selectedCells) {
+      selectedCell.clearPeriodState();
+    }
+
     switch (selectionMode) {
       case SELECTED_PERIOD: {
         // Clear additionally selected cells (Cals were not selected).
@@ -397,9 +402,13 @@ public class CalendarPickerView extends ListView {
         if (selectedCells.get(0).getDate().after(selectedCells.get(1).getDate())) {
           start = selectedCells.get(1).getDate();
           end = selectedCells.get(0).getDate();
+          selectedCells.get(1).setPeriodFirst(true);
+          selectedCells.get(0).setPeriodLast(true);
         } else {
           start = selectedCells.get(0).getDate();
           end = selectedCells.get(1).getDate();
+          selectedCells.get(0).setPeriodFirst(true);
+          selectedCells.get(1).setPeriodLast(true);
         }
 
         for (List<List<MonthCellDescriptor>> month : cells) {
@@ -409,6 +418,7 @@ public class CalendarPickerView extends ListView {
                   && singleCell.getDate().before(end)
                   && singleCell.isSelectable()) {
                 singleCell.setSelected(true);
+                singleCell.setPeriodMiddle(true);
                 selectedCells.add(singleCell);
               }
             }
@@ -546,6 +556,24 @@ public class CalendarPickerView extends ListView {
       }
     }
     return false;
+  }
+
+  private static boolean minDate(List<Calendar> selectedCals, Calendar cal) {
+    for (Calendar selectedCal : selectedCals) {
+      if (cal.after(selectedCal)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static boolean maxDate(List<Calendar> selectedCals, Calendar cal) {
+    for (Calendar selectedCal : selectedCals) {
+      if (cal.before(selectedCal)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static boolean sameDate(Calendar cal, Calendar selectedDate) {

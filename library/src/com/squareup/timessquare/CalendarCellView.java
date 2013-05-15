@@ -1,4 +1,5 @@
 // Copyright 2013 Square, Inc.
+
 package com.squareup.timessquare;
 
 import android.content.Context;
@@ -16,10 +17,22 @@ public class CalendarCellView extends TextView {
   private static final int[] STATE_TODAY = {
       R.attr.state_today
   };
+  private static final int[] STATE_PERIOD_FIRST = {
+      R.attr.state_period_first
+  };
+  private static final int[] STATE_PERIOD_MIDDLE = {
+      R.attr.state_period_middle
+  };
+  private static final int[] STATE_PERIOD_LAST = {
+      R.attr.state_period_last
+  };
 
   private boolean isSelectable = false;
   private boolean isCurrentMonth = false;
   private boolean isToday = false;
+  private boolean isPeriodFirst = false;
+  private boolean isPeriodMiddle = false;
+  private boolean isPeriodLast = false;
 
   public CalendarCellView(Context context) {
     super(context);
@@ -48,6 +61,21 @@ public class CalendarCellView extends TextView {
     refreshDrawableState();
   }
 
+  public void setPeriodFirst(boolean isPeriodFirst) {
+    this.isPeriodFirst = isPeriodFirst;
+    refreshDrawableState();
+  }
+
+  public void setPeriodMiddle(boolean isPeriodMiddle) {
+    this.isPeriodMiddle = isPeriodMiddle;
+    refreshDrawableState();
+  }
+
+  public void setPeriodLast(boolean isPeriodLast) {
+    this.isPeriodLast = isPeriodLast;
+    refreshDrawableState();
+  }
+
   @Override protected int[] onCreateDrawableState(int extraSpace) {
     final int[] drawableState = super.onCreateDrawableState(extraSpace + 4);
 
@@ -61,6 +89,18 @@ public class CalendarCellView extends TextView {
 
     if (isToday) {
       mergeDrawableStates(drawableState, STATE_TODAY);
+    }
+
+    if (isPeriodFirst) {
+      mergeDrawableStates(drawableState, STATE_PERIOD_FIRST);
+    }
+
+    if (isPeriodMiddle) {
+      mergeDrawableStates(drawableState, STATE_PERIOD_MIDDLE);
+    }
+
+    if (isPeriodLast) {
+      mergeDrawableStates(drawableState, STATE_PERIOD_LAST);
     }
 
     return drawableState;

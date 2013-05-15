@@ -11,6 +11,9 @@ class MonthCellDescriptor {
   private boolean isSelected;
   private final boolean isToday;
   private final boolean isSelectable;
+  private boolean isPeriodFirst;
+  private boolean isPeriodMiddle;
+  private boolean isPeriodLast;
 
   MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
       boolean today, int value) {
@@ -46,6 +49,36 @@ class MonthCellDescriptor {
     return isToday;
   }
 
+  public boolean isPeriodFirst() {
+    return isPeriodFirst;
+  }
+
+  public void setPeriodFirst(boolean periodFirst) {
+    isPeriodFirst = periodFirst;
+  }
+
+  public boolean isPeriodMiddle() {
+    return isPeriodMiddle;
+  }
+
+  public void setPeriodMiddle(boolean periodMiddle) {
+    isPeriodMiddle = periodMiddle;
+  }
+
+  public boolean isPeriodLast() {
+    return isPeriodLast;
+  }
+
+  public void setPeriodLast(boolean periodLast) {
+    isPeriodLast = periodLast;
+  }
+
+  public void clearPeriodState() {
+    isPeriodFirst = false;
+    isPeriodMiddle = false;
+    isPeriodLast = false;
+  }
+
   public int getValue() {
     return value;
   }
@@ -64,6 +97,12 @@ class MonthCellDescriptor {
         + isToday
         + ", isSelectable="
         + isSelectable
+        + ", isPeriodFirst="
+        + isPeriodFirst
+        + ", isPeriodMiddle="
+        + isPeriodMiddle
+        + ", isPeriodLast="
+        + isPeriodLast
         + '}';
   }
 }
