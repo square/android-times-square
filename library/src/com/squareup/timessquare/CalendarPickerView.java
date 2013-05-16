@@ -526,6 +526,10 @@ public class CalendarPickerView extends ListView {
     cal.set(DAY_OF_MONTH, 1);
     int firstDayOfWeek = cal.get(DAY_OF_WEEK);
     cal.add(DATE, cal.getFirstDayOfWeek() - firstDayOfWeek);
+
+    Calendar minSelectedCal = minDate(selectedCals);
+    Calendar maxSelectedCal = maxDate(selectedCals);
+
     while ((cal.get(MONTH) < month.getMonth() + 1 || cal.get(YEAR) < month.getYear()) //
         && cal.get(YEAR) <= month.getYear()) {
       Logr.d("Building week row starting at %s", cal.getTime());
@@ -539,9 +543,21 @@ public class CalendarPickerView extends ListView {
             isCurrentMonth && betweenDates(cal, minCal, maxCal) && isDateSelectable(date);
         boolean isToday = sameDate(cal, today);
         int value = cal.get(DAY_OF_MONTH);
+
+        PeriodState periodState = PeriodState.NONE;
+        if (selectedCals != null && selectedCals.size() > 1) {
+          if (sameDate(minSelectedCal, cal)) {
+            periodState = PeriodState.FIRST;
+          } else if (sameDate(maxDate(selectedCals), cal)) {
+            periodState = PeriodState.LAST;
+          } else if (betweenDates(cal, minSelectedCal, maxSelectedCal)) {
+            periodState = PeriodState.MIDDLE;
+          }
+        }
+
         MonthCellDescriptor cell =
             new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday, value,
-                PeriodState.NONE);
+                periodState);
         if (isSelected) {
           selectedCells.add(cell);
         }
@@ -559,6 +575,22 @@ public class CalendarPickerView extends ListView {
       }
     }
     return false;
+  }
+
+  private static Calendar minDate(List<Calendar> selectedCals) {
+    if (selectedCals == null || selectedCals.size() == 0) {
+      return null;
+    }
+    Collections.sort(selectedCals);
+    return selectedCals.get(0);
+  }
+
+  private static Calendar maxDate(List<Calendar> selectedCals) {
+    if (selectedCals == null || selectedCals.size() == 0) {
+      return null;
+    }
+    Collections.sort(selectedCals);
+    return selectedCals.get(selectedCals.size() - 1);
   }
 
   private static boolean sameDate(Calendar cal, Calendar selectedDate) {

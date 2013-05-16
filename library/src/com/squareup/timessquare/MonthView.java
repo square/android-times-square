@@ -11,8 +11,6 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import com.squareup.timessquare.MonthCellDescriptor.PeriodState;
-
 public class MonthView extends LinearLayout {
   private TextView title;
   private CalendarGridView grid;
