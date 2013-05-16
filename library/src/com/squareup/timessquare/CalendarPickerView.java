@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.squareup.timessquare.MonthCellDescriptor.PeriodState;
+
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;
@@ -336,6 +338,11 @@ public class CalendarPickerView extends ListView {
     Calendar selectedCal = Calendar.getInstance();
     selectedCal.setTime(date);
 
+    // Clear any remaining period state.
+    for (MonthCellDescriptor selectedCell : selectedCells) {
+      selectedCell.setPeriodState(PeriodState.NONE);
+    }
+
     switch (selectionMode) {
       case SELECTED_PERIOD: {
         // Clear additionally selected cells (Cals were not selected).
@@ -397,9 +404,13 @@ public class CalendarPickerView extends ListView {
         if (selectedCells.get(0).getDate().after(selectedCells.get(1).getDate())) {
           start = selectedCells.get(1).getDate();
           end = selectedCells.get(0).getDate();
+          selectedCells.get(1).setPeriodState(PeriodState.FIRST);
+          selectedCells.get(0).setPeriodState(PeriodState.LAST);
         } else {
           start = selectedCells.get(0).getDate();
           end = selectedCells.get(1).getDate();
+          selectedCells.get(0).setPeriodState(PeriodState.FIRST);
+          selectedCells.get(1).setPeriodState(PeriodState.LAST);
         }
 
         for (List<List<MonthCellDescriptor>> month : cells) {
@@ -409,6 +420,7 @@ public class CalendarPickerView extends ListView {
                   && singleCell.getDate().before(end)
                   && singleCell.isSelectable()) {
                 singleCell.setSelected(true);
+                singleCell.setPeriodState(PeriodState.MIDDLE);
                 selectedCells.add(singleCell);
               }
             }
@@ -514,6 +526,10 @@ public class CalendarPickerView extends ListView {
     cal.set(DAY_OF_MONTH, 1);
     int firstDayOfWeek = cal.get(DAY_OF_WEEK);
     cal.add(DATE, cal.getFirstDayOfWeek() - firstDayOfWeek);
+
+    Calendar minSelectedCal = minDate(selectedCals);
+    Calendar maxSelectedCal = maxDate(selectedCals);
+
     while ((cal.get(MONTH) < month.getMonth() + 1 || cal.get(YEAR) < month.getYear()) //
         && cal.get(YEAR) <= month.getYear()) {
       Logr.d("Building week row starting at %s", cal.getTime());
@@ -527,8 +543,21 @@ public class CalendarPickerView extends ListView {
             isCurrentMonth && betweenDates(cal, minCal, maxCal) && isDateSelectable(date);
         boolean isToday = sameDate(cal, today);
         int value = cal.get(DAY_OF_MONTH);
+
+        PeriodState periodState = PeriodState.NONE;
+        if (selectedCals != null && selectedCals.size() > 1) {
+          if (sameDate(minSelectedCal, cal)) {
+            periodState = PeriodState.FIRST;
+          } else if (sameDate(maxDate(selectedCals), cal)) {
+            periodState = PeriodState.LAST;
+          } else if (betweenDates(cal, minSelectedCal, maxSelectedCal)) {
+            periodState = PeriodState.MIDDLE;
+          }
+        }
+
         MonthCellDescriptor cell =
-            new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday, value);
+            new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday, value,
+                periodState);
         if (isSelected) {
           selectedCells.add(cell);
         }
@@ -546,6 +575,22 @@ public class CalendarPickerView extends ListView {
       }
     }
     return false;
+  }
+
+  private static Calendar minDate(List<Calendar> selectedCals) {
+    if (selectedCals == null || selectedCals.size() == 0) {
+      return null;
+    }
+    Collections.sort(selectedCals);
+    return selectedCals.get(0);
+  }
+
+  private static Calendar maxDate(List<Calendar> selectedCals) {
+    if (selectedCals == null || selectedCals.size() == 0) {
+      return null;
+    }
+    Collections.sort(selectedCals);
+    return selectedCals.get(selectedCals.size() - 1);
   }
 
   private static boolean sameDate(Calendar cal, Calendar selectedDate) {

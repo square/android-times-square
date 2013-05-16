@@ -5,6 +5,7 @@
   <color name="calendar_divider">#ffbababa</color>
   <color name="calendar_inactive_month_bg">#ffd7d9db</color>
   <color name="calendar_selected_day_bg">#ff379bff</color>
+  <color name="calendar_selected_period_bg">#ff96caff</color>
   <color name="calendar_text_inactive">#40778088</color>
   <color name="calendar_text_active">#ff778088</color>
   <color name="calendar_text_selected">#ffffffff</color>
