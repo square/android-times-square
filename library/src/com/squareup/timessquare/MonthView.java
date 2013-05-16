@@ -11,6 +11,8 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import com.squareup.timessquare.MonthCellDescriptor.PeriodState;
+
 public class MonthView extends LinearLayout {
   private TextView title;
   private CalendarGridView grid;
@@ -67,9 +69,7 @@ public class MonthView extends LinearLayout {
           cellView.setSelected(cell.isSelected());
           cellView.setCurrentMonth(cell.isCurrentMonth());
           cellView.setToday(cell.isToday());
-          cellView.setPeriodFirst(cell.isPeriodFirst());
-          cellView.setPeriodMiddle(cell.isPeriodMiddle());
-          cellView.setPeriodLast(cell.isPeriodLast());
+          cellView.setPeriodState(cell.getPeriodState());
           cellView.setTag(cell);
         }
       } else {

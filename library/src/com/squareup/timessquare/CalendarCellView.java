@@ -2,6 +2,8 @@
 
 package com.squareup.timessquare;
 
+import com.squareup.timessquare.MonthCellDescriptor.PeriodState;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -30,9 +32,7 @@ public class CalendarCellView extends TextView {
   private boolean isSelectable = false;
   private boolean isCurrentMonth = false;
   private boolean isToday = false;
-  private boolean isPeriodFirst = false;
-  private boolean isPeriodMiddle = false;
-  private boolean isPeriodLast = false;
+  private PeriodState periodState = PeriodState.NONE;
 
   public CalendarCellView(Context context) {
     super(context);
@@ -61,23 +61,13 @@ public class CalendarCellView extends TextView {
     refreshDrawableState();
   }
 
-  public void setPeriodFirst(boolean isPeriodFirst) {
-    this.isPeriodFirst = isPeriodFirst;
-    refreshDrawableState();
-  }
-
-  public void setPeriodMiddle(boolean isPeriodMiddle) {
-    this.isPeriodMiddle = isPeriodMiddle;
-    refreshDrawableState();
-  }
-
-  public void setPeriodLast(boolean isPeriodLast) {
-    this.isPeriodLast = isPeriodLast;
+  public void setPeriodState(PeriodState periodState) {
+    this.periodState = periodState;
     refreshDrawableState();
   }
 
   @Override protected int[] onCreateDrawableState(int extraSpace) {
-    final int[] drawableState = super.onCreateDrawableState(extraSpace + 6);
+    final int[] drawableState = super.onCreateDrawableState(extraSpace + 4);
 
     if (isSelectable) {
       mergeDrawableStates(drawableState, STATE_SELECTABLE);
@@ -91,15 +81,11 @@ public class CalendarCellView extends TextView {
       mergeDrawableStates(drawableState, STATE_TODAY);
     }
 
-    if (isPeriodFirst) {
+    if (periodState == PeriodState.FIRST) {
       mergeDrawableStates(drawableState, STATE_PERIOD_FIRST);
-    }
-
-    if (isPeriodMiddle) {
+    } else if (periodState == PeriodState.MIDDLE) {
       mergeDrawableStates(drawableState, STATE_PERIOD_MIDDLE);
-    }
-
-    if (isPeriodLast) {
+    } else if (periodState == PeriodState.LAST) {
       mergeDrawableStates(drawableState, STATE_PERIOD_LAST);
     }
 

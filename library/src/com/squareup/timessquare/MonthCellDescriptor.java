@@ -1,28 +1,32 @@
 // Copyright 2012 Square, Inc.
+
 package com.squareup.timessquare;
 
 import java.util.Date;
 
 /** Describes the state of a particular date cell in a {@link MonthView}. */
 class MonthCellDescriptor {
+  public enum PeriodState {
+    NONE, FIRST, MIDDLE, LAST
+  }
+
   private final Date date;
   private final int value;
   private final boolean isCurrentMonth;
   private boolean isSelected;
   private final boolean isToday;
   private final boolean isSelectable;
-  private boolean isPeriodFirst;
-  private boolean isPeriodMiddle;
-  private boolean isPeriodLast;
+  private PeriodState periodState;
 
   MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
-      boolean today, int value) {
+      boolean today, int value, PeriodState periodState) {
     this.date = date;
     isCurrentMonth = currentMonth;
     isSelectable = selectable;
     isSelected = selected;
     isToday = today;
     this.value = value;
+    this.periodState = periodState;
   }
 
   public Date getDate() {
@@ -49,34 +53,12 @@ class MonthCellDescriptor {
     return isToday;
   }
 
-  public boolean isPeriodFirst() {
-    return isPeriodFirst;
+  public PeriodState getPeriodState() {
+    return periodState;
   }
 
-  public void setPeriodFirst(boolean periodFirst) {
-    isPeriodFirst = periodFirst;
-  }
-
-  public boolean isPeriodMiddle() {
-    return isPeriodMiddle;
-  }
-
-  public void setPeriodMiddle(boolean periodMiddle) {
-    isPeriodMiddle = periodMiddle;
-  }
-
-  public boolean isPeriodLast() {
-    return isPeriodLast;
-  }
-
-  public void setPeriodLast(boolean periodLast) {
-    isPeriodLast = periodLast;
-  }
-
-  public void clearPeriodState() {
-    isPeriodFirst = false;
-    isPeriodMiddle = false;
-    isPeriodLast = false;
+  public void setPeriodState(PeriodState periodState) {
+    this.periodState = periodState;
   }
 
   public int getValue() {
@@ -97,12 +79,8 @@ class MonthCellDescriptor {
         + isToday
         + ", isSelectable="
         + isSelectable
-        + ", isPeriodFirst="
-        + isPeriodFirst
-        + ", isPeriodMiddle="
-        + isPeriodMiddle
-        + ", isPeriodLast="
-        + isPeriodLast
+        + ", periodState="
+        + periodState
         + '}';
   }
 }
