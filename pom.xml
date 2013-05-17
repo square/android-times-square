@@ -51,7 +51,7 @@
     <android.version>4.1.1.4</android.version>
     <android.platform>17</android.platform>
 
-    <fest-assert.version>2.0M8</fest-assert.version>
+    <fest-assert.version>1.0.4</fest-assert.version>
     <junit.version>4.10</junit.version>
     <robolectric.version>2.0-alpha-2</robolectric.version>
     <intellij.annotations.version>12.0</intellij.annotations.version>
@@ -75,8 +75,8 @@
         <version>${robolectric.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.easytesting</groupId>
-        <artifactId>fest-assert-core</artifactId>
+        <groupId>com.squareup</groupId>
+        <artifactId>fest-android</artifactId>
         <version>${fest-assert.version}</version>
       </dependency>
       <dependency>
