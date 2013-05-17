@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import com.squareup.timessquare.MonthCellDescriptor.PeriodState;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,8 +18,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import com.squareup.timessquare.MonthCellDescriptor.PeriodState;
+import java.util.Locale;
 
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
@@ -48,9 +48,9 @@ public class CalendarPickerView extends ListView {
   }
 
   private final CalendarPickerView.MonthAdapter adapter;
-  private final DateFormat monthNameFormat;
-  private final DateFormat weekdayNameFormat;
-  private final DateFormat fullDateFormat;
+  private DateFormat monthNameFormat;
+  private DateFormat weekdayNameFormat;
+  private DateFormat fullDateFormat;
   SelectionMode selectionMode;
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
   final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
@@ -141,8 +141,10 @@ public class CalendarPickerView extends ListView {
     while ((monthCounter.get(MONTH) <= maxMonth // Up to, including the month.
         || monthCounter.get(YEAR) < maxYear) // Up to the year.
         && monthCounter.get(YEAR) < maxYear + 1) { // But not > next yr.
-      MonthDescriptor month = new MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR),
-          monthNameFormat.format(monthCounter.getTime()));
+      Date date = monthCounter.getTime();
+      MonthDescriptor month =
+          new MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR), date,
+              monthNameFormat.format(date));
       cells.add(getMonthCells(month, monthCounter));
       Logr.d("Adding month %s", month);
       months.add(month);
@@ -170,8 +172,8 @@ public class CalendarPickerView extends ListView {
     }
 
     /**
-     * Set multiple selected dates.  This will throw an {@link IllegalArgumentException} if you pass
-     * in multiple dates and haven't already called {@link #inMode(SelectionMode)}.
+     * Set multiple selected dates.  This will throw an {@link IllegalArgumentException} if you
+     * pass in multiple dates and haven't already called {@link #inMode(SelectionMode)}.
      */
     public FluentInitializer withSelectedDates(Iterable<Date> selectedDates) {
       if (selectedDates != null) {
@@ -219,6 +221,20 @@ public class CalendarPickerView extends ListView {
         scrollToSelectedMonth(selectedIndex != 0 ? selectedIndex : todayIndex);
       }
 
+      validateAndUpdate();
+      return this;
+    }
+
+    /** Override default locale: specify a locale in which the calendar should be rendered. */
+    public FluentInitializer withLocale(Locale locale) {
+      monthNameFormat =
+          new SimpleDateFormat(getContext().getString(R.string.month_name_format), locale);
+      for (MonthDescriptor month : months) {
+        month.setLabel(monthNameFormat.format(month.getDate()));
+      }
+      weekdayNameFormat =
+          new SimpleDateFormat(getContext().getString(R.string.day_name_format), locale);
+      fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
       validateAndUpdate();
       return this;
     }

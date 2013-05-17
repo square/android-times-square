@@ -27,8 +27,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert-core</artifactId>
+      <groupId>com.squareup</groupId>
+      <artifactId>fest-android</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -2,11 +2,13 @@
 package com.squareup.timessquare;
 
 import android.app.Activity;
+import android.widget.TextView;
 import com.squareup.timessquare.MonthCellDescriptor.PeriodState;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import org.intellij.lang.annotations.MagicConstant;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,7 @@ import static java.util.Calendar.NOVEMBER;
 import static java.util.Calendar.OCTOBER;
 import static java.util.Calendar.SEPTEMBER;
 import static java.util.Calendar.YEAR;
+import static org.fest.assertions.api.ANDROID.assertThat;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 
@@ -422,6 +425,17 @@ public class CalendarPickerViewTest {
     assertCell(cells, 3, 6, 24, true, true, false, true, PeriodState.LAST);
   }
 
+  @Test
+  public void testLocaleSetting() throws Exception {
+    view.init(minDate, maxDate) //
+      .withLocale(Locale.GERMAN);
+    MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
+    CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
+    TextView firstDay = (TextView) header.getChildAt(0);
+    assertThat(firstDay).hasTextString("So"); // Sonntag = Sunday
+    assertThat(monthView.title).hasTextString("Dezember 2012");
+  }
+
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
       int expectedVal, boolean expectedCurrentMonth, boolean expectedSelected,
       boolean expectedToday, boolean expectedSelectable, PeriodState expectedPeriodState) {
@@ -440,7 +454,7 @@ public class CalendarPickerViewTest {
     cal.set(DAY_OF_MONTH, 1);
     cal.set(YEAR, year);
     cal.set(MONTH, month);
-    return view.getMonthCells(new MonthDescriptor(month, year, "January 2012"), cal);
+    return view.getMonthCells(new MonthDescriptor(month, year, cal.getTime(), "January 2012"), cal);
   }
 
   private Calendar buildCal(int year, @MagicConstant(intValues = {

@@ -12,8 +12,8 @@ import java.util.Calendar;
 import java.util.List;
 
 public class MonthView extends LinearLayout {
-  private TextView title;
-  private CalendarGridView grid;
+  TextView title;
+  CalendarGridView grid;
   private Listener listener;
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
