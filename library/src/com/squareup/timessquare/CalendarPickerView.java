@@ -86,106 +86,41 @@ public class CalendarPickerView extends ListView {
       Calendar nextYear = Calendar.getInstance();
       nextYear.add(Calendar.YEAR, 1);
 
-      init(new Date(), new Date(), nextYear.getTime());
+      init(new Date(), nextYear.getTime()) //
+          .withSelectedDate(new Date());
     }
   }
 
   /**
-   * All date parameters must be non-null and their {@link Date#getTime()} must not return 0.  Time
+   * Both date parameters must be non-null and their {@link Date#getTime()} must not return 0. Time
    * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
    * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
    * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
    * <p/>
    * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
-   * want a different selection mode, use {@link #init(SelectionMode, List, Date, Date)}.
-   *
-   * @param selectedDate Initially selected date.  Must be between {@code minDate} and {@code
-   * maxDate}.
-   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
-   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
-   */
-  public void init(Date selectedDate, Date minDate, Date maxDate) {
-    selectionMode = SelectionMode.SINGLE;
-    initialize(Arrays.asList(selectedDate), minDate, maxDate);
-  }
-
-  /**
-   * All date parameters must be non-null and their {@link Date#getTime()} must not return 0.  Time
-   * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
-   * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
-   * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
+   * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
+   * {@link FluentInitializer} this method returns.
    *
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
-  public void init(SelectionMode selectionMode, Date minDate, Date maxDate) {
-    this.selectionMode = selectionMode;
-    initialize(null, minDate, maxDate);
-  }
-
-  /**
-   * All date parameters must be non-null and their {@link Date#getTime()} must not return 0.  Time
-   * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
-   * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
-   * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
-   *
-   * @param selectedDates Initially selected dates.  Must be between {@code minDate} and {@code
-   * maxDate}.
-   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
-   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
-   */
-  public void init(SelectionMode selectionMode, List<Date> selectedDates, Date minDate,
-      Date maxDate) {
-    this.selectionMode = selectionMode;
-    initialize(selectedDates, minDate, maxDate);
-  }
-
-  private void initialize(List<Date> selectedDates, Date minDate, Date maxDate) {
-    if (getAdapter() == null) {
-        setAdapter(adapter);
-    }
-    if (selectionMode == SelectionMode.SINGLE && selectedDates.size() > 1) {
-      throw new IllegalArgumentException("SINGLE mode cannot be used with multiple selectedDates");
-    }
+  public FluentInitializer init(Date minDate, Date maxDate) {
     if (minDate == null || maxDate == null) {
       throw new IllegalArgumentException(
-          "minDate and maxDate must be non-null.  " + dbg(selectedDates, minDate, maxDate));
+          "minDate and maxDate must be non-null.  " + dbg(minDate, maxDate));
     }
     if (minDate.after(maxDate)) {
       throw new IllegalArgumentException(
-          "Min date must be before max date.  " + dbg(selectedDates, minDate, maxDate));
+          "minDate must be before maxDate.  " + dbg(minDate, maxDate));
     }
     if (minDate.getTime() == 0 || maxDate.getTime() == 0) {
       throw new IllegalArgumentException(
-          "minDate and maxDate must be non-zero.  " + dbg(selectedDates, minDate, maxDate));
+          "minDate and maxDate must be non-zero.  " + dbg(minDate, maxDate));
     }
-
+    this.selectionMode = SelectionMode.SINGLE;
+    // Clear out any previously-selected dates/cells.
     selectedCals.clear();
     selectedCells.clear();
-    if (selectedDates != null) {
-      for (Date selectedDate : selectedDates) {
-        if (selectedDate == null) {
-          throw new IllegalArgumentException(
-              "Selected date must be non-null.  " + dbg(selectedDates, minDate, maxDate));
-        }
-        if (selectedDate.getTime() == 0) {
-          throw new IllegalArgumentException(
-              "Selected date must be non-zero.  " + dbg(selectedDates, minDate, maxDate));
-        }
-
-        if (selectedDate.before(minDate) || selectedDate.after(maxDate)) {
-          throw new IllegalArgumentException(
-              "selectedDate must be between minDate and maxDate.  " + dbg(selectedDates, minDate,
-                  maxDate));
-        }
-
-        Calendar selectedCal = Calendar.getInstance();
-        selectedCals.add(selectedCal);
-        // Sanitize input: clear out the hours/minutes/seconds/millis.
-        selectedCal.setTime(selectedDate);
-        setMidnight(selectedCal);
-      }
-    }
 
     // Clear previous state.
     cells.clear();
@@ -203,9 +138,6 @@ public class CalendarPickerView extends ListView {
     monthCounter.setTime(minCal.getTime());
     final int maxMonth = maxCal.get(MONTH);
     final int maxYear = maxCal.get(YEAR);
-    int selectedIndex = 0;
-    int todayIndex = 0;
-    Calendar today = Calendar.getInstance();
     while ((monthCounter.get(MONTH) <= maxMonth // Up to, including the month.
         || monthCounter.get(YEAR) < maxYear) // Up to the year.
         && monthCounter.get(YEAR) < maxYear + 1) { // But not > next yr.
@@ -213,25 +145,93 @@ public class CalendarPickerView extends ListView {
           monthNameFormat.format(monthCounter.getTime()));
       cells.add(getMonthCells(month, monthCounter));
       Logr.d("Adding month %s", month);
-      if (selectedIndex == 0) {
-        for (Calendar selectedCal : selectedCals) {
-          if (sameMonth(selectedCal, month)) {
-            selectedIndex = months.size();
-            break;
-          }
-        }
-        if (selectedIndex == 0 && todayIndex == 0 && sameMonth(today, month)) {
-          todayIndex = months.size();
-        }
-      }
       months.add(month);
       monthCounter.add(MONTH, 1);
     }
 
-    adapter.notifyDataSetChanged();
-    if (selectedIndex != 0 || todayIndex != 0) {
-      scrollToSelectedMonth(selectedIndex != 0 ? selectedIndex : todayIndex);
+    validateAndUpdate();
+    return new FluentInitializer();
+  }
+
+  public class FluentInitializer {
+    /** Override the {@link SelectionMode} from the default ({@link SelectionMode#SINGLE}). */
+    public FluentInitializer inMode(SelectionMode mode) {
+      selectionMode = mode;
+      validateAndUpdate();
+      return this;
     }
+
+    /**
+     * Set an initially-selected date.  The calendar will scroll to that date if it's not initially
+     * visible.
+     */
+    public FluentInitializer withSelectedDate(Date selectedDates) {
+      return withSelectedDates(Arrays.asList(selectedDates));
+    }
+
+    /**
+     * Set multiple selected dates.  This will throw an {@link IllegalArgumentException} if you pass
+     * in multiple dates and haven't already called {@link #inMode(SelectionMode)}.
+     */
+    public FluentInitializer withSelectedDates(Iterable<Date> selectedDates) {
+      if (selectedDates != null) {
+        Date minDate = minCal.getTime();
+        Date maxDate = maxCal.getTime();
+        for (Date selectedDate : selectedDates) {
+          if (selectedDate == null) {
+            throw new IllegalArgumentException(
+                "Selected date must be non-null.  " + dbg(selectedDates));
+          }
+          if (selectedDate.getTime() == 0) {
+            throw new IllegalArgumentException(
+                "Selected date must be non-zero.  " + dbg(selectedDates));
+          }
+
+          if (selectedDate.before(minDate) || selectedDate.after(maxDate)) {
+            throw new IllegalArgumentException(
+                "selectedDate must be between minDate and maxDate.  " + dbg(selectedDates));
+          }
+
+          Calendar selectedCal = Calendar.getInstance();
+          selectedCals.add(selectedCal);
+          // Sanitize input: clear out the hours/minutes/seconds/millis.
+          selectedCal.setTime(selectedDate);
+          setMidnight(selectedCal);
+        }
+      }
+      int selectedIndex = 0;
+      int todayIndex = 0;
+      Calendar today = Calendar.getInstance();
+      for (MonthDescriptor month : months) {
+        if (selectedIndex == 0) {
+          for (Calendar selectedCal : selectedCals) {
+            if (sameMonth(selectedCal, month)) {
+              selectedIndex = months.size();
+              break;
+            }
+          }
+          if (selectedIndex == 0 && todayIndex == 0 && sameMonth(today, month)) {
+            todayIndex = months.size();
+          }
+        }
+      }
+      if (selectedIndex != 0 || todayIndex != 0) {
+        scrollToSelectedMonth(selectedIndex != 0 ? selectedIndex : todayIndex);
+      }
+
+      validateAndUpdate();
+      return this;
+    }
+  }
+
+  private void validateAndUpdate() {
+    if (getAdapter() == null) {
+      setAdapter(adapter);
+    }
+    if (selectionMode == SelectionMode.SINGLE && selectedCals.size() > 1) {
+      throw new IllegalArgumentException("SINGLE mode cannot be used with multiple selectedDates");
+    }
+    adapter.notifyDataSetChanged();
   }
 
   private void scrollToSelectedMonth(final int selectedIndex) {
@@ -271,17 +271,21 @@ public class CalendarPickerView extends ListView {
   }
 
   /** Returns a string summarizing what the client sent us for init() params. */
-  private static String dbg(List<Date> selectedDates, Date minDate, Date maxDate) {
-    String dbgString = "minDate: " + minDate + "\nmaxDate: " + maxDate;
+  private static String dbg(Date minDate, Date maxDate) {
+    return "minDate: " + minDate + "\nmaxDate: " + maxDate;
+  }
+
+  private static String dbg(Iterable<Date> selectedDates) {
+    StringBuilder sb = new StringBuilder();
     if (selectedDates == null) {
-      dbgString += "\nselectedDates: null";
+      sb.append("selectedDates: null");
     } else {
-      dbgString += "\nselectedDates: ";
+      sb.append("selectedDates: ");
       for (Date selectedDate : selectedDates) {
-        dbgString += selectedDate + "; ";
+        sb.append(selectedDate + "; ");
       }
     }
-    return dbgString;
+    return sb.toString();
   }
 
   /** Clears out the hours/minutes/seconds/millis of a Calendar. */
@@ -430,7 +434,7 @@ public class CalendarPickerView extends ListView {
     }
 
     // Update the adapter.
-    adapter.notifyDataSetChanged();
+    validateAndUpdate();
     return date != null;
   }
 
@@ -638,8 +642,8 @@ public class CalendarPickerView extends ListView {
    * Set a listener used to discriminate between selectable and unselectable dates. Set this to
    * disable arbitrary dates as they are rendered.
    * <p/>
-   * Important: set this before you call one of the init() methods.  If called after init(), it
-   * will not be consistently applied.
+   * Important: set this before you call {@link #init(Date, Date)} methods.  If called afterwards,
+   * it will not be consistently applied.
    */
   public void setDateSelectableFilter(DateSelectableFilter listener) {
     dateConfiguredListener = listener;

@@ -28,14 +28,18 @@ public class SampleTimesSquareActivity extends Activity {
     nextYear.add(Calendar.YEAR, 1);
 
     calendar = (CalendarPickerView) findViewById(R.id.calendar_view);
-    calendar.init(new Date(), new Date(), nextYear.getTime());
+    calendar.init(new Date(), nextYear.getTime()) //
+        .inMode(SelectionMode.SINGLE) //
+        .withSelectedDate(new Date());
 
     Button single = (Button) findViewById(R.id.button_single);
     single.setOnClickListener(new OnClickListener() {
 
       @Override
       public void onClick(View v) {
-        calendar.init(new Date(), new Date(), nextYear.getTime());
+        calendar.init(new Date(), nextYear.getTime()) //
+            .inMode(SelectionMode.SINGLE) //
+            .withSelectedDate(new Date());
       }
     });
 
@@ -50,7 +54,9 @@ public class SampleTimesSquareActivity extends Activity {
           today.add(Calendar.DAY_OF_MONTH, 3);
           dates.add(today.getTime());
         }
-        calendar.init(SelectionMode.MULTIPLE, dates, new Date(), nextYear.getTime());
+        calendar.init(new Date(), nextYear.getTime()) //
+            .inMode(SelectionMode.MULTIPLE) //
+            .withSelectedDates(dates);
       }
     });
 
@@ -65,7 +71,9 @@ public class SampleTimesSquareActivity extends Activity {
         dates.add(today.getTime());
         today.add(Calendar.DAY_OF_MONTH, 5);
         dates.add(today.getTime());
-        calendar.init(SelectionMode.PERIOD, dates, new Date(), nextYear.getTime());
+        calendar.init(new Date(), nextYear.getTime()) //
+            .inMode(SelectionMode.PERIOD) //
+            .withSelectedDates(dates);
       }
     });
 
@@ -80,7 +88,9 @@ public class SampleTimesSquareActivity extends Activity {
         dates.add(today.getTime());
         today.add(Calendar.DAY_OF_MONTH, 5);
         dates.add(today.getTime());
-        calendar.init(SelectionMode.SELECTED_PERIOD, dates, new Date(), nextYear.getTime());
+        calendar.init(new Date(), nextYear.getTime()) //
+            .inMode(SelectionMode.SELECTED_PERIOD) //
+            .withSelectedDates(dates);
       }
     });
 
