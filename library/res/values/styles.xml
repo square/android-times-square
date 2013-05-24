@@ -20,7 +20,7 @@
 
   <style name="CalendarCell.CalendarDate">
     <item name="android:textSize">@dimen/calendar_text_medium</item>
-    <item name="android:colorBackground">@color/calendar_bg_selector</item>
+    <item name="android:background">@drawable/calendar_bg_selector</item>
     <item name="android:textColor">@color/calendar_text_selector</item>
     <item name="android:clickable">true</item>
     <item name="android:textStyle">bold</item>
