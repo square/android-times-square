@@ -204,16 +204,17 @@ public class CalendarPickerView extends ListView {
       int selectedIndex = 0;
       int todayIndex = 0;
       Calendar today = Calendar.getInstance();
-      for (MonthDescriptor month : months) {
+      for (int c = 0; c < months.size(); c++) {
+        MonthDescriptor month = months.get(c);
         if (selectedIndex == 0) {
           for (Calendar selectedCal : selectedCals) {
             if (sameMonth(selectedCal, month)) {
-              selectedIndex = months.size();
+              selectedIndex = c;
               break;
             }
           }
           if (selectedIndex == 0 && todayIndex == 0 && sameMonth(today, month)) {
-            todayIndex = months.size();
+            todayIndex = c;
           }
         }
       }
