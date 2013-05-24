@@ -15,7 +15,8 @@
             android:id="@+id/button_single"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Single" />
+            android:text="Single"
+            android:enabled="false"/>
 
         <Button
             android:id="@+id/button_multi"
@@ -24,16 +25,10 @@
             android:text="Multi" />
 
         <Button
-            android:id="@+id/button_period"
+            android:id="@+id/button_range"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Period" />
-
-        <Button
-            android:id="@+id/button_speriod"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="S-Period" />
+            android:text="Range" />
 
     </LinearLayout>
     
