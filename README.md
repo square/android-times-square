@@ -31,11 +31,11 @@ Calendar nextYear = Calendar.getInstance();
 nextYear.add(Calendar.YEAR, 1);
 
 CalendarPickerView calendar = (CalendarPickerView) findViewById(R.id.calendar_view);
-calendar.init(new Date(), new Date(), nextYear.getTime());
+calendar.init(new Date(), nextYear.getTime());
 ```
 
 To retrieve the currently selected date, call `getSelectedDate()` on the view.
-
+To create a view with a previously selected date, call `selectDate()`.
 
 
 
