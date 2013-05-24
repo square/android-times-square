@@ -6,7 +6,7 @@ import java.util.Date;
 
 /** Describes the state of a particular date cell in a {@link MonthView}. */
 class MonthCellDescriptor {
-  public enum PeriodState {
+  public enum RangeState {
     NONE, FIRST, MIDDLE, LAST
   }
 
@@ -16,17 +16,17 @@ class MonthCellDescriptor {
   private boolean isSelected;
   private final boolean isToday;
   private final boolean isSelectable;
-  private PeriodState periodState;
+  private RangeState rangeState;
 
   MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
-      boolean today, int value, PeriodState periodState) {
+      boolean today, int value, RangeState rangeState) {
     this.date = date;
     isCurrentMonth = currentMonth;
     isSelectable = selectable;
     isSelected = selected;
     isToday = today;
     this.value = value;
-    this.periodState = periodState;
+    this.rangeState = rangeState;
   }
 
   public Date getDate() {
@@ -53,12 +53,12 @@ class MonthCellDescriptor {
     return isToday;
   }
 
-  public PeriodState getPeriodState() {
-    return periodState;
+  public RangeState getRangeState() {
+    return rangeState;
   }
 
-  public void setPeriodState(PeriodState periodState) {
-    this.periodState = periodState;
+  public void setRangeState(RangeState rangeState) {
+    this.rangeState = rangeState;
   }
 
   public int getValue() {
@@ -79,8 +79,8 @@ class MonthCellDescriptor {
         + isToday
         + ", isSelectable="
         + isSelectable
-        + ", periodState="
-        + periodState
+        + ", rangeState="
+        + rangeState
         + '}';
   }
 }

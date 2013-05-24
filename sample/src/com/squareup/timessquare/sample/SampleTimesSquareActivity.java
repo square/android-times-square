@@ -22,32 +22,42 @@ public class SampleTimesSquareActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.calendar_picker);
+    setContentView(R.layout.sample_calendar_picker);
 
     final Calendar nextYear = Calendar.getInstance();
     nextYear.add(Calendar.YEAR, 1);
 
+    final Calendar lastYear = Calendar.getInstance();
+    lastYear.add(Calendar.YEAR, -1);
+
     calendar = (CalendarPickerView) findViewById(R.id.calendar_view);
-    calendar.init(new Date(), nextYear.getTime()) //
+    calendar.init(lastYear.getTime(), nextYear.getTime()) //
         .inMode(SelectionMode.SINGLE) //
         .withSelectedDate(new Date());
 
-    Button single = (Button) findViewById(R.id.button_single);
+    final Button single = (Button) findViewById(R.id.button_single);
+    final Button range = (Button) findViewById(R.id.button_range);
+    final Button multi = (Button) findViewById(R.id.button_multi);
     single.setOnClickListener(new OnClickListener() {
-
       @Override
       public void onClick(View v) {
+        single.setEnabled(false);
+        multi.setEnabled(true);
+        range.setEnabled(true);
+
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.SINGLE) //
             .withSelectedDate(new Date());
       }
     });
 
-    Button multi = (Button) findViewById(R.id.button_multi);
     multi.setOnClickListener(new OnClickListener() {
-
       @Override
       public void onClick(View v) {
+        single.setEnabled(true);
+        multi.setEnabled(false);
+        range.setEnabled(true);
+
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
         for (int i = 0; i < 5; i++) {
@@ -60,36 +70,21 @@ public class SampleTimesSquareActivity extends Activity {
       }
     });
 
-    Button period = (Button) findViewById(R.id.button_period);
-    period.setOnClickListener(new OnClickListener() {
-
+    range.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        single.setEnabled(true);
+        multi.setEnabled(true);
+        range.setEnabled(false);
+
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
-        today.add(Calendar.DAY_OF_MONTH, 3);
+        today.add(Calendar.DATE, 3);
         dates.add(today.getTime());
-        today.add(Calendar.DAY_OF_MONTH, 5);
-        dates.add(today.getTime());
-        calendar.init(new Date(), nextYear.getTime()) //
-            .inMode(SelectionMode.PERIOD) //
-            .withSelectedDates(dates);
-      }
-    });
-
-    Button sPeriod = (Button) findViewById(R.id.button_speriod);
-    sPeriod.setOnClickListener(new OnClickListener() {
-
-      @Override
-      public void onClick(View v) {
-        Calendar today = Calendar.getInstance();
-        ArrayList<Date> dates = new ArrayList<Date>();
-        today.add(Calendar.DAY_OF_MONTH, 3);
-        dates.add(today.getTime());
-        today.add(Calendar.DAY_OF_MONTH, 5);
+        today.add(Calendar.DATE, 5);
         dates.add(today.getTime());
         calendar.init(new Date(), nextYear.getTime()) //
-            .inMode(SelectionMode.SELECTED_PERIOD) //
+            .inMode(SelectionMode.RANGE) //
             .withSelectedDates(dates);
       }
     });
@@ -97,11 +92,9 @@ public class SampleTimesSquareActivity extends Activity {
     findViewById(R.id.done_button).setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
-        Log.d(TAG, "Selected time in millis: "
-            + calendar.getSelectedDate().getTime());
+        Log.d(TAG, "Selected time in millis: " + calendar.getSelectedDate().getTime());
         String toast = "Selected: " + calendar.getSelectedDate().getTime();
-        Toast.makeText(SampleTimesSquareActivity.this, toast, LENGTH_SHORT)
-            .show();
+        Toast.makeText(SampleTimesSquareActivity.this, toast, LENGTH_SHORT).show();
       }
     });
   }
