@@ -3,8 +3,9 @@ package com.squareup.timessquare;
 
 import android.app.Activity;
 import android.widget.TextView;
-import com.squareup.timessquare.MonthCellDescriptor.PeriodState;
+import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.MULTIPLE;
-import static com.squareup.timessquare.CalendarPickerView.SelectionMode.SELECTED_PERIOD;
+import static com.squareup.timessquare.CalendarPickerView.SelectionMode.RANGE;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.SINGLE;
 import static java.util.Calendar.APRIL;
 import static java.util.Calendar.AUGUST;
@@ -93,123 +94,123 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testOnlyShowingFourWeeks() throws Exception {
-    List<List<MonthCellDescriptor>> cells = getCells(FEBRUARY, 2015, today);
+    List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(FEBRUARY, 2015, today);
     assertThat(cells).hasSize(4);
 
     // Last cell should be 1.
-    assertCell(cells, 0, 0, 1, true, false, false, false, PeriodState.NONE);
+    assertCell(cells, 0, 0, 1, true, false, false, false, MonthCellDescriptor.RangeState.NONE);
 
     // Last cell should be 28.
-    assertCell(cells, 3, 6, 28, true, false, false, false, PeriodState.NONE);
+    assertCell(cells, 3, 6, 28, true, false, false, false, MonthCellDescriptor.RangeState.NONE);
   }
 
   @Test
   public void testOnlyShowingFiveWeeks() throws Exception {
-    List<List<MonthCellDescriptor>> cells = getCells(FEBRUARY, 2013, today);
+    List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(FEBRUARY, 2013, today);
     assertThat(cells).hasSize(5);
 
     // First cell is the 27th of January.
-    assertCell(cells, 0, 0, 27, false, false, false, false, PeriodState.NONE);
+    assertCell(cells, 0, 0, 27, false, false, false, false, MonthCellDescriptor.RangeState.NONE);
 
     // First day of Feb falls on the 5th cell.
-    assertCell(cells, 0, 5, 1, true, false, false, true, PeriodState.NONE);
+    assertCell(cells, 0, 5, 1, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
 
     // Last day of Feb falls on the 5th row, 5th column.
-    assertCell(cells, 4, 4, 28, true, false, false, true, PeriodState.NONE);
+    assertCell(cells, 4, 4, 28, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
 
     // Last cell should be March 2nd.
-    assertCell(cells, 4, 6, 2, false, false, false, false, PeriodState.NONE);
+    assertCell(cells, 4, 6, 2, false, false, false, false, RangeState.NONE);
   }
 
   @Test
   public void testWeirdOverlappingYear() throws Exception {
-    List<List<MonthCellDescriptor>> cells = getCells(JANUARY, 2013, today);
+    List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(JANUARY, 2013, today);
     assertThat(cells).hasSize(5);
   }
 
   @Test
   public void testShowingSixWeeks() throws Exception {
-    List<List<MonthCellDescriptor>> cells = getCells(DECEMBER, 2012, today);
+    List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(DECEMBER, 2012, today);
     assertThat(cells).hasSize(6);
 
     // First cell is the 27th of November.
-    assertCell(cells, 0, 0, 25, false, false, false, false, PeriodState.NONE);
+    assertCell(cells, 0, 0, 25, false, false, false, false, MonthCellDescriptor.RangeState.NONE);
 
     // First day of December falls on the 6th cell.
-    assertCell(cells, 0, 6, 1, true, false, false, true, PeriodState.NONE);
+    assertCell(cells, 0, 6, 1, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
 
     // Last day of December falls on the 6th row, 2nd column.
-    assertCell(cells, 5, 1, 31, true, false, false, true, PeriodState.NONE);
+    assertCell(cells, 5, 1, 31, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
 
     // Last cell should be January 5th.
-    assertCell(cells, 5, 6, 5, false, false, false, false, PeriodState.NONE);
+    assertCell(cells, 5, 6, 5, false, false, false, false, RangeState.NONE);
   }
 
   @Test
   public void testIsSelected() throws Exception {
     Calendar nov29 = buildCal(2012, NOVEMBER, 29);
 
-    List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2012, nov29);
+    List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(NOVEMBER, 2012, nov29);
     assertThat(cells).hasSize(5);
     // Make sure the cell is selected when it's in November.
-    assertCell(cells, 4, 4, 29, true, true, false, true, PeriodState.NONE);
+    assertCell(cells, 4, 4, 29, true, true, false, true, MonthCellDescriptor.RangeState.NONE);
 
-    cells = getCells(DECEMBER, 2012, nov29);
+    cells = selectDateAndGetCells(DECEMBER, 2012, nov29);
     assertThat(cells).hasSize(6);
     // Make sure the cell is not selected when it's in December.
-    assertCell(cells, 0, 4, 29, false, false, false, false, PeriodState.NONE);
+    assertCell(cells, 0, 4, 29, false, false, false, false, MonthCellDescriptor.RangeState.NONE);
   }
 
   @Test
   public void testTodayIsToday() throws Exception {
-    List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2012, today);
-    assertCell(cells, 2, 5, 16, true, true, true, true, PeriodState.NONE);
+    List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(NOVEMBER, 2012, today);
+    assertCell(cells, 2, 5, 16, true, true, true, true, RangeState.NONE);
   }
 
   @Test
   public void testSelectabilityInFirstMonth() throws Exception {
-    List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2012, today);
+    List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(NOVEMBER, 2012, today);
     // 10/29 is not selectable because it's in the previous month.
-    assertCell(cells, 0, 0, 28, false, false, false, false, PeriodState.NONE);
+    assertCell(cells, 0, 0, 28, false, false, false, false, RangeState.NONE);
     // 11/1 is not selectable because it's < minDate (11/16/12).
-    assertCell(cells, 0, 4, 1, true, false, false, false, PeriodState.NONE);
+    assertCell(cells, 0, 4, 1, true, false, false, false, MonthCellDescriptor.RangeState.NONE);
     // 11/16 is selectable because it's == minDate (11/16/12).
-    assertCell(cells, 2, 5, 16, true, true, true, true, PeriodState.NONE);
+    assertCell(cells, 2, 5, 16, true, true, true, true, RangeState.NONE);
     // 11/20 is selectable because it's > minDate (11/16/12).
-    assertCell(cells, 3, 2, 20, true, false, false, true, PeriodState.NONE);
+    assertCell(cells, 3, 2, 20, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
     // 12/1 is not selectable because it's in the next month.
-    assertCell(cells, 4, 6, 1, false, false, false, false, PeriodState.NONE);
+    assertCell(cells, 4, 6, 1, false, false, false, false, MonthCellDescriptor.RangeState.NONE);
   }
 
   @Test
   public void testSelectabilityInLastMonth() throws Exception {
-    List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2013, today);
+    List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(NOVEMBER, 2013, today);
     // 10/29 is not selectable because it's in the previous month.
-    assertCell(cells, 0, 0, 27, false, false, false, false, PeriodState.NONE);
+    assertCell(cells, 0, 0, 27, false, false, false, false, RangeState.NONE);
     // 11/1 is selectable because it's < maxDate (11/16/13).
-    assertCell(cells, 0, 5, 1, true, false, false, true, PeriodState.NONE);
+    assertCell(cells, 0, 5, 1, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
     // 11/15 is selectable because it's one less than maxDate (11/16/13).
-    assertCell(cells, 2, 5, 15, true, false, false, true, PeriodState.NONE);
+    assertCell(cells, 2, 5, 15, true, false, false, true, RangeState.NONE);
     // 11/16 is not selectable because it's > maxDate (11/16/13).
-    assertCell(cells, 2, 6, 16, true, false, false, false, PeriodState.NONE);
+    assertCell(cells, 2, 6, 16, true, false, false, false, MonthCellDescriptor.RangeState.NONE);
   }
 
   @Test
   public void testInitSingleWithMultipleSelections() throws Exception {
-    List<Date> multipleSelectedDates = new ArrayList<Date>();
-    multipleSelectedDates.add(minDate);
+    List<Date> selectedDates = new ArrayList<Date>();
+    selectedDates.add(minDate);
     // This one should work.
     view.init(minDate, maxDate) //
         .inMode(SINGLE) //
-        .withSelectedDates(multipleSelectedDates);
+        .withSelectedDates(selectedDates);
 
     // Now add another date and try init'ing again in SINGLE mode.
     Calendar secondSelection = buildCal(2012, NOVEMBER, 17);
-    multipleSelectedDates.add(secondSelection.getTime());
+    selectedDates.add(secondSelection.getTime());
     try {
       view.init(minDate, maxDate) //
           .inMode(SINGLE) //
-          .withSelectedDates(multipleSelectedDates);
+          .withSelectedDates(selectedDates);
       fail("Should not have been able to init() with SINGLE mode && multiple selected dates");
     } catch (IllegalArgumentException expected) {
     }
@@ -221,7 +222,7 @@ public class CalendarPickerViewTest {
     try {
       view.init(validDate, validDate) //
           .inMode(SINGLE) //
-          .withSelectedDate((Date) null);
+          .withSelectedDate(null);
       fail("Should not have been able to pass in a null startDate");
     } catch (IllegalArgumentException expected) {
     }
@@ -328,13 +329,16 @@ public class CalendarPickerViewTest {
   }
 
   @Test
-  public void selectDateReturnsFalseForDatesOutOfRange() {
+  public void selectDateThrowsExceptionForDatesOutOfRange() {
     view.init(minDate, maxDate) //
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
     Calendar outOfRange = buildCal(2015, FEBRUARY, 1);
-    boolean wasAbleToSetDate = view.selectDate(outOfRange.getTime());
-    assertThat(wasAbleToSetDate).isFalse();
+    try {
+      view.selectDate(outOfRange.getTime());
+      fail("selectDate should've blown up with an out of range date");
+    } catch (IllegalArgumentException expected) {
+    }
   }
 
   @Test
@@ -374,8 +378,6 @@ public class CalendarPickerViewTest {
     assertThat(view.getSelectedDates().get(1)).hasTime(secondSelection.getTimeInMillis());
   }
 
-  // TODO add tests for PERIOD and SELECTED_PERIOD
-
   @Test
   public void testOnDateConfiguredListener() {
     final Calendar testCal = Calendar.getInstance();
@@ -401,34 +403,114 @@ public class CalendarPickerViewTest {
   }
 
   @Test
-  public void testPeriodStateOnDateSelections() {
+  public void testRangeSelectionWithNoInitialSelection() throws Exception {
+    view.init(minDate, maxDate)
+        .inMode(RANGE);
+    assertThat(view.selectedCals).hasSize(0);
+    assertThat(view.selectedCells).hasSize(0);
+
+    Calendar nov18 = buildCal(2012, NOVEMBER, 18);
+    view.selectDate(nov18.getTime());
+    assertOneDateSelected();
+
+    Calendar nov24 = buildCal(2012, NOVEMBER, 24);
+    view.selectDate(nov24.getTime());
+    assertRangeSelected();
+
+    assertRangeSelectionBehavior();
+  }
+
+  private void assertRangeSelectionBehavior() {
+    // Start a new range in the middle of the current (Nov 18 - Nov 24) one.
+    Calendar nov20 = buildCal(2012, NOVEMBER, 20);
+    view.selectDate(nov20.getTime());
+    assertOneDateSelected();
+
+    // Finish that range.
+    Calendar nov26 = buildCal(2012, NOVEMBER, 26);
+    view.selectDate(nov26.getTime());
+    assertRangeSelected();
+
+    // Start a new range in the middle of the current (Nov 20 - Nov 26) one.
+    Calendar nov24 = buildCal(2012, NOVEMBER, 24);
+    view.selectDate(nov24.getTime());
+    assertOneDateSelected();
+
+    // Only Nov 24 is selected: going backward should start a new range.
+    view.selectDate(nov20.getTime());
+    assertOneDateSelected();
+  }
+
+  @Test
+  public void testRangeWithTwoInitialSelections() throws Exception {
+    Calendar nov18 = buildCal(2012, NOVEMBER, 18);
+    Calendar nov24 = buildCal(2012, NOVEMBER, 24);
+    List<Date> selectedDates = Arrays.asList(nov18.getTime(), nov24.getTime());
+    view.init(minDate, maxDate)
+        .inMode(RANGE)
+        .withSelectedDates(selectedDates);
+    assertRangeSelected();
+
+    assertRangeSelectionBehavior();
+  }
+
+  @Test
+  public void testRangeWithOneInitialSelection() throws Exception {
+    Calendar nov18 = buildCal(2012, NOVEMBER, 18);
+    Calendar nov24 = buildCal(2012, NOVEMBER, 24);
+    List<Date> selectedDates = Arrays.asList(nov18.getTime());
+    view.init(minDate, maxDate)
+        .inMode(RANGE)
+        .withSelectedDates(selectedDates);
+    assertOneDateSelected();
+
+    view.selectDate(nov24.getTime());
+    assertRangeSelected();
+
+    assertRangeSelectionBehavior();
+  }
+
+  private void assertRangeSelected() {
+    assertThat(view.selectedCals).hasSize(2);
+    assertThat(view.selectedCells).hasSize(7);
+    assertThat(view.getSelectedDates()).hasSize(7);
+  }
+
+  private void assertOneDateSelected() {
+    assertThat(view.selectedCals).hasSize(1);
+    assertThat(view.selectedCells).hasSize(1);
+    assertThat(view.getSelectedDates()).hasSize(1);
+  }
+
+  @Test
+  public void testRangeStateOnDateSelections() {
     Calendar startCal = buildCal(2012, NOVEMBER, 17);
     Calendar endCal = buildCal(2012, NOVEMBER, 24);
 
     view.init(minDate, maxDate) //
-        .inMode(SELECTED_PERIOD);
-    
+        .inMode(RANGE);
+
     boolean wasAbleToSetDate = view.selectDate(startCal.getTime());
     assertThat(wasAbleToSetDate).isTrue();
 
     wasAbleToSetDate = view.selectDate(endCal.getTime());
     assertThat(wasAbleToSetDate).isTrue();
 
-    List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2012, startCal);
-    assertCell(cells, 2, 6, 17, true, true, false, true, PeriodState.FIRST);
-    assertCell(cells, 3, 0, 18, true, false, false, true, PeriodState.MIDDLE);
-    assertCell(cells, 3, 1, 19, true, false, false, true, PeriodState.MIDDLE);
-    assertCell(cells, 3, 2, 20, true, false, false, true, PeriodState.MIDDLE);
-    assertCell(cells, 3, 3, 21, true, false, false, true, PeriodState.MIDDLE);
-    assertCell(cells, 3, 4, 22, true, false, false, true, PeriodState.MIDDLE);
-    assertCell(cells, 3, 5, 23, true, false, false, true, PeriodState.MIDDLE);
-    assertCell(cells, 3, 6, 24, true, true, false, true, PeriodState.LAST);
+    List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2012);
+    assertCell(cells, 2, 6, 17, true, true, false, true, MonthCellDescriptor.RangeState.FIRST);
+    assertCell(cells, 3, 0, 18, true, false, false, true, MonthCellDescriptor.RangeState.MIDDLE);
+    assertCell(cells, 3, 1, 19, true, false, false, true, MonthCellDescriptor.RangeState.MIDDLE);
+    assertCell(cells, 3, 2, 20, true, false, false, true, RangeState.MIDDLE);
+    assertCell(cells, 3, 3, 21, true, false, false, true, RangeState.MIDDLE);
+    assertCell(cells, 3, 4, 22, true, false, false, true, MonthCellDescriptor.RangeState.MIDDLE);
+    assertCell(cells, 3, 5, 23, true, false, false, true, MonthCellDescriptor.RangeState.MIDDLE);
+    assertCell(cells, 3, 6, 24, true, true, false, true, MonthCellDescriptor.RangeState.LAST);
   }
 
   @Test
   public void testLocaleSetting() throws Exception {
     view.init(minDate, maxDate) //
-      .withLocale(Locale.GERMAN);
+        .withLocale(Locale.GERMAN);
     MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
     CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
     TextView firstDay = (TextView) header.getChildAt(0);
@@ -438,18 +520,23 @@ public class CalendarPickerViewTest {
 
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
       int expectedVal, boolean expectedCurrentMonth, boolean expectedSelected,
-      boolean expectedToday, boolean expectedSelectable, PeriodState expectedPeriodState) {
+      boolean expectedToday, boolean expectedSelectable, MonthCellDescriptor.RangeState expectedRangeState) {
     final MonthCellDescriptor cell = cells.get(row).get(col);
     assertThat(cell.getValue()).isEqualTo(expectedVal);
     assertThat(cell.isCurrentMonth()).isEqualTo(expectedCurrentMonth);
     assertThat(cell.isSelected()).isEqualTo(expectedSelected);
     assertThat(cell.isToday()).isEqualTo(expectedToday);
     assertThat(cell.isSelectable()).isEqualTo(expectedSelectable);
-    assertThat(cell.getPeriodState()).isEqualTo(expectedPeriodState);
+    assertThat(cell.getRangeState()).isEqualTo(expectedRangeState);
   }
 
-  private List<List<MonthCellDescriptor>> getCells(int month, int year, Calendar selectedDate) {
+  private List<List<MonthCellDescriptor>> selectDateAndGetCells(int month, int year,
+      Calendar selectedDate) {
     view.selectDate(selectedDate.getTime());
+    return getCells(month, year);
+  }
+
+  private List<List<MonthCellDescriptor>> getCells(int month, int year) {
     Calendar cal = Calendar.getInstance();
     cal.set(DAY_OF_MONTH, 1);
     cal.set(YEAR, year);
@@ -463,6 +550,7 @@ public class CalendarPickerViewTest {
   }) int month, int day) {
     Calendar jumpToCal = Calendar.getInstance();
     jumpToCal.set(year, month, day);
+    CalendarPickerView.setMidnight(jumpToCal);
     return jumpToCal;
   }
 }

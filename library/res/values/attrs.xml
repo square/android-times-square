@@ -4,8 +4,8 @@
     <attr name="state_selectable" format="boolean" />
     <attr name="state_current_month" format="boolean" />
     <attr name="state_today" format="boolean" />
-    <attr name="state_period_first" format="boolean" />
-    <attr name="state_period_middle" format="boolean" />
-    <attr name="state_period_last" format="boolean" />
+    <attr name="state_range_first" format="boolean" />
+    <attr name="state_range_middle" format="boolean" />
+    <attr name="state_range_last" format="boolean" />
   </declare-styleable>
 </resources>
