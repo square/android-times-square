@@ -33,8 +33,9 @@ import static java.util.Calendar.YEAR;
 
 /**
  * Android component to allow picking a date from a calendar view (a list of months).  Must be
- * initialized after inflation with one of the init() methods.  The currently selected date can be
- * retrieved with {@link #getSelectedDate()}.
+ * initialized after inflation with {@link #init(Date, Date)} and can be customized with any of the
+ * {@link FluentInitializer} methods returned.  The currently selected date can be retrieved with
+ * {@link #getSelectedDate()}.
  */
 public class CalendarPickerView extends ListView {
   public enum SelectionMode {
@@ -43,10 +44,7 @@ public class CalendarPickerView extends ListView {
      * one, the old date will be unselected.
      */
     SINGLE,
-    /**
-     * Multiple dates will be selectable.  If there is already a selected date and you select a new
-     * one, the old date will also be selected.
-     */
+    /** Multiple dates will be selectable.  Selecting an already-selected date will un-select it. */
     MULTIPLE,
     /**
      * Allows you to select a date range.  Previous selections are cleared when you either:
@@ -107,7 +105,7 @@ public class CalendarPickerView extends ListView {
    * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
    * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
    * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
-   * <p/>
+   * <p>
    * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
    * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
    * {@link FluentInitializer} this method returns.
@@ -175,7 +173,7 @@ public class CalendarPickerView extends ListView {
     }
 
     /**
-     * Set an initially-selected date.  The calendar will scroll to that date if it's not initially
+     * Set an initially-selected date.  The calendar will scroll to that date if it's not already
      * visible.
      */
     public FluentInitializer withSelectedDate(Date selectedDates) {
@@ -279,19 +277,6 @@ public class CalendarPickerView extends ListView {
     return "minDate: " + minDate + "\nmaxDate: " + maxDate;
   }
 
-  private static String dbg(Iterable<Date> selectedDates) {
-    StringBuilder sb = new StringBuilder();
-    if (selectedDates == null) {
-      sb.append("selectedDates: null");
-    } else {
-      sb.append("selectedDates: ");
-      for (Date selectedDate : selectedDates) {
-        sb.append(selectedDate + "; ");
-      }
-    }
-    return sb.toString();
-  }
-
   /** Clears out the hours/minutes/seconds/millis of a Calendar. */
   static void setMidnight(Calendar cal) {
     cal.set(HOUR_OF_DAY, 0);
@@ -323,7 +308,8 @@ public class CalendarPickerView extends ListView {
    * with: if you are in {@link SelectionMode#SINGLE}, the previously selected date will be
    * un-selected.  In {@link SelectionMode#MULTIPLE}, the new date will be added to the list of
    * selected dates.
-   * </p> If the selection was made (selectable date, in range), the view will scroll to the newly
+   * <p>
+   * If the selection was made (selectable date, in range), the view will scroll to the newly
    * selected date if it's not already visible.
    *
    * @return - whether we were able to set the date
@@ -626,8 +612,10 @@ public class CalendarPickerView extends ListView {
 
   /**
    * Set a listener used to discriminate between selectable and unselectable dates. Set this to
-   * disable arbitrary dates as they are rendered. <p/> Important: set this before you call {@link
-   * #init(Date, Date)} methods.  If called afterwards, it will not be consistently applied.
+   * disable arbitrary dates as they are rendered.
+   * <p>
+   * Important: set this before you call {@link #init(Date, Date)} methods.  If called afterwards,
+   * it will not be consistently applied.
    */
   public void setDateSelectableFilter(DateSelectableFilter listener) {
     dateConfiguredListener = listener;
@@ -636,7 +624,9 @@ public class CalendarPickerView extends ListView {
   /**
    * Interface to be notified when a new date is selected.  This will only be called when the user
    * initiates the date selection.  If you call {@link #selectDate(Date)} this listener will not be
-   * notified. <p/> See {@link #setOnDateSelectedListener(OnDateSelectedListener)}.
+   * notified.
+   *
+   * @see #setOnDateSelectedListener(OnDateSelectedListener)
    */
   public interface OnDateSelectedListener {
     void onDateSelected(Date date);
@@ -644,10 +634,10 @@ public class CalendarPickerView extends ListView {
 
   /**
    * Interface to be notified when an invalid date is selected by the user. This will only be
-   * called
-   * when the user initiates the date selection. If you call {@link #selectDate(Date)} this
-   * listener
-   * will not be notified. <p/> See {@link #setOnInvalidDateSelectedListener(OnInvalidDateSelectedListener)}.
+   * called when the user initiates the date selection. If you call {@link #selectDate(Date)} this
+   * listener will not be notified.
+   *
+   * @see #setOnInvalidDateSelectedListener(OnInvalidDateSelectedListener)
    */
   public interface OnInvalidDateSelectedListener {
     void onInvalidDateSelected(Date date);
@@ -655,7 +645,9 @@ public class CalendarPickerView extends ListView {
 
   /**
    * Interface used for determining the selectability of a date cell when it is configured for
-   * display on the calendar. <p/> See {@link #setDateSelectableFilter(DateSelectableFilter)}.
+   * display on the calendar.
+   *
+   * @see #setDateSelectableFilter(DateSelectableFilter)
    */
   public interface DateSelectableFilter {
     boolean isDateSelectable(Date date);
