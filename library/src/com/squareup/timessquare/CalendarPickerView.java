@@ -70,12 +70,10 @@ public class CalendarPickerView extends ListView {
   private final Calendar minCal = Calendar.getInstance();
   private final Calendar maxCal = Calendar.getInstance();
   private final Calendar monthCounter = Calendar.getInstance();
-
   private final MonthView.Listener listener = new CellClickedListener();
 
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
-
   private OnInvalidDateSelectedListener invalidDateListener =
       new DefaultOnInvalidDateSelectedListener();
 

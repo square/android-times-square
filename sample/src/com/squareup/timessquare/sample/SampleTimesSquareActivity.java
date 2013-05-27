@@ -1,6 +1,8 @@
 package com.squareup.timessquare.sample;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,8 +38,9 @@ public class SampleTimesSquareActivity extends Activity {
         .withSelectedDate(new Date());
 
     final Button single = (Button) findViewById(R.id.button_single);
-    final Button range = (Button) findViewById(R.id.button_range);
     final Button multi = (Button) findViewById(R.id.button_multi);
+    final Button range = (Button) findViewById(R.id.button_range);
+    final Button dialog = (Button) findViewById(R.id.button_dialog);
     single.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -86,6 +89,24 @@ public class SampleTimesSquareActivity extends Activity {
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.RANGE) //
             .withSelectedDates(dates);
+      }
+    });
+
+    dialog.setOnClickListener(new OnClickListener() {
+      @Override public void onClick(View view) {
+        CalendarPickerView dialogView =
+            (CalendarPickerView) getLayoutInflater().inflate(R.layout.dialog, null, false);
+        dialogView.init(new Date(), nextYear.getTime());
+        new AlertDialog.Builder(SampleTimesSquareActivity.this)
+            .setTitle("I'm a dialog!")
+            .setView(dialogView)
+            .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+              @Override public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+              }
+            })
+            .create()
+            .show();
       }
     });
 

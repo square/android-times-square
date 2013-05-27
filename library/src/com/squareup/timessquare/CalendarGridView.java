@@ -18,6 +18,7 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
  */
 public class CalendarGridView extends ViewGroup {
   private final Paint dividerPaint = new Paint();
+  private int oldWidthMeasureSize;
 
   public CalendarGridView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -56,12 +57,21 @@ public class CalendarGridView extends ViewGroup {
   }
 
   @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    Logr.d("Grid.onMeasure w=%s h=%s", MeasureSpec.toString(widthMeasureSpec),
+        MeasureSpec.toString(heightMeasureSpec));
+    int widthMeasureSize = MeasureSpec.getSize(widthMeasureSpec);
+    if (oldWidthMeasureSize == widthMeasureSize) {
+      Logr.d("SKIP Grid.onMeasure");
+      setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight());
+      return;
+    }
     long start = System.currentTimeMillis();
-    int totalWidth = MeasureSpec.getSize(widthMeasureSpec);
-    int cellSize = totalWidth / 7;
-    totalWidth = cellSize * 7; // Remove any extra pixels since /7 is unlikely to give whole nums.
+    oldWidthMeasureSize = widthMeasureSize;
+    int cellSize = widthMeasureSize / 7;
+    // Remove any extra pixels since /7 is unlikely to give whole nums.
+    widthMeasureSize = cellSize * 7;
     int totalHeight = 0;
-    final int rowWidthSpec = makeMeasureSpec(totalWidth, EXACTLY);
+    final int rowWidthSpec = makeMeasureSpec(widthMeasureSize, EXACTLY);
     final int rowHeightSpec = makeMeasureSpec(cellSize, EXACTLY);
     for (int c = 0, numChildren = getChildCount(); c < numChildren; c++) {
       final View child = getChildAt(c);
@@ -74,7 +84,7 @@ public class CalendarGridView extends ViewGroup {
         totalHeight += child.getMeasuredHeight();
       }
     }
-    final int measuredWidth = totalWidth + 2; // Fudge factor to make the borders show up right.
+    final int measuredWidth = widthMeasureSize + 2; // Fudge factor to make the borders show up.
     setMeasuredDimension(measuredWidth, totalHeight);
     Logr.d("Grid.onMeasure %d ms", System.currentTimeMillis() - start);
   }
