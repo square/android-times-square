@@ -31,13 +31,18 @@ Calendar nextYear = Calendar.getInstance();
 nextYear.add(Calendar.YEAR, 1);
 
 CalendarPickerView calendar = (CalendarPickerView) findViewById(R.id.calendar_view);
-calendar.init(new Date(), nextYear.getTime());
+Date today = new Date();
+calendar.init(today, nextYear.getTime())
+    .withSelectedDate(today);
 ```
 
-To retrieve the currently selected date, call `getSelectedDate()` on the view.
-To create a view with a previously selected date, call `selectDate()`.
+The default mode of the view is to have one selectable date.  If you want the user to be able to
+select multiple dates or a date range, use the inMode() method:
 
-
+```java
+calendar.init(today, nextYear.getTime())
+    .inMode(RANGE);
+```
 
 Download
 --------
@@ -55,8 +60,6 @@ You can also depend on the library through Maven:
     <type>apklib</type>
 </dependency>
 ```
-
-
 
 License
 -------
