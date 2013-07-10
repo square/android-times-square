@@ -446,6 +446,30 @@ public class CalendarPickerViewTest {
     assertRangeSelectionBehavior();
   }
 
+  @Test
+  public void testInitWithoutHighlightingCells() {
+    view.init(minDate, maxDate, locale)
+        .inMode(SINGLE);
+
+    assertThat(view.highlightedCals).hasSize(0);
+    assertThat(view.highlightedCells).hasSize(0);
+  }
+
+  @Test
+  public void testHighlightingCells() {
+    final Calendar highlightedCal = buildCal(2012, NOVEMBER, 20);
+
+    view.init(minDate, maxDate, locale)
+        .inMode(SINGLE)
+        .withHighlightedDate(highlightedCal.getTime());
+
+    assertThat(view.highlightedCals).hasSize(1);
+    assertThat(view.highlightedCells).hasSize(1);
+
+    List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2012);
+    assertThat(cells.get(3).get(2).isHighlighted()).isTrue();
+  }
+
   private void assertRangeSelectionBehavior() {
     // Start a new range in the middle of the current (Nov 18 - Nov 24) one.
     Calendar nov20 = buildCal(2012, NOVEMBER, 20);

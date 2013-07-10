@@ -67,7 +67,9 @@ public class CalendarPickerView extends ListView {
   Calendar today;
   private final List<List<List<MonthCellDescriptor>>> cells =
       new ArrayList<List<List<MonthCellDescriptor>>>();
+  final List<MonthCellDescriptor> highlightedCells = new ArrayList<MonthCellDescriptor>();
   final List<Calendar> selectedCals = new ArrayList<Calendar>();
+  final List<Calendar> highlightedCals = new ArrayList<Calendar>();
   private Calendar minCal;
   private Calendar maxCal;
   private Calendar monthCounter;
@@ -157,6 +159,7 @@ public class CalendarPickerView extends ListView {
     // Clear out any previously-selected dates/cells.
     selectedCals.clear();
     selectedCells.clear();
+    highlightedCells.clear();
 
     // Clear previous state.
     cells.clear();
@@ -267,6 +270,15 @@ public class CalendarPickerView extends ListView {
       validateAndUpdate();
       return this;
     }
+
+    public FluentInitializer withHighlightedDates(Collection<Date> dates) {
+      highlightDates(dates);
+      return this;
+    }
+
+    public FluentInitializer withHighlightedDate(Date date) {
+      return withHighlightedDates(Arrays.asList(date));
+    }
   }
 
   private void validateAndUpdate() {
@@ -329,7 +341,7 @@ public class CalendarPickerView extends ListView {
         }
       } else if (dateListener != null) {
         boolean wasSelected = doSelectDate(clickedDate, cell);
-        
+
         if (wasSelected) {
           dateListener.onDateSelected(clickedDate);
         } else {
@@ -351,6 +363,20 @@ public class CalendarPickerView extends ListView {
    * @return - whether we were able to set the date
    */
   public boolean selectDate(Date date) {
+    validateDate(date);
+
+    MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
+    if (monthCellWithMonthIndex == null || !isDateSelectable(date)) {
+      return false;
+    }
+    boolean wasSelected = doSelectDate(date, monthCellWithMonthIndex.cell);
+    if (wasSelected) {
+      scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex);
+    }
+    return wasSelected;
+  }
+
+  private void validateDate(Date date) {
     if (date == null) {
       throw new IllegalArgumentException("Selected date must be non-null.  " + date);
     }
@@ -361,15 +387,6 @@ public class CalendarPickerView extends ListView {
       throw new IllegalArgumentException(
           "selectedDate must be between minDate and maxDate.  " + date);
     }
-    MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
-    if (monthCellWithMonthIndex == null || !isDateSelectable(date)) {
-      return false;
-    }
-    boolean wasSelected = doSelectDate(date, monthCellWithMonthIndex.cell);
-    if (wasSelected) {
-      scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex);
-    }
-    return wasSelected;
   }
 
   private boolean doSelectDate(Date date, MonthCellDescriptor cell) {
@@ -469,6 +486,26 @@ public class CalendarPickerView extends ListView {
     return date;
   }
 
+  public void highlightDates(Collection<Date> dates) {
+    for (Date date : dates) {
+      validateDate(date);
+
+      MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
+      if (monthCellWithMonthIndex != null) {
+        Calendar newlyHighlightedCal = Calendar.getInstance();
+        newlyHighlightedCal.setTime(date);
+        MonthCellDescriptor cell = monthCellWithMonthIndex.cell;
+
+        highlightedCells.add(cell);
+        highlightedCals.add(newlyHighlightedCal);
+        cell.setHighlighted(true);
+      }
+    }
+
+    adapter.notifyDataSetChanged();
+    setAdapter(adapter);
+  }
+
   /** Hold a cell with a month-index. */
   private static class MonthCellWithMonthIndex {
     public MonthCellDescriptor cell;
@@ -562,6 +599,7 @@ public class CalendarPickerView extends ListView {
         boolean isSelectable =
             isCurrentMonth && betweenDates(cal, minCal, maxCal) && isDateSelectable(date);
         boolean isToday = sameDate(cal, today);
+        boolean isHighlighted = containsDate(highlightedCals, cal);
         int value = cal.get(DAY_OF_MONTH);
 
         MonthCellDescriptor.RangeState rangeState = MonthCellDescriptor.RangeState.NONE;
@@ -576,8 +614,8 @@ public class CalendarPickerView extends ListView {
         }
 
         weekCells.add(
-            new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday, value,
-                rangeState));
+            new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday,
+                isHighlighted, value, rangeState));
         cal.add(DATE, 1);
       }
     }
@@ -662,14 +700,14 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * Interface to be notified when a new date is selected or unselected. This will only be called when the user
-   * initiates the date selection.  If you call {@link #selectDate(Date)} this listener will not be
-   * notified.
+   * Interface to be notified when a new date is selected or unselected. This will only be called
+   * when the user initiates the date selection.  If you call {@link #selectDate(Date)} this
+   * listener will not be notified.
    *
    * @see #setOnDateSelectedListener(OnDateSelectedListener)
    */
   public interface OnDateSelectedListener {
-    void onDateSelected(Date date);  
+    void onDateSelected(Date date);
 
     void onDateUnselected(Date date);
   }
