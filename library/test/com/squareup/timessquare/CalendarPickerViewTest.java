@@ -3,7 +3,6 @@ package com.squareup.timessquare;
 
 import android.app.Activity;
 import android.widget.TextView;
-import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -19,6 +18,10 @@ import org.robolectric.RobolectricTestRunner;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.MULTIPLE;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.RANGE;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.SINGLE;
+import static com.squareup.timessquare.MonthCellDescriptor.RangeState.FIRST;
+import static com.squareup.timessquare.MonthCellDescriptor.RangeState.LAST;
+import static com.squareup.timessquare.MonthCellDescriptor.RangeState.MIDDLE;
+import static com.squareup.timessquare.MonthCellDescriptor.RangeState.NONE;
 import static java.util.Calendar.APRIL;
 import static java.util.Calendar.AUGUST;
 import static java.util.Calendar.DAY_OF_MONTH;
@@ -98,10 +101,10 @@ public class CalendarPickerViewTest {
     assertThat(cells).hasSize(4);
 
     // Last cell should be 1.
-    assertCell(cells, 0, 0, 1, true, false, false, false, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 0, 0, 1, true, false, false, false, NONE);
 
     // Last cell should be 28.
-    assertCell(cells, 3, 6, 28, true, false, false, false, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 3, 6, 28, true, false, false, false, NONE);
   }
 
   @Test
@@ -110,16 +113,16 @@ public class CalendarPickerViewTest {
     assertThat(cells).hasSize(5);
 
     // First cell is the 27th of January.
-    assertCell(cells, 0, 0, 27, false, false, false, false, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 0, 0, 27, false, false, false, false, NONE);
 
     // First day of Feb falls on the 5th cell.
-    assertCell(cells, 0, 5, 1, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 0, 5, 1, true, false, false, true, NONE);
 
     // Last day of Feb falls on the 5th row, 5th column.
-    assertCell(cells, 4, 4, 28, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 4, 4, 28, true, false, false, true, NONE);
 
     // Last cell should be March 2nd.
-    assertCell(cells, 4, 6, 2, false, false, false, false, RangeState.NONE);
+    assertCell(cells, 4, 6, 2, false, false, false, false, NONE);
   }
 
   @Test
@@ -134,16 +137,16 @@ public class CalendarPickerViewTest {
     assertThat(cells).hasSize(6);
 
     // First cell is the 27th of November.
-    assertCell(cells, 0, 0, 25, false, false, false, false, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 0, 0, 25, false, false, false, false, NONE);
 
     // First day of December falls on the 6th cell.
-    assertCell(cells, 0, 6, 1, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 0, 6, 1, true, false, false, true, NONE);
 
     // Last day of December falls on the 6th row, 2nd column.
-    assertCell(cells, 5, 1, 31, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 5, 1, 31, true, false, false, true, NONE);
 
     // Last cell should be January 5th.
-    assertCell(cells, 5, 6, 5, false, false, false, false, RangeState.NONE);
+    assertCell(cells, 5, 6, 5, false, false, false, false, NONE);
   }
 
   @Test
@@ -153,46 +156,46 @@ public class CalendarPickerViewTest {
     List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(NOVEMBER, 2012, nov29);
     assertThat(cells).hasSize(5);
     // Make sure the cell is selected when it's in November.
-    assertCell(cells, 4, 4, 29, true, true, false, true, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 4, 4, 29, true, true, false, true, NONE);
 
     cells = selectDateAndGetCells(DECEMBER, 2012, nov29);
     assertThat(cells).hasSize(6);
     // Make sure the cell is not selected when it's in December.
-    assertCell(cells, 0, 4, 29, false, false, false, false, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 0, 4, 29, false, false, false, false, NONE);
   }
 
   @Test
   public void testTodayIsToday() throws Exception {
     List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(NOVEMBER, 2012, today);
-    assertCell(cells, 2, 5, 16, true, true, true, true, RangeState.NONE);
+    assertCell(cells, 2, 5, 16, true, true, true, true, NONE);
   }
 
   @Test
   public void testSelectabilityInFirstMonth() throws Exception {
     List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(NOVEMBER, 2012, today);
     // 10/29 is not selectable because it's in the previous month.
-    assertCell(cells, 0, 0, 28, false, false, false, false, RangeState.NONE);
+    assertCell(cells, 0, 0, 28, false, false, false, false, NONE);
     // 11/1 is not selectable because it's < minDate (11/16/12).
-    assertCell(cells, 0, 4, 1, true, false, false, false, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 0, 4, 1, true, false, false, false, NONE);
     // 11/16 is selectable because it's == minDate (11/16/12).
-    assertCell(cells, 2, 5, 16, true, true, true, true, RangeState.NONE);
+    assertCell(cells, 2, 5, 16, true, true, true, true, NONE);
     // 11/20 is selectable because it's > minDate (11/16/12).
-    assertCell(cells, 3, 2, 20, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 3, 2, 20, true, false, false, true, NONE);
     // 12/1 is not selectable because it's in the next month.
-    assertCell(cells, 4, 6, 1, false, false, false, false, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 4, 6, 1, false, false, false, false, NONE);
   }
 
   @Test
   public void testSelectabilityInLastMonth() throws Exception {
     List<List<MonthCellDescriptor>> cells = selectDateAndGetCells(NOVEMBER, 2013, today);
     // 10/29 is not selectable because it's in the previous month.
-    assertCell(cells, 0, 0, 27, false, false, false, false, RangeState.NONE);
+    assertCell(cells, 0, 0, 27, false, false, false, false, NONE);
     // 11/1 is selectable because it's < maxDate (11/16/13).
-    assertCell(cells, 0, 5, 1, true, false, false, true, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 0, 5, 1, true, false, false, true, NONE);
     // 11/15 is selectable because it's one less than maxDate (11/16/13).
-    assertCell(cells, 2, 5, 15, true, false, false, true, RangeState.NONE);
+    assertCell(cells, 2, 5, 15, true, false, false, true, NONE);
     // 11/16 is not selectable because it's > maxDate (11/16/13).
-    assertCell(cells, 2, 6, 16, true, false, false, false, MonthCellDescriptor.RangeState.NONE);
+    assertCell(cells, 2, 6, 16, true, false, false, false, NONE);
   }
 
   @Test
@@ -497,14 +500,14 @@ public class CalendarPickerViewTest {
     assertThat(wasAbleToSetDate).isTrue();
 
     List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2012);
-    assertCell(cells, 2, 6, 17, true, true, false, true, MonthCellDescriptor.RangeState.FIRST);
-    assertCell(cells, 3, 0, 18, true, false, false, true, MonthCellDescriptor.RangeState.MIDDLE);
-    assertCell(cells, 3, 1, 19, true, false, false, true, MonthCellDescriptor.RangeState.MIDDLE);
-    assertCell(cells, 3, 2, 20, true, false, false, true, RangeState.MIDDLE);
-    assertCell(cells, 3, 3, 21, true, false, false, true, RangeState.MIDDLE);
-    assertCell(cells, 3, 4, 22, true, false, false, true, MonthCellDescriptor.RangeState.MIDDLE);
-    assertCell(cells, 3, 5, 23, true, false, false, true, MonthCellDescriptor.RangeState.MIDDLE);
-    assertCell(cells, 3, 6, 24, true, true, false, true, MonthCellDescriptor.RangeState.LAST);
+    assertCell(cells, 2, 6, 17, true, true, false, true, FIRST);
+    assertCell(cells, 3, 0, 18, true, false, false, true, MIDDLE);
+    assertCell(cells, 3, 1, 19, true, false, false, true, MIDDLE);
+    assertCell(cells, 3, 2, 20, true, false, false, true, MIDDLE);
+    assertCell(cells, 3, 3, 21, true, false, false, true, MIDDLE);
+    assertCell(cells, 3, 4, 22, true, false, false, true, MIDDLE);
+    assertCell(cells, 3, 5, 23, true, false, false, true, MIDDLE);
+    assertCell(cells, 3, 6, 24, true, true, false, true, LAST);
   }
 
   @Test
@@ -518,9 +521,40 @@ public class CalendarPickerViewTest {
     assertThat(monthView.title).hasTextString("Dezember 2012");
   }
 
+  @Test
+  public void testFirstDayOfWeekIsMonday() throws Exception {
+    Locale originalLocale = Locale.getDefault();
+    Locale greatBritain = new Locale("en", "GB");
+    // Verify that firstDayOfWeek is actually Monday.
+    Calendar cal = Calendar.getInstance(greatBritain);
+    assertThat(cal.getFirstDayOfWeek()).isEqualTo(Calendar.MONDAY);
+
+    // Set the locale and run "setUp" again.
+    Locale.setDefault(greatBritain);
+    setUp();
+
+    try {
+      view.init(minDate, maxDate);
+      MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
+      CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
+      TextView firstDay = (TextView) header.getChildAt(0);
+      assertThat(firstDay).hasTextString("Mon"); // Monday!
+
+      // Now verify that the generated cells are right.
+      List<List<MonthCellDescriptor>> cells = getCells(SEPTEMBER, 2013);
+      assertThat(cells).hasSize(6);
+      assertCell(cells, 0, 0, 26, false, false, false, false, NONE);
+      assertCell(cells, 1, 0, 2, true, false, false, true, NONE);
+      assertCell(cells, 5, 0, 30, true, false, false, true, NONE);
+    } finally {
+      Locale.setDefault(originalLocale);
+    }
+  }
+
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
       int expectedVal, boolean expectedCurrentMonth, boolean expectedSelected,
-      boolean expectedToday, boolean expectedSelectable, MonthCellDescriptor.RangeState expectedRangeState) {
+      boolean expectedToday, boolean expectedSelectable,
+      MonthCellDescriptor.RangeState expectedRangeState) {
     final MonthCellDescriptor cell = cells.get(row).get(col);
     assertThat(cell.getValue()).isEqualTo(expectedVal);
     assertThat(cell.isCurrentMonth()).isEqualTo(expectedCurrentMonth);

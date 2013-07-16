@@ -50,6 +50,7 @@ public class MonthView extends LinearLayout {
     title.setText(month.getLabel());
 
     final int numRows = cells.size();
+    grid.setNumRows(numRows);
     for (int i = 0; i < 6; i++) {
       CalendarRowView weekRow = (CalendarRowView) grid.getChildAt(i + 1);
       weekRow.setListener(listener);
