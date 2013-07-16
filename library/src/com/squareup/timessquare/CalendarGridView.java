@@ -19,6 +19,7 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 public class CalendarGridView extends ViewGroup {
   private final Paint dividerPaint = new Paint();
   private int oldWidthMeasureSize;
+  private int oldNumRows;
 
   public CalendarGridView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -99,5 +100,13 @@ public class CalendarGridView extends ViewGroup {
       top += rowHeight;
     }
     Logr.d("Grid.onLayout %d ms", System.currentTimeMillis() - start);
+  }
+
+  public void setNumRows(int numRows) {
+    if (oldNumRows != numRows) {
+      // If the number of rows changes, make sure we do a re-measure next time around.
+      oldWidthMeasureSize = 0;
+    }
+    oldNumRows = numRows;
   }
 }

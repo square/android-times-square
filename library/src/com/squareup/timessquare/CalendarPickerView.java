@@ -503,7 +503,11 @@ public class CalendarPickerView extends ListView {
     List<List<MonthCellDescriptor>> cells = new ArrayList<List<MonthCellDescriptor>>();
     cal.set(DAY_OF_MONTH, 1);
     int firstDayOfWeek = cal.get(DAY_OF_WEEK);
-    cal.add(DATE, cal.getFirstDayOfWeek() - firstDayOfWeek);
+    int offset = cal.getFirstDayOfWeek() - firstDayOfWeek;
+    if (offset > 0) {
+      offset -= 7;
+    }
+    cal.add(Calendar.DATE, offset);
 
     Calendar minSelectedCal = minDate(selectedCals);
     Calendar maxSelectedCal = maxDate(selectedCals);
