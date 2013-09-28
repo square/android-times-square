@@ -57,19 +57,20 @@ public class CalendarPickerView extends ListView {
   }
 
   private final CalendarPickerView.MonthAdapter adapter;
+  private Locale locale;
   private DateFormat monthNameFormat;
   private DateFormat weekdayNameFormat;
   private DateFormat fullDateFormat;
   SelectionMode selectionMode;
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
   final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
-  final Calendar today = Calendar.getInstance();
+  Calendar today;
   private final List<List<List<MonthCellDescriptor>>> cells =
       new ArrayList<List<List<MonthCellDescriptor>>>();
   final List<Calendar> selectedCals = new ArrayList<Calendar>();
-  private final Calendar minCal = Calendar.getInstance();
-  private final Calendar maxCal = Calendar.getInstance();
-  private final Calendar monthCounter = Calendar.getInstance();
+  private Calendar minCal;
+  private Calendar maxCal;
+  private Calendar monthCounter;
   private final MonthView.Listener listener = new CellClickedListener();
 
   private OnDateSelectedListener dateListener;
@@ -85,12 +86,17 @@ public class CalendarPickerView extends ListView {
     final int bg = getResources().getColor(R.color.calendar_bg);
     setBackgroundColor(bg);
     setCacheColorHint(bg);
-    monthNameFormat = new SimpleDateFormat(context.getString(R.string.month_name_format));
-    weekdayNameFormat = new SimpleDateFormat(context.getString(R.string.day_name_format));
-    fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+    locale = Locale.getDefault();
+    today = Calendar.getInstance(locale);
+    minCal = Calendar.getInstance(locale);
+    maxCal = Calendar.getInstance(locale);
+    monthCounter = Calendar.getInstance(locale);
+    monthNameFormat = new SimpleDateFormat(context.getString(R.string.month_name_format), locale);
+    weekdayNameFormat = new SimpleDateFormat(context.getString(R.string.day_name_format), locale);
+    fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
 
     if (isInEditMode()) {
-      Calendar nextYear = Calendar.getInstance();
+      Calendar nextYear = Calendar.getInstance(locale);
       nextYear.add(Calendar.YEAR, 1);
 
       init(new Date(), nextYear.getTime()) //
@@ -107,11 +113,15 @@ public class CalendarPickerView extends ListView {
    * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
    * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
    * {@link FluentInitializer} this method returns.
+   * <p>
+   * The calendar will be constructed using the given locale. This means that all names
+   * (months, days) will be in the language of the locale and the weeks start with the day
+   * specified by the locale.
    *
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
-  public FluentInitializer init(Date minDate, Date maxDate) {
+  public FluentInitializer init(Date minDate, Date maxDate, Locale locale) {
     if (minDate == null || maxDate == null) {
       throw new IllegalArgumentException(
           "minDate and maxDate must be non-null.  " + dbg(minDate, maxDate));
@@ -124,6 +134,25 @@ public class CalendarPickerView extends ListView {
       throw new IllegalArgumentException(
           "minDate and maxDate must be non-zero.  " + dbg(minDate, maxDate));
     }
+    if (locale == null) {
+      throw new IllegalArgumentException("Locale is null.");
+    }
+
+    // Make sure that all calendar instances use the same locale.
+    this.locale = locale;
+    today = Calendar.getInstance(locale);
+    minCal = Calendar.getInstance(locale);
+    maxCal = Calendar.getInstance(locale);
+    monthCounter = Calendar.getInstance(locale);
+    monthNameFormat =
+        new SimpleDateFormat(getContext().getString(R.string.month_name_format), locale);
+    for (MonthDescriptor month : months) {
+      month.setLabel(monthNameFormat.format(month.getDate()));
+    }
+    weekdayNameFormat =
+        new SimpleDateFormat(getContext().getString(R.string.day_name_format), locale);
+    fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+
     this.selectionMode = SelectionMode.SINGLE;
     // Clear out any previously-selected dates/cells.
     selectedCals.clear();
@@ -162,6 +191,27 @@ public class CalendarPickerView extends ListView {
     return new FluentInitializer();
   }
 
+  /**
+   * Both date parameters must be non-null and their {@link Date#getTime()} must not return 0. Time
+   * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
+   * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
+   * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
+   * <p>
+   * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
+   * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
+   * {@link FluentInitializer} this method returns.
+   * <p>
+   * The calendar will be constructed using the default locale as returned by
+   * {@link java.util.Locale#getDefault()}. If you wish the calendar to be constructed using a
+   * different locale, use {@link #init(java.util.Date, java.util.Date, java.util.Locale)}.
+   *
+   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
+   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
+   */
+  public FluentInitializer init(Date minDate, Date maxDate) {
+    return init(minDate, maxDate, Locale.getDefault());
+  }
+
   public class FluentInitializer {
     /** Override the {@link SelectionMode} from the default ({@link SelectionMode#SINGLE}). */
     public FluentInitializer inMode(SelectionMode mode) {
@@ -193,7 +243,7 @@ public class CalendarPickerView extends ListView {
       }
       Integer selectedIndex = null;
       Integer todayIndex = null;
-      Calendar today = Calendar.getInstance();
+      Calendar today = Calendar.getInstance(locale);
       for (int c = 0; c < months.size(); c++) {
         MonthDescriptor month = months.get(c);
         if (selectedIndex == null) {
@@ -214,20 +264,6 @@ public class CalendarPickerView extends ListView {
         scrollToSelectedMonth(todayIndex);
       }
 
-      validateAndUpdate();
-      return this;
-    }
-
-    /** Override default locale: specify a locale in which the calendar should be rendered. */
-    public FluentInitializer withLocale(Locale locale) {
-      monthNameFormat =
-          new SimpleDateFormat(getContext().getString(R.string.month_name_format), locale);
-      for (MonthDescriptor month : months) {
-        month.setLabel(monthNameFormat.format(month.getDate()));
-      }
-      weekdayNameFormat =
-          new SimpleDateFormat(getContext().getString(R.string.day_name_format), locale);
-      fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
       validateAndUpdate();
       return this;
     }
@@ -335,7 +371,7 @@ public class CalendarPickerView extends ListView {
   }
 
   private boolean doSelectDate(Date date, MonthCellDescriptor cell) {
-    Calendar newlySelectedCal = Calendar.getInstance();
+    Calendar newlySelectedCal = Calendar.getInstance(locale);
     newlySelectedCal.setTime(date);
     // Sanitize input: clear out the hours/minutes/seconds/millis.
     setMidnight(newlySelectedCal);
@@ -445,9 +481,9 @@ public class CalendarPickerView extends ListView {
   /** Return cell and month-index (for scrolling) for a given Date. */
   private MonthCellWithMonthIndex getMonthCellWithIndexByDate(Date date) {
     int index = 0;
-    Calendar searchCal = Calendar.getInstance();
+    Calendar searchCal = Calendar.getInstance(locale);
     searchCal.setTime(date);
-    Calendar actCal = Calendar.getInstance();
+    Calendar actCal = Calendar.getInstance(locale);
 
     for (List<List<MonthCellDescriptor>> monthCells : cells) {
       for (List<MonthCellDescriptor> weekCells : monthCells) {
@@ -498,7 +534,7 @@ public class CalendarPickerView extends ListView {
   }
 
   List<List<MonthCellDescriptor>> getMonthCells(MonthDescriptor month, Calendar startCal) {
-    Calendar cal = Calendar.getInstance();
+    Calendar cal = Calendar.getInstance(locale);
     cal.setTime(startCal.getTime());
     List<List<MonthCellDescriptor>> cells = new ArrayList<List<MonthCellDescriptor>>();
     cal.set(DAY_OF_MONTH, 1);

@@ -44,6 +44,15 @@ import static org.fest.assertions.api.Assertions.fail;
 
 @RunWith(RobolectricTestRunner.class)
 public class CalendarPickerViewTest {
+
+  static {
+    // Set the default locale to a different one than the locale used for the tests to ensure that
+    // the CalendarPickerView does not rely on any other locale than the configured one --
+    // especially not the default locale.
+    Locale.setDefault(Locale.GERMANY);
+  }
+
+  private Locale locale;
   private CalendarPickerView view;
   private Calendar today;
   private Date maxDate;
@@ -51,25 +60,28 @@ public class CalendarPickerViewTest {
 
   @Before
   public void setUp() throws Exception {
+    locale = Locale.US;
     view = new CalendarPickerView(new Activity(), null);
-    today = Calendar.getInstance();
+    today = Calendar.getInstance(locale);
     today.set(2012, NOVEMBER, 16, 0, 0);
     minDate = today.getTime();
     today.set(2013, NOVEMBER, 16, 0, 0);
     maxDate = today.getTime();
     today.set(2012, NOVEMBER, 16, 0, 0);
     Date startDate = today.getTime();
-    view.today.setTime(startDate);
-    view.init(minDate, maxDate) //
+    view.init(minDate, maxDate, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(startDate);
+
+    // Do not change the internal state of the CalendarPickerView until init() has run.
+    view.today.setTime(startDate);
   }
 
   @Test
   public void testInitDecember() throws Exception {
     Calendar dec2012 = buildCal(2012, DECEMBER, 1);
     Calendar dec2013 = buildCal(2013, DECEMBER, 1);
-    view.init(dec2012.getTime(), dec2013.getTime()) //
+    view.init(dec2012.getTime(), dec2013.getTime(), locale) //
         .inMode(SINGLE) //
         .withSelectedDate(dec2012.getTime());
     assertThat(view.months).hasSize(12);
@@ -79,7 +91,7 @@ public class CalendarPickerViewTest {
   public void testInitJanuary() throws Exception {
     Calendar jan2012 = buildCal(2012, JANUARY, 1);
     Calendar jan2013 = buildCal(2013, JANUARY, 1);
-    view.init(jan2012.getTime(), jan2013.getTime()) //
+    view.init(jan2012.getTime(), jan2013.getTime(), locale) //
         .inMode(SINGLE) //
         .withSelectedDate(jan2012.getTime());
     assertThat(view.months).hasSize(12);
@@ -89,7 +101,7 @@ public class CalendarPickerViewTest {
   public void testInitMidyear() throws Exception {
     Calendar may2012 = buildCal(2012, MAY, 1);
     Calendar may2013 = buildCal(2013, MAY, 1);
-    view.init(may2012.getTime(), may2013.getTime()) //
+    view.init(may2012.getTime(), may2013.getTime(), locale) //
         .inMode(SINGLE) //
         .withSelectedDate(may2012.getTime());
     assertThat(view.months).hasSize(12);
@@ -203,7 +215,7 @@ public class CalendarPickerViewTest {
     List<Date> selectedDates = new ArrayList<Date>();
     selectedDates.add(minDate);
     // This one should work.
-    view.init(minDate, maxDate) //
+    view.init(minDate, maxDate, locale) //
         .inMode(SINGLE) //
         .withSelectedDates(selectedDates);
 
@@ -211,7 +223,7 @@ public class CalendarPickerViewTest {
     Calendar secondSelection = buildCal(2012, NOVEMBER, 17);
     selectedDates.add(secondSelection.getTime());
     try {
-      view.init(minDate, maxDate) //
+      view.init(minDate, maxDate, locale) //
           .inMode(SINGLE) //
           .withSelectedDates(selectedDates);
       fail("Should not have been able to init() with SINGLE mode && multiple selected dates");
@@ -220,27 +232,34 @@ public class CalendarPickerViewTest {
   }
 
   @Test
-  public void testNullDates() throws Exception {
+  public void testNullInitArguments() throws Exception {
     final Date validDate = today.getTime();
     try {
-      view.init(validDate, validDate) //
+      view.init(validDate, validDate, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(null);
       fail("Should not have been able to pass in a null startDate");
     } catch (IllegalArgumentException expected) {
     }
     try {
-      view.init(null, validDate) //
+      view.init(null, validDate, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(validDate);
       fail("Should not have been able to pass in a null minDate");
     } catch (IllegalArgumentException expected) {
     }
     try {
-      view.init(validDate, null) //
+      view.init(validDate, null, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(validDate);
       fail("Should not have been able to pass in a null maxDate");
+    } catch (IllegalArgumentException expected) {
+    }
+    try {
+      view.init(validDate, validDate, null) //
+          .inMode(SINGLE) //
+          .withSelectedDate(validDate);
+      fail("Should not have been able to pass in a null locale");
     } catch (IllegalArgumentException expected) {
     }
   }
@@ -250,21 +269,21 @@ public class CalendarPickerViewTest {
     final Date validDate = today.getTime();
     final Date zeroDate = new Date(0L);
     try {
-      view.init(validDate, validDate) //
+      view.init(validDate, validDate, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(zeroDate);
       fail("Should not have been able to pass in a zero startDate");
     } catch (IllegalArgumentException expected) {
     }
     try {
-      view.init(zeroDate, validDate) //
+      view.init(zeroDate, validDate, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(validDate);
       fail("Should not have been able to pass in a zero minDate");
     } catch (IllegalArgumentException expected) {
     }
     try {
-      view.init(validDate, zeroDate) //
+      view.init(validDate, zeroDate, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(validDate);
       fail("Should not have been able to pass in a zero maxDate");
@@ -278,7 +297,7 @@ public class CalendarPickerViewTest {
     today.add(YEAR, -1);
     final Date maxDate = today.getTime();
     try {
-      view.init(minDate, maxDate) //
+      view.init(minDate, maxDate, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(minDate);
       fail("Should not have been able to pass in a maxDate < minDate");
@@ -294,7 +313,7 @@ public class CalendarPickerViewTest {
     today.add(YEAR, 1);
     Date selectedDate = today.getTime();
     try {
-      view.init(minDate, maxDate) //
+      view.init(minDate, maxDate, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(selectedDate);
       fail("Should not have been able to pass in a selectedDate > maxDate");
@@ -303,7 +322,7 @@ public class CalendarPickerViewTest {
     today.add(YEAR, -5);
     selectedDate = today.getTime();
     try {
-      view.init(minDate, maxDate) //
+      view.init(minDate, maxDate, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(selectedDate);
       fail("Should not have been able to pass in a selectedDate < minDate");
@@ -325,7 +344,7 @@ public class CalendarPickerViewTest {
   public void testShowingOnlyOneMonth() throws Exception {
     Calendar feb1 = buildCal(2013, FEBRUARY, 1);
     Calendar mar1 = buildCal(2013, MARCH, 1);
-    view.init(feb1.getTime(), mar1.getTime()) //
+    view.init(feb1.getTime(), mar1.getTime(), locale) //
         .inMode(SINGLE) //
         .withSelectedDate(feb1.getTime());
     assertThat(view.months).hasSize(1);
@@ -333,7 +352,7 @@ public class CalendarPickerViewTest {
 
   @Test
   public void selectDateThrowsExceptionForDatesOutOfRange() {
-    view.init(minDate, maxDate) //
+    view.init(minDate, maxDate, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
     Calendar outOfRange = buildCal(2015, FEBRUARY, 1);
@@ -346,7 +365,7 @@ public class CalendarPickerViewTest {
 
   @Test
   public void selectDateReturnsTrueForDateInRange() {
-    view.init(minDate, maxDate) //
+    view.init(minDate, maxDate, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
     Calendar inRange = buildCal(2013, FEBRUARY, 1);
@@ -356,7 +375,7 @@ public class CalendarPickerViewTest {
 
   @Test
   public void selectDateDoesntSelectDisabledCell() {
-    view.init(minDate, maxDate) //
+    view.init(minDate, maxDate, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
     Calendar jumpToCal = buildCal(2013, FEBRUARY, 1);
@@ -367,7 +386,7 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testMultiselectWithNoInitialSelections() throws Exception {
-    view.init(minDate, maxDate) //
+    view.init(minDate, maxDate, locale) //
         .inMode(MULTIPLE);
     assertThat(view.selectionMode).isEqualTo(MULTIPLE);
     assertThat(view.getSelectedDates()).isEmpty();
@@ -383,7 +402,7 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testOnDateConfiguredListener() {
-    final Calendar testCal = Calendar.getInstance();
+    final Calendar testCal = Calendar.getInstance(locale);
     view.setDateSelectableFilter(new CalendarPickerView.DateSelectableFilter() {
       @Override public boolean isDateSelectable(Date date) {
         testCal.setTime(date);
@@ -391,10 +410,10 @@ public class CalendarPickerViewTest {
         return dayOfWeek > 1 && dayOfWeek < 7;
       }
     });
-    view.init(minDate, maxDate) //
+    view.init(minDate, maxDate, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
-    Calendar jumpToCal = Calendar.getInstance();
+    Calendar jumpToCal = Calendar.getInstance(locale);
     jumpToCal.add(MONTH, 2);
     jumpToCal.set(DAY_OF_WEEK, 1);
     boolean wasAbleToSetDate = view.selectDate(jumpToCal.getTime());
@@ -407,7 +426,7 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testRangeSelectionWithNoInitialSelection() throws Exception {
-    view.init(minDate, maxDate)
+    view.init(minDate, maxDate, locale)
         .inMode(RANGE);
     assertThat(view.selectedCals).hasSize(0);
     assertThat(view.selectedCells).hasSize(0);
@@ -449,7 +468,7 @@ public class CalendarPickerViewTest {
     Calendar nov18 = buildCal(2012, NOVEMBER, 18);
     Calendar nov24 = buildCal(2012, NOVEMBER, 24);
     List<Date> selectedDates = Arrays.asList(nov18.getTime(), nov24.getTime());
-    view.init(minDate, maxDate)
+    view.init(minDate, maxDate, locale)
         .inMode(RANGE)
         .withSelectedDates(selectedDates);
     assertRangeSelected();
@@ -462,7 +481,7 @@ public class CalendarPickerViewTest {
     Calendar nov18 = buildCal(2012, NOVEMBER, 18);
     Calendar nov24 = buildCal(2012, NOVEMBER, 24);
     List<Date> selectedDates = Arrays.asList(nov18.getTime());
-    view.init(minDate, maxDate)
+    view.init(minDate, maxDate, locale)
         .inMode(RANGE)
         .withSelectedDates(selectedDates);
     assertOneDateSelected();
@@ -490,7 +509,7 @@ public class CalendarPickerViewTest {
     Calendar startCal = buildCal(2012, NOVEMBER, 17);
     Calendar endCal = buildCal(2012, NOVEMBER, 24);
 
-    view.init(minDate, maxDate) //
+    view.init(minDate, maxDate, locale) //
         .inMode(RANGE);
 
     boolean wasAbleToSetDate = view.selectDate(startCal.getTime());
@@ -512,8 +531,7 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testLocaleSetting() throws Exception {
-    view.init(minDate, maxDate) //
-        .withLocale(Locale.GERMAN);
+    view.init(minDate, maxDate, Locale.GERMAN);
     MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
     CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
     TextView firstDay = (TextView) header.getChildAt(0);
@@ -523,32 +541,23 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testFirstDayOfWeekIsMonday() throws Exception {
-    Locale originalLocale = Locale.getDefault();
     Locale greatBritain = new Locale("en", "GB");
+
     // Verify that firstDayOfWeek is actually Monday.
     Calendar cal = Calendar.getInstance(greatBritain);
     assertThat(cal.getFirstDayOfWeek()).isEqualTo(Calendar.MONDAY);
 
-    // Set the locale and run "setUp" again.
-    Locale.setDefault(greatBritain);
-    setUp();
+    view.init(minDate, maxDate, greatBritain);
+    MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
+    CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
+    TextView firstDay = (TextView) header.getChildAt(0);
+    assertThat(firstDay).hasTextString("Mon"); // Monday!
 
-    try {
-      view.init(minDate, maxDate);
-      MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
-      CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
-      TextView firstDay = (TextView) header.getChildAt(0);
-      assertThat(firstDay).hasTextString("Mon"); // Monday!
-
-      // Now verify that the generated cells are right.
-      List<List<MonthCellDescriptor>> cells = getCells(SEPTEMBER, 2013);
-      assertThat(cells).hasSize(6);
-      assertCell(cells, 0, 0, 26, false, false, false, false, NONE);
-      assertCell(cells, 1, 0, 2, true, false, false, true, NONE);
-      assertCell(cells, 5, 0, 30, true, false, false, true, NONE);
-    } finally {
-      Locale.setDefault(originalLocale);
-    }
+    List<List<MonthCellDescriptor>> cells = getCells(SEPTEMBER, 2013);
+    assertThat(cells).hasSize(6);
+    assertCell(cells, 0, 0, 26, false, false, false, false, NONE);
+    assertCell(cells, 1, 0, 2, true, false, false, true, NONE);
+    assertCell(cells, 5, 0, 30, true, false, false, true, NONE);
   }
 
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
@@ -571,7 +580,7 @@ public class CalendarPickerViewTest {
   }
 
   private List<List<MonthCellDescriptor>> getCells(int month, int year) {
-    Calendar cal = Calendar.getInstance();
+    Calendar cal = Calendar.getInstance(locale);
     cal.set(DAY_OF_MONTH, 1);
     cal.set(YEAR, year);
     cal.set(MONTH, month);
@@ -582,7 +591,7 @@ public class CalendarPickerViewTest {
       JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER,
       DECEMBER
   }) int month, int day) {
-    Calendar jumpToCal = Calendar.getInstance();
+    Calendar jumpToCal = Calendar.getInstance(locale);
     jumpToCal.set(year, month, day);
     CalendarPickerView.setMidnight(jumpToCal);
     return jumpToCal;
