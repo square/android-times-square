@@ -517,7 +517,7 @@ public class CalendarPickerViewTest {
     MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
     CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
     TextView firstDay = (TextView) header.getChildAt(0);
-    assertThat(firstDay).hasTextString("So"); // Sonntag = Sunday
+    assertThat(firstDay).hasTextString("Mo"); // Montag = Monday
     assertThat(monthView.title).hasTextString("Dezember 2012");
   }
 
