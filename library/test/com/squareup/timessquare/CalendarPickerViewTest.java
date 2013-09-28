@@ -414,6 +414,7 @@ public class CalendarPickerViewTest {
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
     Calendar jumpToCal = Calendar.getInstance(locale);
+    jumpToCal.setTime(today.getTime());
     jumpToCal.add(MONTH, 2);
     jumpToCal.set(DAY_OF_WEEK, 1);
     boolean wasAbleToSetDate = view.selectDate(jumpToCal.getTime());
