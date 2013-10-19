@@ -21,3 +21,7 @@ obj
 tmp
 
 .DS_Store
+
+build
+.gradle
+local.properties
