@@ -1,0 +1,20 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:0.6.+'
+  }
+}
+
+allprojects {
+  group = 'com.squareup'
+  version = '1.0.4-SNAPSHOT'
+  repositories {
+    mavenCentral()
+  }
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '1.8'
+}
