@@ -67,32 +67,30 @@ public class MonthView extends LinearLayout {
           MonthCellDescriptor cell = week.get(c);
           CalendarCellView cellView = (CalendarCellView) weekRow.getChildAt(c);
 
-          if (cellView != null) {
-            cellView.setText(Integer.toString(cell.getValue()));
-            cellView.setEnabled(cell.isCurrentMonth());
+          cellView.setText(Integer.toString(cell.getValue()));
+          cellView.setEnabled(cell.isCurrentMonth());
 
-            cellView.setBackgroundResource(R.drawable.calendar_bg_selector);
+          cellView.setBackgroundResource(R.drawable.calendar_bg_selector);
 
-            if (cell.getEvent() != null) {
-              cellView.setBackgroundColor(cell.getEvent().getColor());
-              cellView.setTextColor(cell.getEvent().getTextColor());
+          if (cell.getEvent() != null) {
+            cellView.setBackgroundColor(cell.getEvent().getColor());
+            cellView.setTextColor(cell.getEvent().getTextColor());
+          } else {
+            if (cell.isToday()) {
+              cellView.setTextColor(
+                  getContext().getResources().getColor(R.color.calendar_text_selected));
             } else {
-              if (cell.isToday()) {
-                cellView.setTextColor(
-                    getContext().getResources().getColor(R.color.calendar_text_selected));
-              } else {
-                cellView.setTextColor(
-                    getContext().getResources().getColor(R.color.calendar_text_active));
-              }
+              cellView.setTextColor(
+                  getContext().getResources().getColor(R.color.calendar_text_active));
             }
-
-            cellView.setSelectable(cell.isSelectable());
-            cellView.setSelected(cell.isSelected());
-            cellView.setCurrentMonth(cell.isCurrentMonth());
-            cellView.setToday(cell.isToday());
-            cellView.setRangeState(cell.getRangeState());
-            cellView.setTag(cell);
           }
+
+          cellView.setSelectable(cell.isSelectable());
+          cellView.setSelected(cell.isSelected());
+          cellView.setCurrentMonth(cell.isCurrentMonth());
+          cellView.setToday(cell.isToday());
+          cellView.setRangeState(cell.getRangeState());
+          cellView.setTag(cell);
         }
       } else {
         weekRow.setVisibility(GONE);
