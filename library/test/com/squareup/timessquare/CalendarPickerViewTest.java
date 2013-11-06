@@ -13,6 +13,7 @@ import org.intellij.lang.annotations.MagicConstant;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.MULTIPLE;
@@ -52,6 +53,7 @@ public class CalendarPickerViewTest {
     Locale.setDefault(Locale.GERMANY);
   }
 
+  private Activity activity;
   private Locale locale;
   private CalendarPickerView view;
   private Calendar today;
@@ -60,8 +62,9 @@ public class CalendarPickerViewTest {
 
   @Before
   public void setUp() throws Exception {
+    activity = Robolectric.buildActivity(Activity.class).create().start().resume().get();
     locale = Locale.US;
-    view = new CalendarPickerView(new Activity(), null);
+    view = new CalendarPickerView(activity, null);
     today = Calendar.getInstance(locale);
     today.set(2012, NOVEMBER, 16, 0, 0);
     minDate = today.getTime();
@@ -332,7 +335,7 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testNotCallingInit() throws Exception {
-    view = new CalendarPickerView(new Activity(), null);
+    view = new CalendarPickerView(activity, null);
     try {
       view.onMeasure(0, 0);
       fail("Should have thrown an IllegalStateException!");
