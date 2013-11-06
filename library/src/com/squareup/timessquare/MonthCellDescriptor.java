@@ -9,91 +9,91 @@ import java.util.Date;
  */
 class MonthCellDescriptor {
 
-    public Event getEvent() {
-        return event;
-    }
+  public Event getEvent() {
+    return event;
+  }
 
-    public enum RangeState {
-        NONE, FIRST, MIDDLE, LAST
-    }
+  public enum RangeState {
+    NONE, FIRST, MIDDLE, LAST
+  }
 
-    private final Date date;
-    private final int value;
-    private final boolean isCurrentMonth;
-    private boolean isSelected;
-    private final boolean isToday;
-    private final boolean isSelectable;
-    private RangeState rangeState;
-    private Event event;
+  private final Date date;
+  private final int value;
+  private final boolean isCurrentMonth;
+  private boolean isSelected;
+  private final boolean isToday;
+  private final boolean isSelectable;
+  private RangeState rangeState;
+  private Event event;
 
-    MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
-                        boolean today, int value, RangeState rangeState) {
-        this.date = date;
-        isCurrentMonth = currentMonth;
-        isSelectable = selectable;
-        isSelected = selected;
-        isToday = today;
-        this.value = value;
-        this.rangeState = rangeState;
-    }
+  MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
+      boolean today, int value, RangeState rangeState) {
+    this.date = date;
+    isCurrentMonth = currentMonth;
+    isSelectable = selectable;
+    isSelected = selected;
+    isToday = today;
+    this.value = value;
+    this.rangeState = rangeState;
+  }
 
-    public Date getDate() {
-        return date;
-    }
+  public Date getDate() {
+    return date;
+  }
 
-    public boolean isCurrentMonth() {
-        return isCurrentMonth;
-    }
+  public boolean isCurrentMonth() {
+    return isCurrentMonth;
+  }
 
-    public boolean isSelectable() {
-        return isSelectable;
-    }
+  public boolean isSelectable() {
+    return isSelectable;
+  }
 
-    public boolean isSelected() {
-        return isSelected;
-    }
+  public boolean isSelected() {
+    return isSelected;
+  }
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
+  public void setSelected(boolean selected) {
+    isSelected = selected;
+  }
 
-    public boolean isToday() {
-        return isToday;
-    }
+  public boolean isToday() {
+    return isToday;
+  }
 
-    public RangeState getRangeState() {
-        return rangeState;
-    }
+  public RangeState getRangeState() {
+    return rangeState;
+  }
 
-    public void setRangeState(RangeState rangeState) {
-        this.rangeState = rangeState;
-    }
+  public void setRangeState(RangeState rangeState) {
+    this.rangeState = rangeState;
+  }
 
-    public int getValue() {
-        return value;
-    }
+  public int getValue() {
+    return value;
+  }
 
-    public void setEvent(Event event) {
-        this.event = event;
-    }
+  public void setEvent(Event event) {
+    this.event = event;
+  }
 
-    @Override
-    public String toString() {
-        return "MonthCellDescriptor{"
-                + "date="
-                + date
-                + ", value="
-                + value
-                + ", isCurrentMonth="
-                + isCurrentMonth
-                + ", isSelected="
-                + isSelected
-                + ", isToday="
-                + isToday
-                + ", isSelectable="
-                + isSelectable
-                + ", rangeState="
-                + rangeState
-                + '}';
-    }
+  @Override
+  public String toString() {
+    return "MonthCellDescriptor{"
+        + "date="
+        + date
+        + ", value="
+        + value
+        + ", isCurrentMonth="
+        + isCurrentMonth
+        + ", isSelected="
+        + isSelected
+        + ", isToday="
+        + isToday
+        + ", isSelectable="
+        + isSelectable
+        + ", rangeState="
+        + rangeState
+        + '}';
+  }
 }

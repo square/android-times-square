@@ -1,44 +1,50 @@
 package com.squareup.timessquare;
 
+import java.util.Calendar;
 import java.util.Date;
 
-/**
- * Created by Bernat on 6/11/13.
- */
+/** Event class that allows calendar to highlight specific date. */
 public class Event {
 
-    private Date date;
-    private int color;
-    private String text;
+  private Date date;
+  private int color;
+  private int textColor;
 
-    public Event(Date date, int color, String text) {
-        this.date = date;
-        this.color = color;
-        this.text = text;
-    }
+  public Event(int backgroundColor, int textColor) {
+    this.color = backgroundColor;
+    this.textColor = textColor;
+  }
 
-    public Date getDate() {
-        return date;
-    }
+  public Date getDate() {
+    return date;
+  }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+  public void setDate(int day, int month, int year) {
 
-    public int getColor() {
-        return color;
-    }
+    Calendar eventCalendar = Calendar.getInstance();
+    eventCalendar.set(Calendar.DAY_OF_MONTH, day);
+    eventCalendar.set(Calendar.MONTH, month);
+    eventCalendar.set(Calendar.YEAR, year);
+    eventCalendar.set(Calendar.AM_PM, Calendar.AM);
+    CalendarPickerView.setMidnight(eventCalendar);
 
-    public void setColor(int color) {
-        this.color = color;
-    }
+    this.date = eventCalendar.getTime();
+  }
 
-    public String getText() {
-        return text;
-    }
+  public int getColor() {
+    return color;
+  }
 
-    public void setText(String text) {
-        this.text = text;
-    }
+  public void setColor(int color) {
+    this.color = color;
+  }
+
+  public int getTextColor() {
+    return textColor;
+  }
+
+  public void setTextColor(int textColor) {
+    this.textColor = textColor;
+  }
 }
 

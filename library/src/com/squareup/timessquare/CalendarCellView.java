@@ -5,9 +5,6 @@ package com.squareup.timessquare;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-
-import com.squareup.timessquare.R;
-
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 
 public class CalendarCellView extends TextView {

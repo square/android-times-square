@@ -8,104 +8,104 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.squareup.timessquare.R;
-
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 public class MonthView extends LinearLayout {
-    TextView title;
-    CalendarGridView grid;
-    private Listener listener;
-    private HashMap<Long, Event> events;
-    private Drawable defBg = null;
-    private int txtColor = 0;
+  TextView title;
+  CalendarGridView grid;
+  private Listener listener;
+  private HashMap<Long, Event> events;
+  private Drawable defBg = null;
+  private int txtColor = 0;
 
-    public static MonthView create(ViewGroup parent, LayoutInflater inflater,
-                                   DateFormat weekdayNameFormat, Listener listener, Calendar today) {
-        final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
+  public static MonthView create(ViewGroup parent, LayoutInflater inflater,
+      DateFormat weekdayNameFormat, Listener listener, Calendar today) {
+    final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
 
-        final int originalDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
+    final int originalDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
 
-        int firstDayOfWeek = today.getFirstDayOfWeek();
-        final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
-        for (int offset = 0; offset < 7; offset++) {
-            today.set(Calendar.DAY_OF_WEEK, firstDayOfWeek + offset);
-            final TextView textView = (TextView) headerRow.getChildAt(offset);
-            textView.setText(weekdayNameFormat.format(today.getTime()));
-        }
-        today.set(Calendar.DAY_OF_WEEK, originalDayOfWeek);
-        view.listener = listener;
-        return view;
+    int firstDayOfWeek = today.getFirstDayOfWeek();
+    final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
+    for (int offset = 0; offset < 7; offset++) {
+      today.set(Calendar.DAY_OF_WEEK, firstDayOfWeek + offset);
+      final TextView textView = (TextView) headerRow.getChildAt(offset);
+      textView.setText(weekdayNameFormat.format(today.getTime()));
     }
+    today.set(Calendar.DAY_OF_WEEK, originalDayOfWeek);
+    view.listener = listener;
+    return view;
+  }
 
-    public MonthView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+  public MonthView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+  }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        title = (TextView) findViewById(R.id.title);
-        grid = (CalendarGridView) findViewById(R.id.calendar_grid);
-    }
+  @Override
+  protected void onFinishInflate() {
+    super.onFinishInflate();
+    title = (TextView) findViewById(R.id.title);
+    grid = (CalendarGridView) findViewById(R.id.calendar_grid);
+  }
 
-    public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells) {
-        Logr.d("Initializing MonthView (%d) for %s", System.identityHashCode(this), month);
-        long start = System.currentTimeMillis();
-        title.setText(month.getLabel());
+  public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells) {
+    Logr.d("Initializing MonthView (%d) for %s", System.identityHashCode(this), month);
+    long start = System.currentTimeMillis();
+    title.setText(month.getLabel());
 
-        final int numRows = cells.size();
-        grid.setNumRows(numRows);
-        for (int i = 0; i < 6; i++) {
-            CalendarRowView weekRow = (CalendarRowView) grid.getChildAt(i + 1);
-            weekRow.setListener(listener);
-            if (i < numRows) {
-                weekRow.setVisibility(VISIBLE);
-                List<MonthCellDescriptor> week = cells.get(i);
-                for (int c = 0; c < week.size(); c++) {
-                    MonthCellDescriptor cell = week.get(c);
-                    CalendarCellView cellView = (CalendarCellView) weekRow.getChildAt(c);
+    final int numRows = cells.size();
+    grid.setNumRows(numRows);
+    for (int i = 0; i < 6; i++) {
+      CalendarRowView weekRow = (CalendarRowView) grid.getChildAt(i + 1);
+      weekRow.setListener(listener);
+      if (i < numRows) {
+        weekRow.setVisibility(VISIBLE);
+        List<MonthCellDescriptor> week = cells.get(i);
+        for (int c = 0; c < week.size(); c++) {
+          MonthCellDescriptor cell = week.get(c);
+          CalendarCellView cellView = (CalendarCellView) weekRow.getChildAt(c);
 
-                    if (cellView != null) {
-                        cellView.setText(Integer.toString(cell.getValue()));
-                        cellView.setEnabled(cell.isCurrentMonth());
+          if (cellView != null) {
+            cellView.setText(Integer.toString(cell.getValue()));
+            cellView.setEnabled(cell.isCurrentMonth());
 
-                        cellView.setBackgroundResource(R.drawable.calendar_bg_selector);
+            cellView.setBackgroundResource(R.drawable.calendar_bg_selector);
 
-                        if (cell.isToday()) {
-                            cellView.setTextColor(getContext().getResources().getColor(R.color.calendar_text_selected));
-                        } else {
-                            cellView.setTextColor(getContext().getResources().getColor(R.color.calendar_text_active));
-                        }
-                        if (cell.getEvent() != null) {
-                            cellView.setBackgroundResource(cell.getEvent().getColor());
-                            cellView.setTextColor(getContext().getResources().getColor(android.R.color.white));
-                        }
-
-                        cellView.setSelectable(cell.isSelectable());
-                        cellView.setSelected(cell.isSelected());
-                        cellView.setCurrentMonth(cell.isCurrentMonth());
-                        cellView.setToday(cell.isToday());
-                        cellView.setRangeState(cell.getRangeState());
-                        cellView.setTag(cell);
-                    }
-                }
+            if (cell.getEvent() != null) {
+              cellView.setBackgroundColor(cell.getEvent().getColor());
+              cellView.setTextColor(cell.getEvent().getTextColor());
             } else {
-                weekRow.setVisibility(GONE);
+              if (cell.isToday()) {
+                cellView.setTextColor(
+                    getContext().getResources().getColor(R.color.calendar_text_selected));
+              } else {
+                cellView.setTextColor(
+                    getContext().getResources().getColor(R.color.calendar_text_active));
+              }
             }
+
+            cellView.setSelectable(cell.isSelectable());
+            cellView.setSelected(cell.isSelected());
+            cellView.setCurrentMonth(cell.isCurrentMonth());
+            cellView.setToday(cell.isToday());
+            cellView.setRangeState(cell.getRangeState());
+            cellView.setTag(cell);
+          }
         }
-        Logr.d("MonthView.init took %d ms", System.currentTimeMillis() - start);
+      } else {
+        weekRow.setVisibility(GONE);
+      }
     }
+    Logr.d("MonthView.init took %d ms", System.currentTimeMillis() - start);
+  }
 
-    public void setEvents(HashMap<Long, Event> events) {
-        this.events = events;
-    }
+  public void setEvents(HashMap<Long, Event> events) {
+    this.events = events;
+  }
 
-    public interface Listener {
-        void handleClick(MonthCellDescriptor cell);
-    }
+  public interface Listener {
+    void handleClick(MonthCellDescriptor cell);
+  }
 }
