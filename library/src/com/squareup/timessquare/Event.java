@@ -46,5 +46,16 @@ public class Event {
   public void setTextColor(int textColor) {
     this.textColor = textColor;
   }
+
+  @Override public String toString() {
+    return "Event{"
+        + "date="
+        + date
+        + ", color="
+        + color
+        + ", textColor="
+        + textColor +
+        '}';
+  }
 }
 

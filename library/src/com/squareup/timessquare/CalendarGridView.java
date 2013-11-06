@@ -26,16 +26,14 @@ public class CalendarGridView extends ViewGroup {
     dividerPaint.setColor(getResources().getColor(R.color.calendar_divider));
   }
 
-  @Override
-  public void addView(View child, int index, ViewGroup.LayoutParams params) {
+  @Override public void addView(View child, int index, ViewGroup.LayoutParams params) {
     if (getChildCount() == 0) {
       ((CalendarRowView) child).setIsHeaderRow(true);
     }
     super.addView(child, index, params);
   }
 
-  @Override
-  protected void dispatchDraw(Canvas canvas) {
+  @Override protected void dispatchDraw(Canvas canvas) {
     super.dispatchDraw(canvas);
     final ViewGroup row = (ViewGroup) getChildAt(1);
     int top = row.getTop();
@@ -51,8 +49,7 @@ public class CalendarGridView extends ViewGroup {
     }
   }
 
-  @Override
-  protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+  @Override protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
     final boolean retVal = super.drawChild(canvas, child, drawingTime);
     // Draw a bottom border.
     final int bottom = child.getBottom() - 1;
@@ -60,8 +57,7 @@ public class CalendarGridView extends ViewGroup {
     return retVal;
   }
 
-  @Override
-  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+  @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     Logr.d("Grid.onMeasure w=%s h=%s", MeasureSpec.toString(widthMeasureSpec),
         MeasureSpec.toString(heightMeasureSpec));
     int widthMeasureSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -94,8 +90,7 @@ public class CalendarGridView extends ViewGroup {
     Logr.d("Grid.onMeasure %d ms", System.currentTimeMillis() - start);
   }
 
-  @Override
-  protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+  @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
     long start = System.currentTimeMillis();
     top = 0;
     for (int c = 0, numChildren = getChildCount(); c < numChildren; c++) {
