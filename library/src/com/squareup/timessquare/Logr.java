@@ -2,6 +2,8 @@ package com.squareup.timessquare;
 
 import android.util.Log;
 
+import com.alorma.divorceddads.BuildConfig;
+
 /** Log utility class to handle the log tag and DEBUG-only logging. */
 final class Logr {
   public static void d(String message) {
