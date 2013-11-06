@@ -387,7 +387,11 @@ public class CalendarPickerView extends ListView {
         boolean wasSelected = doSelectDate(clickedDate, cell);
 
         if (wasSelected && dateListener != null) {
-          dateListener.onDateSelected(clickedDate);
+          if (cell.getEvent() != null) {
+            dateListener.onEventSelected(clickedDate, cell.getEvent());
+          } else {
+            dateListener.onDateSelected(clickedDate);
+          }
         }
       }
     }
@@ -593,7 +597,6 @@ public class CalendarPickerView extends ListView {
       if (monthView == null) {
         monthView = MonthView.create(parent, inflater, weekdayNameFormat, listener, today);
       }
-      monthView.setEvents(hashEvents);
       monthView.init(months.get(position), cells.get(position));
 
       return monthView;
@@ -750,6 +753,8 @@ public class CalendarPickerView extends ListView {
    */
   public interface OnDateSelectedListener {
     void onDateSelected(Date date);
+
+    void onEventSelected(Date date, Event event);
   }
 
   /**

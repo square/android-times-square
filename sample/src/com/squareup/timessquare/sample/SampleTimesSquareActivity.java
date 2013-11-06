@@ -19,7 +19,8 @@ import java.util.List;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class SampleTimesSquareActivity extends Activity {
+public class SampleTimesSquareActivity extends Activity
+    implements CalendarPickerView.OnDateSelectedListener {
   private static final String TAG = "SampleTimesSquareActivity";
   private CalendarPickerView calendar;
 
@@ -35,6 +36,9 @@ public class SampleTimesSquareActivity extends Activity {
     lastYear.add(Calendar.YEAR, -1);
 
     calendar = (CalendarPickerView) findViewById(R.id.calendar_view);
+
+    calendar.setOnDateSelectedListener(this);
+
     calendar.init(lastYear.getTime(), nextYear.getTime()) //
         .inMode(SelectionMode.SINGLE) //
         .withSelectedDate(new Date());
@@ -159,5 +163,13 @@ public class SampleTimesSquareActivity extends Activity {
         Toast.makeText(SampleTimesSquareActivity.this, toast, LENGTH_SHORT).show();
       }
     });
+  }
+
+  @Override public void onDateSelected(Date date) {
+    Toast.makeText(this, date.toString(), Toast.LENGTH_SHORT).show();
+  }
+
+  @Override public void onEventSelected(Date date, Event event) {
+    Toast.makeText(this, "Event selected: " + date.toString(), Toast.LENGTH_SHORT).show();
   }
 }

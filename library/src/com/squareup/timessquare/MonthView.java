@@ -2,7 +2,6 @@
 package com.squareup.timessquare;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -10,16 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 
 public class MonthView extends LinearLayout {
   TextView title;
   CalendarGridView grid;
   private Listener listener;
-  private HashMap<Long, Event> events;
-  private Drawable defBg = null;
-  private int txtColor = 0;
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today) {
@@ -97,10 +92,6 @@ public class MonthView extends LinearLayout {
       }
     }
     Logr.d("MonthView.init took %d ms", System.currentTimeMillis() - start);
-  }
-
-  public void setEvents(HashMap<Long, Event> events) {
-    this.events = events;
   }
 
   public interface Listener {
