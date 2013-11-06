@@ -11,9 +11,11 @@ import android.widget.Button;
 import android.widget.Toast;
 import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
+import com.squareup.timessquare.Event;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -41,12 +43,15 @@ public class SampleTimesSquareActivity extends Activity {
     final Button multi = (Button) findViewById(R.id.button_multi);
     final Button range = (Button) findViewById(R.id.button_range);
     final Button dialog = (Button) findViewById(R.id.button_dialog);
+    final Button events = (Button) findViewById(R.id.button_events);
+
     single.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         single.setEnabled(false);
         multi.setEnabled(true);
         range.setEnabled(true);
+        events.setEnabled(true);
 
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.SINGLE) //
@@ -60,6 +65,7 @@ public class SampleTimesSquareActivity extends Activity {
         single.setEnabled(true);
         multi.setEnabled(false);
         range.setEnabled(true);
+        events.setEnabled(true);
 
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
@@ -79,6 +85,7 @@ public class SampleTimesSquareActivity extends Activity {
         single.setEnabled(true);
         multi.setEnabled(true);
         range.setEnabled(false);
+        events.setEnabled(true);
 
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
@@ -93,20 +100,54 @@ public class SampleTimesSquareActivity extends Activity {
     });
 
     dialog.setOnClickListener(new OnClickListener() {
-      @Override public void onClick(View view) {
+      @Override
+      public void onClick(View view) {
         CalendarPickerView dialogView =
             (CalendarPickerView) getLayoutInflater().inflate(R.layout.dialog, null, false);
         dialogView.init(new Date(), nextYear.getTime());
-        new AlertDialog.Builder(SampleTimesSquareActivity.this)
-            .setTitle("I'm a dialog!")
+        new AlertDialog.Builder(SampleTimesSquareActivity.this).setTitle("I'm a dialog!")
             .setView(dialogView)
             .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-              @Override public void onClick(DialogInterface dialogInterface, int i) {
+              @Override
+              public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
               }
             })
             .create()
             .show();
+      }
+    });
+
+    events.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        single.setEnabled(true);
+        multi.setEnabled(true);
+        range.setEnabled(true);
+        events.setEnabled(false);
+
+        Calendar today = Calendar.getInstance();
+
+        int event1Color = getResources().getColor(android.R.color.holo_orange_light);
+        int event1TxtColor = getResources().getColor(android.R.color.white);
+
+        Event event1 = new Event(event1Color, event1TxtColor);
+        event1.setDate(2, Calendar.DECEMBER, 2013);
+
+        int event2Color = getResources().getColor(android.R.color.holo_green_dark);
+        int event2TxtColor = getResources().getColor(android.R.color.holo_red_light);
+
+        Event event2 = new Event(event2Color, event2TxtColor);
+        event2.setDate(8, Calendar.NOVEMBER, 2013);
+
+        List<Event> events = new ArrayList<Event>();
+
+        events.add(event1);
+        events.add(event2);
+
+        calendar.init(new Date(), nextYear.getTime(), events) //
+            .inMode(SelectionMode.SINGLE) //
+            .withSelectedDate(today.getTime());
       }
     });
 
