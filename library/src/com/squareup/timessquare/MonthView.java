@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alorma.divorceddads.R;
+import com.squareup.timessquare.R;
 
 import java.text.DateFormat;
 import java.util.Calendar;

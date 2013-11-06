@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.alorma.divorceddads.R;
+import com.squareup.timessquare.R;
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 
 import java.text.DateFormat;
