@@ -130,24 +130,35 @@ public class SampleTimesSquareActivity extends Activity
         range.setEnabled(true);
         events.setEnabled(false);
 
-        Calendar today = Calendar.getInstance();
 
+        // Add event 1
         int event1Color = getResources().getColor(android.R.color.holo_orange_light);
         int event1TxtColor = getResources().getColor(android.R.color.white);
 
-        Event event1 = new Event(event1Color, event1TxtColor);
-        event1.setDate(2, Calendar.DECEMBER, 2013);
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.set(Calendar.DAY_OF_MONTH, 9);
+
+        Event event1 = new Event(calendar1.getTime(), event1Color, event1TxtColor);
+
+
+        // Add event 2
 
         int event2Color = getResources().getColor(android.R.color.holo_green_dark);
         int event2TxtColor = getResources().getColor(android.R.color.holo_red_light);
 
-        Event event2 = new Event(event2Color, event2TxtColor);
-        event2.setDate(8, Calendar.NOVEMBER, 2013);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.set(Calendar.DAY_OF_MONTH, 19);
+
+        Event event2 = new Event(calendar2.getTime(), event2Color, event2TxtColor);
 
         List<Event> events = new ArrayList<Event>();
 
         events.add(event1);
         events.add(event2);
+
+        // Init calendar
+
+        Calendar today = Calendar.getInstance();
 
         calendar.init(new Date(), nextYear.getTime(), events) //
             .inMode(SelectionMode.SINGLE) //

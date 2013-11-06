@@ -10,7 +10,8 @@ public class Event {
   private int color;
   private int textColor;
 
-  public Event(int backgroundColor, int textColor) {
+  public Event(Date date, int backgroundColor, int textColor) {
+    setDate(date);
     this.color = backgroundColor;
     this.textColor = textColor;
   }
@@ -19,16 +20,14 @@ public class Event {
     return date;
   }
 
-  public void setDate(int day, int month, int year) {
+  public void setDate(Date date) {
 
-    Calendar eventCalendar = Calendar.getInstance();
-    eventCalendar.set(Calendar.DAY_OF_MONTH, day);
-    eventCalendar.set(Calendar.MONTH, month);
-    eventCalendar.set(Calendar.YEAR, year);
-    eventCalendar.set(Calendar.AM_PM, Calendar.AM);
-    CalendarPickerView.setMidnight(eventCalendar);
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+    cal.set(Calendar.AM_PM, Calendar.AM);
+    CalendarPickerView.setMidnight(cal);
 
-    this.date = eventCalendar.getTime();
+    this.date = cal.getTime();
   }
 
   public int getColor() {
