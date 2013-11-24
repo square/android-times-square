@@ -4,8 +4,15 @@ package com.squareup.timessquare;
 
 import java.util.Date;
 
-/** Describes the state of a particular date cell in a {@link MonthView}. */
+/**
+ * Describes the state of a particular date cell in a {@link MonthView}.
+ */
 class MonthCellDescriptor {
+
+  public Event getEvent() {
+    return event;
+  }
+
   public enum RangeState {
     NONE, FIRST, MIDDLE, LAST
   }
@@ -17,6 +24,7 @@ class MonthCellDescriptor {
   private final boolean isToday;
   private final boolean isSelectable;
   private RangeState rangeState;
+  private Event event;
 
   MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
       boolean today, int value, RangeState rangeState) {
@@ -65,7 +73,12 @@ class MonthCellDescriptor {
     return value;
   }
 
-  @Override public String toString() {
+  public void setEvent(Event event) {
+    this.event = event;
+  }
+
+  @Override
+  public String toString() {
     return "MonthCellDescriptor{"
         + "date="
         + date

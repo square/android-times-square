@@ -10,7 +10,9 @@ import static android.view.View.MeasureSpec.AT_MOST;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
-/** TableRow that draws a divider between each cell. To be used with {@link CalendarGridView}. */
+/**
+ * TableRow that draws a divider between each cell. To be used with {@link CalendarGridView}.
+ */
 public class CalendarRowView extends ViewGroup implements View.OnClickListener {
   private boolean isHeaderRow;
   private MonthView.Listener listener;
@@ -20,12 +22,14 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
     super(context, attrs);
   }
 
-  @Override public void addView(View child, int index, ViewGroup.LayoutParams params) {
+  @Override
+  public void addView(View child, int index, ViewGroup.LayoutParams params) {
     child.setOnClickListener(this);
     super.addView(child, index, params);
   }
 
-  @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     long start = System.currentTimeMillis();
     final int totalWidth = MeasureSpec.getSize(widthMeasureSpec);
     cellSize = totalWidth / 7;
@@ -46,7 +50,8 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
     Logr.d("Row.onMeasure %d ms", System.currentTimeMillis() - start);
   }
 
-  @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+  @Override
+  protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
     long start = System.currentTimeMillis();
     int cellHeight = bottom - top;
     for (int c = 0, numChildren = getChildCount(); c < numChildren; c++) {
@@ -60,7 +65,8 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
     this.isHeaderRow = isHeaderRow;
   }
 
-  @Override public void onClick(View v) {
+  @Override
+  public void onClick(View v) {
     // Header rows don't have a click listener
     if (listener != null) {
       listener.handleClick((MonthCellDescriptor) v.getTag());

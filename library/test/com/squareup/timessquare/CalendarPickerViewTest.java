@@ -259,7 +259,7 @@ public class CalendarPickerViewTest {
     } catch (IllegalArgumentException expected) {
     }
     try {
-      view.init(validDate, validDate, null) //
+      view.init(validDate, validDate) //
           .inMode(SINGLE) //
           .withSelectedDate(validDate);
       fail("Should not have been able to pass in a null locale");

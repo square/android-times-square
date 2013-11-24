@@ -38,7 +38,8 @@ public class MonthView extends LinearLayout {
     super(context, attrs);
   }
 
-  @Override protected void onFinishInflate() {
+  @Override
+  protected void onFinishInflate() {
     super.onFinishInflate();
     title = (TextView) findViewById(R.id.title);
     grid = (CalendarGridView) findViewById(R.id.calendar_grid);
@@ -63,6 +64,21 @@ public class MonthView extends LinearLayout {
 
           cellView.setText(Integer.toString(cell.getValue()));
           cellView.setEnabled(cell.isCurrentMonth());
+
+          cellView.setBackgroundResource(R.drawable.calendar_bg_selector);
+
+          if (cell.getEvent() != null) {
+            cellView.setBackgroundColor(cell.getEvent().getColor());
+            cellView.setTextColor(cell.getEvent().getTextColor());
+          } else {
+            if (cell.isToday()) {
+              cellView.setTextColor(
+                  getContext().getResources().getColor(R.color.calendar_text_selected));
+            } else {
+              cellView.setTextColor(
+                  getContext().getResources().getColor(R.color.calendar_text_active));
+            }
+          }
 
           cellView.setSelectable(cell.isSelectable());
           cellView.setSelected(cell.isSelected());
