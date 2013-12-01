@@ -327,12 +327,12 @@ public class CalendarPickerView extends ListView {
         if (invalidDateListener != null) {
           invalidDateListener.onInvalidDateSelected(clickedDate);
         }
-      } else {
+      } else if (dateListener != null) {
         boolean wasSelected = doSelectDate(clickedDate, cell);
-
-        if (wasSelected && dateListener != null) {
+        
+        if (wasSelected) {
           dateListener.onDateSelected(clickedDate);
-        } else if (!wasSelected && dateListener != null) {
+        } else if (!wasSelected) {
           dateListener.onDateUnselected(clickedDate);
         }
       }
@@ -662,7 +662,7 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * Interface to be notified when a new date is selected.  This will only be called when the user
+   * Interface to be notified when a new date is selected or unselected. This will only be called when the user
    * initiates the date selection.  If you call {@link #selectDate(Date)} this listener will not be
    * notified.
    *
@@ -671,7 +671,7 @@ public class CalendarPickerView extends ListView {
   public interface OnDateSelectedListener {
     void onDateSelected(Date date);  
 
-      void onDateUnselected(Date date);
+    void onDateUnselected(Date date);
   }
 
   /**
