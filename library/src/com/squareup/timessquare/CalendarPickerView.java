@@ -332,7 +332,7 @@ public class CalendarPickerView extends ListView {
         
         if (wasSelected) {
           dateListener.onDateSelected(clickedDate);
-        } else if (!wasSelected) {
+        } else {
           dateListener.onDateUnselected(clickedDate);
         }
       }
