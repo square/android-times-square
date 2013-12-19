@@ -18,6 +18,9 @@ public class CalendarCellView extends TextView {
   private static final int[] STATE_TODAY = {
       R.attr.state_today
   };
+  private static final int[] STATE_HIGHLIGHTED = {
+      R.attr.state_highlighted
+  };
   private static final int[] STATE_RANGE_FIRST = {
       R.attr.state_range_first
   };
@@ -31,6 +34,7 @@ public class CalendarCellView extends TextView {
   private boolean isSelectable = false;
   private boolean isCurrentMonth = false;
   private boolean isToday = false;
+  private boolean isHighlighted = false;
   private RangeState rangeState = RangeState.NONE;
 
   public CalendarCellView(Context context) {
@@ -65,8 +69,12 @@ public class CalendarCellView extends TextView {
     refreshDrawableState();
   }
 
+  public void setHighlighted(boolean highlighted) {
+    isHighlighted = highlighted;
+  }
+
   @Override protected int[] onCreateDrawableState(int extraSpace) {
-    final int[] drawableState = super.onCreateDrawableState(extraSpace + 4);
+    final int[] drawableState = super.onCreateDrawableState(extraSpace + 5);
 
     if (isSelectable) {
       mergeDrawableStates(drawableState, STATE_SELECTABLE);
@@ -78,6 +86,10 @@ public class CalendarCellView extends TextView {
 
     if (isToday) {
       mergeDrawableStates(drawableState, STATE_TODAY);
+    }
+
+    if (isHighlighted) {
+      mergeDrawableStates(drawableState, STATE_HIGHLIGHTED);
     }
 
     if (rangeState == MonthCellDescriptor.RangeState.FIRST) {
