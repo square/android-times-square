@@ -244,28 +244,7 @@ public class CalendarPickerView extends ListView {
           selectDate(date);
         }
       }
-      Integer selectedIndex = null;
-      Integer todayIndex = null;
-      Calendar today = Calendar.getInstance(locale);
-      for (int c = 0; c < months.size(); c++) {
-        MonthDescriptor month = months.get(c);
-        if (selectedIndex == null) {
-          for (Calendar selectedCal : selectedCals) {
-            if (sameMonth(selectedCal, month)) {
-              selectedIndex = c;
-              break;
-            }
-          }
-          if (selectedIndex == null && todayIndex == null && sameMonth(today, month)) {
-            todayIndex = c;
-          }
-        }
-      }
-      if (selectedIndex != null) {
-        scrollToSelectedMonth(selectedIndex);
-      } else if (todayIndex != null) {
-        scrollToSelectedMonth(todayIndex);
-      }
+      scrollToSelectedDates();
 
       validateAndUpdate();
       return this;
@@ -292,9 +271,66 @@ public class CalendarPickerView extends ListView {
     post(new Runnable() {
       @Override
       public void run() {
-        smoothScrollToPosition(selectedIndex);
+        Logr.d("Scrolling to position %d", selectedIndex);
+        setSelection(selectedIndex);
       }
     });
+  }
+
+  private void scrollToSelectedDates() {
+    Integer selectedIndex = null;
+    Integer todayIndex = null;
+    Calendar today = Calendar.getInstance(locale);
+    for (int c = 0; c < months.size(); c++) {
+      MonthDescriptor month = months.get(c);
+      if (selectedIndex == null) {
+        for (Calendar selectedCal : selectedCals) {
+          if (sameMonth(selectedCal, month)) {
+            selectedIndex = c;
+            break;
+          }
+        }
+        if (selectedIndex == null && todayIndex == null && sameMonth(today, month)) {
+          todayIndex = c;
+        }
+      }
+    }
+    if (selectedIndex != null) {
+      scrollToSelectedMonth(selectedIndex);
+    } else if (todayIndex != null) {
+      scrollToSelectedMonth(todayIndex);
+    }
+  }
+
+  /**
+   * This method should only be called if the calendar is contained in a dialog, and it should only
+   * be called once, right after the dialog is shown (using {@link android.content.DialogInterface.OnShowListener}
+   * or {@link android.app.DialogFragment#onStart()}).
+   */
+  public void fixDialogDimens() {
+    Logr.d("Fixing dimensions to h = %d / w = %d", getMeasuredHeight(), getMeasuredWidth());
+    // Fix the layout height/width after the dialog has been shown.
+    getLayoutParams().height = getMeasuredHeight();
+    getLayoutParams().width = getMeasuredWidth();
+    // Post this runnable so it runs _after_ the dimen changes have been applied/re-measured.
+    post(new Runnable() {
+      @Override public void run() {
+        Logr.d("Dimens are fixed: now scroll to the selected date");
+        scrollToSelectedDates();
+      }
+    });
+  }
+
+  /**
+   * This method should only be called if the calendar is contained in a dialog, and it should only
+   * be called when the screen has been rotated and the dialog should be re-measured.
+   */
+  public void unfixDialogDimens() {
+    Logr.d("Reset the fixed dimensions to allow for re-measurement");
+    // Fix the layout height/width after the dialog has been shown.
+    getLayoutParams().height = LayoutParams.MATCH_PARENT;
+    getLayoutParams().width = LayoutParams.MATCH_PARENT;
+    requestLayout();
   }
 
   @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

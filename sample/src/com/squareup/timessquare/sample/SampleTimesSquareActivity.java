@@ -3,6 +3,7 @@ package com.squareup.timessquare.sample;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,8 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class SampleTimesSquareActivity extends Activity {
   private static final String TAG = "SampleTimesSquareActivity";
   private CalendarPickerView calendar;
+  private AlertDialog theDialog;
+  private CalendarPickerView dialogView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -94,19 +97,25 @@ public class SampleTimesSquareActivity extends Activity {
 
     dialog.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View view) {
-        CalendarPickerView dialogView =
-            (CalendarPickerView) getLayoutInflater().inflate(R.layout.dialog, null, false);
-        dialogView.init(new Date(), nextYear.getTime());
-        new AlertDialog.Builder(SampleTimesSquareActivity.this)
-            .setTitle("I'm a dialog!")
-            .setView(dialogView)
-            .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-              @Override public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-              }
-            })
-            .create()
-            .show();
+        dialogView = (CalendarPickerView) getLayoutInflater().inflate(R.layout.dialog, null, false);
+        dialogView.init(lastYear.getTime(), nextYear.getTime()) //
+            .withSelectedDate(new Date());
+        theDialog =
+            new AlertDialog.Builder(SampleTimesSquareActivity.this).setTitle("I'm a dialog!")
+                .setView(dialogView)
+                .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                  @Override public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                  }
+                })
+                .create();
+        theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+          @Override public void onShow(DialogInterface dialogInterface) {
+            Log.d(TAG, "onShow: fix the dimens!");
+            dialogView.fixDialogDimens();
+          }
+        });
+        theDialog.show();
       }
     });
 
@@ -118,5 +127,22 @@ public class SampleTimesSquareActivity extends Activity {
         Toast.makeText(SampleTimesSquareActivity.this, toast, LENGTH_SHORT).show();
       }
     });
+  }
+
+  @Override public void onConfigurationChanged(Configuration newConfig) {
+    boolean applyFixes = theDialog != null && theDialog.isShowing();
+    if (applyFixes) {
+      Log.d(TAG, "Config change: unfix the dimens so I'll get remeasured!");
+      dialogView.unfixDialogDimens();
+    }
+    super.onConfigurationChanged(newConfig);
+    if (applyFixes) {
+      dialogView.post(new Runnable() {
+        @Override public void run() {
+          Log.d(TAG, "Config change done: re-fix the dimens!");
+          dialogView.fixDialogDimens();
+        }
+      });
+    }
   }
 }
