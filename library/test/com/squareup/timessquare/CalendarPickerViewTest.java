@@ -25,6 +25,7 @@ import static com.squareup.timessquare.MonthCellDescriptor.RangeState.MIDDLE;
 import static com.squareup.timessquare.MonthCellDescriptor.RangeState.NONE;
 import static java.util.Calendar.APRIL;
 import static java.util.Calendar.AUGUST;
+import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;
 import static java.util.Calendar.DECEMBER;
@@ -426,6 +427,23 @@ public class CalendarPickerViewTest {
     jumpToCal.set(DAY_OF_WEEK, 2);
     wasAbleToSetDate = view.selectDate(jumpToCal.getTime());
     assertThat(wasAbleToSetDate).isTrue();
+  }
+
+  @Test
+  public void testWithoutDateSelectedListener() throws Exception {
+    view.init(minDate, maxDate, locale) //
+        .inMode(SINGLE) //
+        .withSelectedDate(today.getTime());
+
+    Calendar jumpToCal = Calendar.getInstance(locale);
+    jumpToCal.setTime(today.getTime());
+    jumpToCal.add(DATE, 1);
+    MonthCellDescriptor cellToClick =
+        new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, 0,
+            MonthCellDescriptor.RangeState.NONE);
+    view.listener.handleClick(cellToClick);
+
+    assertThat(view.selectedCals.get(0).get(DATE)).isEqualTo(jumpToCal.get(DATE));
   }
 
   @Test

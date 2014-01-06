@@ -73,7 +73,7 @@ public class CalendarPickerView extends ListView {
   private Calendar minCal;
   private Calendar maxCal;
   private Calendar monthCounter;
-  private final MonthView.Listener listener = new CellClickedListener();
+  final MonthView.Listener listener = new CellClickedListener();
 
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
@@ -339,13 +339,15 @@ public class CalendarPickerView extends ListView {
         if (invalidDateListener != null) {
           invalidDateListener.onInvalidDateSelected(clickedDate);
         }
-      } else if (dateListener != null) {
+      } else {
         boolean wasSelected = doSelectDate(clickedDate, cell);
 
-        if (wasSelected) {
-          dateListener.onDateSelected(clickedDate);
-        } else {
-          dateListener.onDateUnselected(clickedDate);
+        if (dateListener != null) {
+          if (wasSelected) {
+            dateListener.onDateSelected(clickedDate);
+          } else {
+            dateListener.onDateUnselected(clickedDate);
+          }
         }
       }
     }
