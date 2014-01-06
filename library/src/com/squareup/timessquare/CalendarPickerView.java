@@ -57,23 +57,23 @@ public class CalendarPickerView extends ListView {
   }
 
   private final CalendarPickerView.MonthAdapter adapter;
+  private final List<List<List<MonthCellDescriptor>>> cells =
+      new ArrayList<List<List<MonthCellDescriptor>>>();
+  final MonthView.Listener listener = new CellClickedListener();
+  final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
+  final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
+  final List<MonthCellDescriptor> highlightedCells = new ArrayList<MonthCellDescriptor>();
+  final List<Calendar> selectedCals = new ArrayList<Calendar>();
+  final List<Calendar> highlightedCals = new ArrayList<Calendar>();
   private Locale locale;
   private DateFormat monthNameFormat;
   private DateFormat weekdayNameFormat;
   private DateFormat fullDateFormat;
-  SelectionMode selectionMode;
-  final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
-  final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
-  Calendar today;
-  private final List<List<List<MonthCellDescriptor>>> cells =
-      new ArrayList<List<List<MonthCellDescriptor>>>();
-  final List<MonthCellDescriptor> highlightedCells = new ArrayList<MonthCellDescriptor>();
-  final List<Calendar> selectedCals = new ArrayList<Calendar>();
-  final List<Calendar> highlightedCals = new ArrayList<Calendar>();
   private Calendar minCal;
   private Calendar maxCal;
   private Calendar monthCounter;
-  final MonthView.Listener listener = new CellClickedListener();
+  SelectionMode selectionMode;
+  Calendar today;
 
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
@@ -380,7 +380,7 @@ public class CalendarPickerView extends ListView {
 
   private void validateDate(Date date) {
     if (date == null) {
-      throw new IllegalArgumentException("Selected date must be non-null.  " + date);
+      throw new IllegalArgumentException("Selected date must be non-null.");
     }
     if (date.getTime() == 0) {
       throw new IllegalArgumentException("Selected date must be non-zero.  " + date);
@@ -605,7 +605,7 @@ public class CalendarPickerView extends ListView {
         int value = cal.get(DAY_OF_MONTH);
 
         MonthCellDescriptor.RangeState rangeState = MonthCellDescriptor.RangeState.NONE;
-        if (selectedCals != null && selectedCals.size() > 1) {
+        if (selectedCals.size() > 1) {
           if (sameDate(minSelectedCal, cal)) {
             rangeState = MonthCellDescriptor.RangeState.FIRST;
           } else if (sameDate(maxDate(selectedCals), cal)) {
@@ -671,10 +671,7 @@ public class CalendarPickerView extends ListView {
   }
 
   private boolean isDateSelectable(Date date) {
-    if (dateConfiguredListener == null) {
-      return true;
-    }
-    return dateConfiguredListener.isDateSelectable(date);
+    return dateConfiguredListener == null || dateConfiguredListener.isDateSelectable(date);
   }
 
   public void setOnDateSelectedListener(OnDateSelectedListener listener) {

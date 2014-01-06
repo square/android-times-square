@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 
 public class CalendarCellView extends TextView {
-
   private static final int[] STATE_SELECTABLE = {
       R.attr.state_selectable
   };
@@ -37,16 +36,9 @@ public class CalendarCellView extends TextView {
   private boolean isHighlighted = false;
   private RangeState rangeState = RangeState.NONE;
 
-  public CalendarCellView(Context context) {
-    super(context);
-  }
-
+  @SuppressWarnings("UnusedDeclaration")
   public CalendarCellView(Context context, AttributeSet attrs) {
     super(context, attrs);
-  }
-
-  public CalendarCellView(Context context, AttributeSet attrs, int defStyle) {
-    super(context, attrs, defStyle);
   }
 
   public void setSelectable(boolean isSelectable) {
