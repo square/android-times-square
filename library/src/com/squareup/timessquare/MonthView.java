@@ -44,7 +44,8 @@ public class MonthView extends LinearLayout {
     grid = (CalendarGridView) findViewById(R.id.calendar_grid);
   }
 
-  public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells) {
+  public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells,
+      boolean displayOnly) {
     Logr.d("Initializing MonthView (%d) for %s", System.identityHashCode(this), month);
     long start = System.currentTimeMillis();
     title.setText(month.getLabel());
@@ -63,6 +64,7 @@ public class MonthView extends LinearLayout {
 
           cellView.setText(Integer.toString(cell.getValue()));
           cellView.setEnabled(cell.isCurrentMonth());
+          cellView.setClickable(!displayOnly);
 
           cellView.setSelectable(cell.isSelectable());
           cellView.setSelected(cell.isSelected());
