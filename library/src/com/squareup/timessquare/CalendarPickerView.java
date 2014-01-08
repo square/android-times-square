@@ -72,6 +72,7 @@ public class CalendarPickerView extends ListView {
   private Calendar minCal;
   private Calendar maxCal;
   private Calendar monthCounter;
+  private boolean displayOnly;
   SelectionMode selectionMode;
   Calendar today;
 
@@ -168,6 +169,7 @@ public class CalendarPickerView extends ListView {
     maxCal.setTime(maxDate);
     setMidnight(minCal);
     setMidnight(maxCal);
+    displayOnly = false;
 
     // maxDate is exclusive: bump back to the previous day so if maxDate is the first of a month,
     // we don't accidentally include that month in the view.
@@ -278,6 +280,11 @@ public class CalendarPickerView extends ListView {
 
     public FluentInitializer withHighlightedDate(Date date) {
       return withHighlightedDates(Arrays.asList(date));
+    }
+
+    public FluentInitializer displayOnly() {
+      displayOnly = true;
+      return this;
     }
   }
 
@@ -569,7 +576,7 @@ public class CalendarPickerView extends ListView {
       if (monthView == null) {
         monthView = MonthView.create(parent, inflater, weekdayNameFormat, listener, today);
       }
-      monthView.init(months.get(position), cells.get(position));
+      monthView.init(months.get(position), cells.get(position), displayOnly);
       return monthView;
     }
   }

@@ -40,6 +40,7 @@ public class SampleTimesSquareActivity extends Activity {
     final Button single = (Button) findViewById(R.id.button_single);
     final Button multi = (Button) findViewById(R.id.button_multi);
     final Button range = (Button) findViewById(R.id.button_range);
+    final Button displayOnly = (Button) findViewById(R.id.button_display_only);
     final Button dialog = (Button) findViewById(R.id.button_dialog);
     single.setOnClickListener(new OnClickListener() {
       @Override
@@ -47,8 +48,9 @@ public class SampleTimesSquareActivity extends Activity {
         single.setEnabled(false);
         multi.setEnabled(true);
         range.setEnabled(true);
+        displayOnly.setEnabled(true);
 
-        calendar.init(new Date(), nextYear.getTime()) //
+        calendar.init(lastYear.getTime(), nextYear.getTime()) //
             .inMode(SelectionMode.SINGLE) //
             .withSelectedDate(new Date());
       }
@@ -60,6 +62,7 @@ public class SampleTimesSquareActivity extends Activity {
         single.setEnabled(true);
         multi.setEnabled(false);
         range.setEnabled(true);
+        displayOnly.setEnabled(true);
 
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
@@ -79,6 +82,7 @@ public class SampleTimesSquareActivity extends Activity {
         single.setEnabled(true);
         multi.setEnabled(true);
         range.setEnabled(false);
+        displayOnly.setEnabled(true);
 
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
@@ -89,6 +93,21 @@ public class SampleTimesSquareActivity extends Activity {
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.RANGE) //
             .withSelectedDates(dates);
+      }
+    });
+
+    displayOnly.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        single.setEnabled(true);
+        multi.setEnabled(true);
+        range.setEnabled(true);
+        displayOnly.setEnabled(false);
+
+        calendar.init(new Date(), nextYear.getTime()) //
+            .inMode(SelectionMode.SINGLE) //
+            .withSelectedDate(new Date())
+            .displayOnly();
       }
     });
 
