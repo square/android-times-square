@@ -311,8 +311,9 @@ public class CalendarPickerView extends ListView {
 
   /**
    * This method should only be called if the calendar is contained in a dialog, and it should only
-   * be called once, right after the dialog is shown (using {@link android.content.DialogInterface.OnShowListener}
-   * or {@link android.app.DialogFragment#onStart()}).
+   * be called once, right after the dialog is shown (using
+   * {@link android.content.DialogInterface.OnShowListener} or
+   * {@link android.app.DialogFragment#onStart()}).
    */
   public void fixDialogDimens() {
     Logr.d("Fixing dimensions to h = %d / w = %d", getMeasuredHeight(), getMeasuredWidth());
