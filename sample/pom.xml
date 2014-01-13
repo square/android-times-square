@@ -25,7 +25,7 @@
       <groupId>com.squareup</groupId>
       <artifactId>android-times-square</artifactId>
       <version>${project.version}</version>
-      <type>apklib</type>
+      <type>aar</type>
     </dependency>
   </dependencies>
 
