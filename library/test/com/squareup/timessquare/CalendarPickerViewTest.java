@@ -25,6 +25,7 @@ import static com.squareup.timessquare.MonthCellDescriptor.RangeState.MIDDLE;
 import static com.squareup.timessquare.MonthCellDescriptor.RangeState.NONE;
 import static java.util.Calendar.APRIL;
 import static java.util.Calendar.AUGUST;
+import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;
 import static java.util.Calendar.DECEMBER;
@@ -429,6 +430,23 @@ public class CalendarPickerViewTest {
   }
 
   @Test
+  public void testWithoutDateSelectedListener() throws Exception {
+    view.init(minDate, maxDate, locale) //
+        .inMode(SINGLE) //
+        .withSelectedDate(today.getTime());
+
+    Calendar jumpToCal = Calendar.getInstance(locale);
+    jumpToCal.setTime(today.getTime());
+    jumpToCal.add(DATE, 1);
+    MonthCellDescriptor cellToClick =
+        new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, 0,
+            MonthCellDescriptor.RangeState.NONE);
+    view.listener.handleClick(cellToClick);
+
+    assertThat(view.selectedCals.get(0).get(DATE)).isEqualTo(jumpToCal.get(DATE));
+  }
+
+  @Test
   public void testRangeSelectionWithNoInitialSelection() throws Exception {
     view.init(minDate, maxDate, locale)
         .inMode(RANGE);
@@ -444,6 +462,30 @@ public class CalendarPickerViewTest {
     assertRangeSelected();
 
     assertRangeSelectionBehavior();
+  }
+
+  @Test
+  public void testInitWithoutHighlightingCells() {
+    view.init(minDate, maxDate, locale)
+        .inMode(SINGLE);
+
+    assertThat(view.highlightedCals).hasSize(0);
+    assertThat(view.highlightedCells).hasSize(0);
+  }
+
+  @Test
+  public void testHighlightingCells() {
+    final Calendar highlightedCal = buildCal(2012, NOVEMBER, 20);
+
+    view.init(minDate, maxDate, locale)
+        .inMode(SINGLE)
+        .withHighlightedDate(highlightedCal.getTime());
+
+    assertThat(view.highlightedCals).hasSize(1);
+    assertThat(view.highlightedCells).hasSize(1);
+
+    List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2012);
+    assertThat(cells.get(3).get(2).isHighlighted()).isTrue();
   }
 
   private void assertRangeSelectionBehavior() {

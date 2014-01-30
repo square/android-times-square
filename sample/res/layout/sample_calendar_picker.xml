@@ -31,13 +31,19 @@
             android:text="Range" />
 
       <Button
+          android:id="@+id/button_display_only"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="DisplayOnly" />
+
+      <Button
           android:id="@+id/button_dialog"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="Dialog" />
 
     </LinearLayout>
-    
+
   <com.squareup.timessquare.CalendarPickerView
       android:id="@+id/calendar_view"
       android:layout_width="match_parent"

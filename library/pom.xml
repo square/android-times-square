@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.squareup</groupId>
     <artifactId>android-times-square-parent</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
