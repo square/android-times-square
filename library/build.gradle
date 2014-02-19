@@ -15,7 +15,7 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.0'
+    buildToolsVersion '19.0.1'
 
     lintOptions {
         abortOnError false
@@ -35,5 +35,42 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
+        instrumentTest.setRoot('test')
     }
 }
+
+sourceSets {
+    unitTest {
+        java.srcDir file('test')
+    }
+}
+
+configurations {
+    unitTestCompile.extendsFrom runtime
+    unitTestRuntime.extendsFrom unitTestCompile
+}
+
+dependencies {
+    // your unit test dependencies as described in the article
+    unitTestCompile files("$project.buildDir/classes/release")
+    unitTestCompile 'com.google.android:android:4.1.1.4'
+    unitTestCompile 'junit:junit:4.10'
+    unitTestCompile 'com.squareup:fest-android:1.0.7'
+    unitTestCompile 'org.robolectric:robolectric:2.2'
+    unitTestCompile 'com.intellij:annotations:12.0'
+
+    // duplicate these dependencies in the instrumentTestCompile scope
+    // in order to have the integration in Android Studio (autocompletion and stuff)
+    instrumentTestCompile 'junit:junit:4.10'
+    instrumentTestCompile 'com.squareup:fest-android:1.0.7'
+    instrumentTestCompile 'org.robolectric:robolectric:2.2'
+    instrumentTestCompile 'com.intellij:annotations:12.0'
+}
+
+task unitTest(type:Test, dependsOn: assemble) {
+    description = "run unit tests"
+    testClassesDir = project.sourceSets.unitTest.output.classesDir
+    classpath = project.sourceSets.unitTest.runtimeClasspath
+}
+
+check.dependsOn unitTest

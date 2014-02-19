@@ -1,10 +1,14 @@
 apply plugin: 'android'
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.0'
+    buildToolsVersion '19.0.1'
 
     lintOptions {
         abortOnError false
+    }
+
+    defaultConfig {
+        minSdkVersion 8
     }
 
     sourceSets {
@@ -25,4 +29,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+}
+
+dependencies {
+    compile project(':library')
 }
