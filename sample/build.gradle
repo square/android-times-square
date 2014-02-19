@@ -1,6 +1,6 @@
 apply plugin: 'android'
 android {
-    compileSdkVersion 19
+    compileSdkVersion 17
     buildToolsVersion '19.0.1'
 
     lintOptions {
