@@ -63,6 +63,7 @@ public class CalendarCellView extends TextView {
 
   public void setHighlighted(boolean highlighted) {
     isHighlighted = highlighted;
+    refreshDrawableState();
   }
 
   @Override protected int[] onCreateDrawableState(int extraSpace) {
