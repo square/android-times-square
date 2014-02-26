@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.1.1 *(2014-02-26)*
+----------------------------
+
+ * Fix: Ensure cell drawables properly invalidate on state change.
+ * Fix: Revert to older maven-android-plugin to fix .aar artifact.
+
+
 Version 1.1.0 *(2014-01-28)*
 ----------------------------
 
