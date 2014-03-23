@@ -431,7 +431,9 @@ public class CalendarPickerView extends ListView {
     }
     if (date.before(minCal.getTime()) || date.after(maxCal.getTime())) {
       throw new IllegalArgumentException(
-          "selectedDate must be between minDate and maxDate.  " + date);
+          String.format("SelectedDate must be between minDate and maxDate."
+                  + "%nminDate: %s%nmaxDate: %s%nselectedDate: %s",
+                  minCal.getTime(), maxCal.getTime(), date));
     }
   }
 

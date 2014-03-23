@@ -334,6 +334,17 @@ public class CalendarPickerViewTest {
     }
   }
 
+  /**
+   * Verify the expectation that the set of dates excludes the max.
+   * In other words, the date interval is [minDate, maxDate)
+   */
+  @Test(expected=IllegalArgumentException.class)
+  public void testSelectedNotInRange_maxDateExcluded() throws Exception {
+    view.init(minDate, maxDate, locale)
+        .inMode(SINGLE)
+        .withSelectedDate(maxDate);
+  }
+
   @Test
   public void testNotCallingInit() throws Exception {
     view = new CalendarPickerView(activity, null);
