@@ -2,6 +2,8 @@
 package com.squareup.timessquare;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +77,11 @@ public class CalendarPickerView extends ListView {
   private boolean displayOnly;
   SelectionMode selectionMode;
   Calendar today;
+  private int dividerColor;
+  private int dayBackgroundResId;
+  private int dayTextColorResId;
+  private int titleTextColor;
+  private int headerTextColor;
 
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
@@ -83,10 +90,26 @@ public class CalendarPickerView extends ListView {
 
   public CalendarPickerView(Context context, AttributeSet attrs) {
     super(context, attrs);
+
+    Resources res = context.getResources();
+    TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CalendarPickerView);
+    final int bg = a.getColor(R.styleable.CalendarPickerView_android_background,
+        res.getColor(R.color.calendar_bg));
+    dividerColor = a.getColor(R.styleable.CalendarPickerView_dividerColor,
+        res.getColor(R.color.calendar_divider));
+    dayBackgroundResId = a.getResourceId(R.styleable.CalendarPickerView_dayBackground,
+        R.drawable.calendar_bg_selector);
+    dayTextColorResId = a.getResourceId(R.styleable.CalendarPickerView_dayTextColor,
+        R.color.calendar_text_selector);
+    titleTextColor =
+        a.getColor(R.styleable.CalendarPickerView_titleTextColor, R.color.calendar_text_active);
+    headerTextColor =
+        a.getColor(R.styleable.CalendarPickerView_headerTextColor, R.color.calendar_text_active);
+    a.recycle();
+
     adapter = new MonthAdapter();
     setDivider(null);
     setDividerHeight(0);
-    final int bg = getResources().getColor(R.color.calendar_bg);
     setBackgroundColor(bg);
     setCacheColorHint(bg);
     locale = Locale.getDefault();
@@ -613,7 +636,9 @@ public class CalendarPickerView extends ListView {
     @Override public View getView(int position, View convertView, ViewGroup parent) {
       MonthView monthView = (MonthView) convertView;
       if (monthView == null) {
-        monthView = MonthView.create(parent, inflater, weekdayNameFormat, listener, today);
+        monthView =
+            MonthView.create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
+                dayBackgroundResId, dayTextColorResId, titleTextColor, headerTextColor);
       }
       monthView.init(months.get(position), cells.get(position), displayOnly);
       return monthView;
