@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <declare-styleable name="CalendarPickerView">
+    <attr name="android:background"/>
+    <attr name="dividerColor" format="color"/>
+    <attr name="dayBackground" format="reference"/>
+    <attr name="dayTextColor" format="color"/>
+    <attr name="titleTextColor" format="color"/>
+    <attr name="headerTextColor" format="color"/>
+  </declare-styleable>
+
   <declare-styleable name="calendar_cell">
     <attr name="state_selectable" format="boolean" />
     <attr name="state_current_month" format="boolean" />

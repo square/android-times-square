@@ -2,9 +2,11 @@
 package com.squareup.timessquare;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import static android.view.View.MeasureSpec.AT_MOST;
 import static android.view.View.MeasureSpec.EXACTLY;
@@ -69,5 +71,23 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
 
   public void setListener(MonthView.Listener listener) {
     this.listener = listener;
+  }
+
+  public void setCellBackground(int resId) {
+    for (int i = 0; i < getChildCount(); i++) {
+      getChildAt(i).setBackgroundResource(resId);
+    }
+  }
+
+  public void setCellTextColor(int resId) {
+    for (int i = 0; i < getChildCount(); i++) {
+      ((TextView) getChildAt(i)).setTextColor(resId);
+    }
+  }
+
+  public void setCellTextColor(ColorStateList colors) {
+    for (int i = 0; i < getChildCount(); i++) {
+      ((TextView) getChildAt(i)).setTextColor(colors);
+    }
   }
 }

@@ -17,8 +17,17 @@ public class MonthView extends LinearLayout {
   private Listener listener;
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
-      DateFormat weekdayNameFormat, Listener listener, Calendar today) {
+      DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
+      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, int headerTextColor) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
+    view.setDividerColor(dividerColor);
+    view.setDayTextColor(dayTextColorResId);
+    view.setTitleTextColor(titleTextColor);
+    view.setHeaderTextColor(headerTextColor);
+
+    if (dayBackgroundResId != 0) {
+      view.setDayBackground(dayBackgroundResId);
+    }
 
     final int originalDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
 
@@ -79,6 +88,26 @@ public class MonthView extends LinearLayout {
       }
     }
     Logr.d("MonthView.init took %d ms", System.currentTimeMillis() - start);
+  }
+
+  public void setDividerColor(int color) {
+    grid.setDividerColor(color);
+  }
+
+  public void setDayBackground(int resId) {
+    grid.setDayBackground(resId);
+  }
+
+  public void setDayTextColor(int resId) {
+    grid.setDayTextColor(resId);
+  }
+
+  public void setTitleTextColor(int color) {
+    title.setTextColor(color);
+  }
+
+  public void setHeaderTextColor(int color) {
+    grid.setHeaderTextColor(color);
   }
 
   public interface Listener {

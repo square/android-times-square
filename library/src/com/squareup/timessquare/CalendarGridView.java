@@ -2,6 +2,7 @@
 package com.squareup.timessquare;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -24,6 +25,27 @@ public class CalendarGridView extends ViewGroup {
   public CalendarGridView(Context context, AttributeSet attrs) {
     super(context, attrs);
     dividerPaint.setColor(getResources().getColor(R.color.calendar_divider));
+  }
+
+  public void setDividerColor(int color) {
+    dividerPaint.setColor(color);
+  }
+
+  public void setDayBackground(int resId) {
+    for (int i = 1; i < getChildCount(); i++) {
+      ((CalendarRowView) getChildAt(i)).setCellBackground(resId);
+    }
+  }
+
+  public void setDayTextColor(int resId) {
+    for (int i = 0; i < getChildCount(); i++) {
+      ColorStateList colors = getResources().getColorStateList(resId);
+      ((CalendarRowView) getChildAt(i)).setCellTextColor(colors);
+    }
+  }
+
+  public void setHeaderTextColor(int color) {
+    ((CalendarRowView) getChildAt(0)).setCellTextColor(color);
   }
 
   @Override public void addView(View child, int index, ViewGroup.LayoutParams params) {
