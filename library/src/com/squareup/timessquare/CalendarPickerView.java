@@ -298,11 +298,20 @@ public class CalendarPickerView extends ListView {
   }
 
   private void scrollToSelectedMonth(final int selectedIndex) {
+    scrollToSelectedMonth(selectedIndex, false);
+  }
+
+  private void scrollToSelectedMonth(final int selectedIndex, final boolean smoothScroll) {
     post(new Runnable() {
       @Override
       public void run() {
         Logr.d("Scrolling to position %d", selectedIndex);
-        setSelection(selectedIndex);
+
+        if (smoothScroll) {
+          smoothScrollToPosition(selectedIndex);
+        } else {
+          setSelection(selectedIndex);
+        }
       }
     });
   }
@@ -432,6 +441,21 @@ public class CalendarPickerView extends ListView {
    * @return - whether we were able to set the date
    */
   public boolean selectDate(Date date) {
+    return selectDate(date, false);
+  }
+
+  /**
+   * Select a new date.  Respects the {@link SelectionMode} this CalendarPickerView is configured
+   * with: if you are in {@link SelectionMode#SINGLE}, the previously selected date will be
+   * un-selected.  In {@link SelectionMode#MULTIPLE}, the new date will be added to the list of
+   * selected dates.
+   * <p>
+   * If the selection was made (selectable date, in range), the view will scroll to the newly
+   * selected date if it's not already visible.
+   *
+   * @return - whether we were able to set the date
+   */
+  public boolean selectDate(Date date, boolean smoothScroll) {
     validateDate(date);
 
     MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
@@ -440,7 +464,7 @@ public class CalendarPickerView extends ListView {
     }
     boolean wasSelected = doSelectDate(date, monthCellWithMonthIndex.cell);
     if (wasSelected) {
-      scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex);
+      scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex, smoothScroll);
     }
     return wasSelected;
   }
