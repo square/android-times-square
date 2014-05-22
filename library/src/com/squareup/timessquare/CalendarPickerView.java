@@ -183,6 +183,7 @@ public class CalendarPickerView extends ListView {
     // Clear out any previously-selected dates/cells.
     selectedCals.clear();
     selectedCells.clear();
+    highlightedCals.clear();
     highlightedCells.clear();
 
     // Clear previous state.
