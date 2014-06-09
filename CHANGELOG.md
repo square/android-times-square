@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Version 1.2.0 *(2014-05-09)*
+----------------------------
+
+ * New: Better support for theming the widget.
+ * New: Optional smooth scroll support for `selectDate`.
+ * Fix: Properly clear highlighted dates when initializing the widget.
+
+
 Version 1.1.1 *(2014-02-26)*
 ----------------------------
 
