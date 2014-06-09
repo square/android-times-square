@@ -15,9 +15,14 @@ release.properties
 
 .idea
 *.iml
+gradle
+.gradle
+gradlew
+gradlew.bat
 classes
 
 obj
 tmp
 
 .DS_Store
+local.properties
