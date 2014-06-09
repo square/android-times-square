@@ -1,7 +1,13 @@
 Change Log
 ==========
 
-Version 1.2.0 *(2014-05-09)*
+Version 1.2.1 *(2014-06-09)*
+----------------------------
+
+ * Fix: Revert to older maven-android-plugin to fix .aar artifact.
+
+
+Version 1.2.0 *(2014-06-09)*
 ----------------------------
 
  * New: Better support for theming the widget.
