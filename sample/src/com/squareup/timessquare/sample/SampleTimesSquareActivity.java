@@ -45,6 +45,7 @@ public class SampleTimesSquareActivity extends Activity {
     final Button range = (Button) findViewById(R.id.button_range);
     final Button displayOnly = (Button) findViewById(R.id.button_display_only);
     final Button dialog = (Button) findViewById(R.id.button_dialog);
+    final Button customized = (Button) findViewById(R.id.button_customized);
     single.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -129,7 +130,34 @@ public class SampleTimesSquareActivity extends Activity {
                 })
                 .create();
         theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-          @Override public void onShow(DialogInterface dialogInterface) {
+          @Override
+          public void onShow(DialogInterface dialogInterface) {
+            Log.d(TAG, "onShow: fix the dimens!");
+            dialogView.fixDialogDimens();
+          }
+        });
+        theDialog.show();
+      }
+    });
+
+    customized.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        dialogView = (CalendarPickerView) getLayoutInflater() //
+            .inflate(R.layout.dialog_customized, null, false);
+        dialogView.init(lastYear.getTime(), nextYear.getTime()).withSelectedDate(new Date());
+        theDialog =
+            new AlertDialog.Builder(SampleTimesSquareActivity.this).setTitle("Pimp my calendar !")
+                .setView(dialogView)
+                .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                  }
+                }).create();
+        theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+          @Override
+          public void onShow(DialogInterface dialogInterface) {
             Log.d(TAG, "onShow: fix the dimens!");
             dialogView.fixDialogDimens();
           }
