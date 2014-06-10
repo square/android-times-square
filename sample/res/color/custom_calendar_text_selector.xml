@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2014 Square, Inc. -->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:state_selected="true" android:color="@color/custom_text_selected"/>
+    <item android:state_pressed="true" android:color="@color/custom_text_selected"/>
+    <item app:state_current_month="false" android:color="@color/custom_text_inactive"/>
+    <item app:state_today="true" android:color="@color/custom_text_selected"/>
+    <item app:state_selectable="false" android:color="@color/custom_text_inactive" />
+    <item android:color="@color/custom_background_today"/>
+</selector>
