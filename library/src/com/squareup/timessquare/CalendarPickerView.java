@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -283,6 +284,14 @@ public class CalendarPickerView extends ListView {
 
     public FluentInitializer withHighlightedDate(Date date) {
       return withHighlightedDates(Arrays.asList(date));
+    }
+
+    public FluentInitializer setShortWeekdays(String[] newShortWeekdays) {
+      DateFormatSymbols symbols = new DateFormatSymbols(locale);
+      symbols.setShortWeekdays(newShortWeekdays);
+      weekdayNameFormat =
+          new SimpleDateFormat(getContext().getString(R.string.day_name_format), symbols);
+      return this;
     }
 
     public FluentInitializer displayOnly() {

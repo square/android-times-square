@@ -617,6 +617,25 @@ public class CalendarPickerViewTest {
     assertCell(cells, 5, 0, 30, true, false, false, true, NONE);
   }
 
+  @Test
+  public void testSetShortWeekdays() throws Exception {
+    String[] capitalDays = { "", "S", "M", "T", "W", "T", "F", "S" };
+
+    Calendar cal = Calendar.getInstance(Locale.getDefault());
+    assertThat(cal.getFirstDayOfWeek()).isEqualTo(Calendar.MONDAY);
+
+    view.init(minDate, maxDate, Locale.getDefault())
+        .setShortWeekdays(capitalDays);
+    MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
+    CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
+    TextView firstDay = (TextView) header.getChildAt(0);
+    assertThat(firstDay).hasTextString("M"); // Monday!
+    TextView secondDay = (TextView) header.getChildAt(1);
+    assertThat(secondDay).hasTextString("T"); // Tuesday!
+    TextView thirdDay = (TextView) header.getChildAt(2);
+    assertThat(thirdDay).hasTextString("W"); // Wednesday!
+  }
+
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
       int expectedVal, boolean expectedCurrentMonth, boolean expectedSelected,
       boolean expectedToday, boolean expectedSelectable,
