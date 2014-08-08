@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.3.0 *(2014-08-08)*
+----------------------------
+
+ * New: `setShortWeekdays` method allows supplying alternate day names in accordance
+   with `DateFormatSymbols.setShortWeekdays`.
+
+
 Version 1.2.1 *(2014-06-09)*
 ----------------------------
 
