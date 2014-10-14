@@ -4,6 +4,7 @@ package com.squareup.timessquare;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -82,7 +83,9 @@ public class CalendarPickerView extends ListView {
   private int dayBackgroundResId;
   private int dayTextColorResId;
   private int titleTextColor;
+  private boolean displayHeader;
   private int headerTextColor;
+  private Typeface typeface;
 
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
@@ -104,6 +107,7 @@ public class CalendarPickerView extends ListView {
         R.color.calendar_text_selector);
     titleTextColor =
         a.getColor(R.styleable.CalendarPickerView_titleTextColor, R.color.calendar_text_active);
+    displayHeader = a.getBoolean(R.styleable.CalendarPickerView_displayHeader, true);
     headerTextColor =
         a.getColor(R.styleable.CalendarPickerView_headerTextColor, R.color.calendar_text_active);
     a.recycle();
@@ -369,6 +373,11 @@ public class CalendarPickerView extends ListView {
         scrollToSelectedDates();
       }
     });
+  }
+
+  public void setTypeface(Typeface typeface) {
+    this.typeface = typeface;
+    validateAndUpdate();
   }
 
   /**
@@ -672,9 +681,10 @@ public class CalendarPickerView extends ListView {
       if (monthView == null) {
         monthView =
             MonthView.create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
-                dayBackgroundResId, dayTextColorResId, titleTextColor, headerTextColor);
+                dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader,
+                headerTextColor);
       }
-      monthView.init(months.get(position), cells.get(position), displayOnly);
+      monthView.init(months.get(position), cells.get(position), displayOnly, typeface);
       return monthView;
     }
   }

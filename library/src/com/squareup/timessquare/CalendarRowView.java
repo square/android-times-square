@@ -3,6 +3,7 @@ package com.squareup.timessquare;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,12 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
   public void setCellTextColor(ColorStateList colors) {
     for (int i = 0; i < getChildCount(); i++) {
       ((TextView) getChildAt(i)).setTextColor(colors);
+    }
+  }
+
+  public void setTypeface(Typeface typeface) {
+    for (int i = 0; i < getChildCount(); i++) {
+      ((TextView) getChildAt(i)).setTypeface(typeface);
     }
   }
 }
