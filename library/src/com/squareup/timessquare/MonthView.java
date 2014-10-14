@@ -2,6 +2,7 @@
 package com.squareup.timessquare;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -18,11 +19,13 @@ public class MonthView extends LinearLayout {
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
-      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, int headerTextColor) {
+      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
+      int headerTextColor) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
     view.setDividerColor(dividerColor);
     view.setDayTextColor(dayTextColorResId);
     view.setTitleTextColor(titleTextColor);
+    view.setDisplayHeader(displayHeader);
     view.setHeaderTextColor(headerTextColor);
 
     if (dayBackgroundResId != 0) {
@@ -54,7 +57,7 @@ public class MonthView extends LinearLayout {
   }
 
   public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells,
-      boolean displayOnly) {
+      boolean displayOnly, Typeface typeface) {
     Logr.d("Initializing MonthView (%d) for %s", System.identityHashCode(this), month);
     long start = System.currentTimeMillis();
     title.setText(month.getLabel());
@@ -87,6 +90,11 @@ public class MonthView extends LinearLayout {
         weekRow.setVisibility(GONE);
       }
     }
+
+    if (typeface != null) {
+      setTypeface(typeface);
+    }
+
     Logr.d("MonthView.init took %d ms", System.currentTimeMillis() - start);
   }
 
@@ -106,8 +114,17 @@ public class MonthView extends LinearLayout {
     title.setTextColor(color);
   }
 
+  public void setDisplayHeader(boolean displayHeader) {
+    grid.setDisplayHeader(displayHeader);
+  }
+
   public void setHeaderTextColor(int color) {
     grid.setHeaderTextColor(color);
+  }
+
+  public void setTypeface(Typeface typeface) {
+    title.setTypeface(typeface);
+    grid.setTypeface(typeface);
   }
 
   public interface Listener {

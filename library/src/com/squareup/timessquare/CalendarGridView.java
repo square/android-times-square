@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,8 +51,18 @@ public class CalendarGridView extends ViewGroup {
     }
   }
 
+  public void setDisplayHeader(boolean displayHeader) {
+    getChildAt(0).setVisibility(displayHeader ? VISIBLE : GONE);
+  }
+
   public void setHeaderTextColor(int color) {
     ((CalendarRowView) getChildAt(0)).setCellTextColor(color);
+  }
+
+  public void setTypeface(Typeface typeface) {
+    for (int i = 0; i < getChildCount(); i++) {
+      ((CalendarRowView) getChildAt(i)).setTypeface(typeface);
+    }
   }
 
   @Override public void addView(View child, int index, ViewGroup.LayoutParams params) {
