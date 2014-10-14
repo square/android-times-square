@@ -4,10 +4,7 @@ package com.squareup.timessquare;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,18 +110,9 @@ public class CalendarPickerView extends ListView {
     displayHeader = a.getBoolean(R.styleable.CalendarPickerView_displayHeader, true);
     headerTextColor =
         a.getColor(R.styleable.CalendarPickerView_headerTextColor, R.color.calendar_text_active);
-    Drawable divider = a.getDrawable(R.styleable.CalendarPickerView_android_divider);
-    if (divider == null) {
-      divider = new ColorDrawable(Color.TRANSPARENT);
-    }
-    int dividerHeight = a.getDimensionPixelSize(
-        R.styleable.CalendarPickerView_android_dividerHeight,
-        res.getDimensionPixelSize(R.dimen.calendar_month_topmargin));
     a.recycle();
 
     adapter = new MonthAdapter();
-    setDivider(divider);
-    setDividerHeight(dividerHeight);
     setBackgroundColor(bg);
     setCacheColorHint(bg);
     locale = Locale.getDefault();

@@ -10,6 +10,7 @@
       android:id="@+id/title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/calendar_month_topmargin"
       android:layout_marginBottom="@dimen/calendar_month_title_bottommargin"
       android:gravity="center_horizontal"
       style="@style/CalendarTitle"
