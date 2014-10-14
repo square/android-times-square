@@ -113,6 +113,8 @@ public class CalendarPickerView extends ListView {
     a.recycle();
 
     adapter = new MonthAdapter();
+    setDivider(null);
+    setDividerHeight(0);
     setBackgroundColor(bg);
     setCacheColorHint(bg);
     locale = Locale.getDefault();
