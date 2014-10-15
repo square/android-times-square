@@ -12,7 +12,7 @@
   <groupId>com.squareup</groupId>
   <artifactId>android-times-square-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.3.1-SNAPSHOT</version>
+  <version>1.4.0</version>
 
   <name>Android-TimesSquare (Parent)</name>
   <description>Android component for picking a date on a calendar.</description>
