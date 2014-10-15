@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.4.0 *(2014-10-14)*
+----------------------------
+
+ * New: Styling options for typeface, hiding the header, and specifying a divider.
+
+
 Version 1.3.0 *(2014-08-08)*
 ----------------------------
 

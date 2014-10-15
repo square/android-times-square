@@ -57,13 +57,13 @@ You can also depend on the library through Maven:
 <dependency>
     <groupId>com.squareup</groupId>
     <artifactId>android-times-square</artifactId>
-    <version>(insert latest version)</version>
+    <version>1.4.0</version>
     <type>apklib</type>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'com.squareup:android-times-square:(version)@aar'
+compile 'com.squareup:android-times-square:1.4.0@aar'
 ```
 
 
