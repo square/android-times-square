@@ -57,7 +57,7 @@ public class MonthView extends LinearLayout {
   }
 
   public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells,
-      boolean displayOnly, Typeface typeface) {
+      boolean displayOnly, Typeface titleTypeface, Typeface dateTypeface) {
     Logr.d("Initializing MonthView (%d) for %s", System.identityHashCode(this), month);
     long start = System.currentTimeMillis();
     title.setText(month.getLabel());
@@ -91,8 +91,11 @@ public class MonthView extends LinearLayout {
       }
     }
 
-    if (typeface != null) {
-      setTypeface(typeface);
+    if (titleTypeface != null) {
+      title.setTypeface(titleTypeface);
+    }
+    if (dateTypeface != null) {
+      grid.setTypeface(dateTypeface);
     }
 
     Logr.d("MonthView.init took %d ms", System.currentTimeMillis() - start);
@@ -120,11 +123,6 @@ public class MonthView extends LinearLayout {
 
   public void setHeaderTextColor(int color) {
     grid.setHeaderTextColor(color);
-  }
-
-  public void setTypeface(Typeface typeface) {
-    title.setTypeface(typeface);
-    grid.setTypeface(typeface);
   }
 
   public interface Listener {
