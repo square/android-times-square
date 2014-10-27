@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.4.1 *(2014-10-27)*
+----------------------------
+
+ * New: Individual typeface options for the header and days.
+ * Fix: Prevent warnings which might have been logged about relayout. 
+
+
 Version 1.4.0 *(2014-10-14)*
 ----------------------------
 
