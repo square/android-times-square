@@ -85,7 +85,8 @@ public class CalendarPickerView extends ListView {
   private int titleTextColor;
   private boolean displayHeader;
   private int headerTextColor;
-  private Typeface typeface;
+  private Typeface titleTypeface;
+  private Typeface dateTypeface;
 
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
@@ -375,9 +376,28 @@ public class CalendarPickerView extends ListView {
     });
   }
 
-  public void setTypeface(Typeface typeface) {
-    this.typeface = typeface;
+  /**
+   * Set the typeface to be used for month titles.
+   */
+  public void setTitleTypeface(Typeface titleTypeface) {
+    this.titleTypeface = titleTypeface;
     validateAndUpdate();
+  }
+
+  /**
+   * Sets the typeface to be used within the date grid.
+   */
+  public void setDateTypeface(Typeface dateTypeface) {
+    this.dateTypeface = dateTypeface;
+    validateAndUpdate();
+  }
+
+  /**
+   * Sets the typeface to be used for all text within this calendar.
+   */
+  public void setTypeface(Typeface typeface) {
+    setTitleTypeface(typeface);
+    setDateTypeface(typeface);
   }
 
   /**
@@ -684,7 +704,8 @@ public class CalendarPickerView extends ListView {
                 dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader,
                 headerTextColor);
       }
-      monthView.init(months.get(position), cells.get(position), displayOnly, typeface);
+      monthView.init(months.get(position), cells.get(position), displayOnly, titleTypeface,
+          dateTypeface);
       return monthView;
     }
   }
