@@ -106,11 +106,11 @@ public class CalendarPickerView extends ListView {
         R.drawable.calendar_bg_selector);
     dayTextColorResId = a.getResourceId(R.styleable.CalendarPickerView_dayTextColor,
         R.color.calendar_text_selector);
-    titleTextColor =
-        a.getColor(R.styleable.CalendarPickerView_titleTextColor, R.color.calendar_text_active);
+    titleTextColor = a.getColor(R.styleable.CalendarPickerView_titleTextColor,
+        res.getColor(R.color.calendar_text_active));
     displayHeader = a.getBoolean(R.styleable.CalendarPickerView_displayHeader, true);
-    headerTextColor =
-        a.getColor(R.styleable.CalendarPickerView_headerTextColor, R.color.calendar_text_active);
+    headerTextColor = a.getColor(R.styleable.CalendarPickerView_headerTextColor,
+        res.getColor(R.color.calendar_text_active));
     a.recycle();
 
     adapter = new MonthAdapter();
