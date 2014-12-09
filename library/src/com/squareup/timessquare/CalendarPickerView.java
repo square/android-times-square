@@ -318,8 +318,7 @@ public class CalendarPickerView extends ListView {
 
   private void scrollToSelectedMonth(final int selectedIndex, final boolean smoothScroll) {
     post(new Runnable() {
-      @Override
-      public void run() {
+      @Override public void run() {
         Logr.d("Scrolling to position %d", selectedIndex);
 
         if (smoothScroll) {
@@ -516,10 +515,10 @@ public class CalendarPickerView extends ListView {
       throw new IllegalArgumentException("Selected date must be non-zero.  " + date);
     }
     if (date.before(minCal.getTime()) || date.after(maxCal.getTime())) {
-      throw new IllegalArgumentException(
-          String.format("SelectedDate must be between minDate and maxDate."
-                  + "%nminDate: %s%nmaxDate: %s%nselectedDate: %s",
-                  minCal.getTime(), maxCal.getTime(), date));
+      throw new IllegalArgumentException(String.format(
+          "SelectedDate must be between minDate and maxDate."
+              + "%nminDate: %s%nmaxDate: %s%nselectedDate: %s", minCal.getTime(), maxCal.getTime(),
+          date));
     }
   }
 

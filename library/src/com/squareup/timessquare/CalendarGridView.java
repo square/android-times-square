@@ -22,7 +22,7 @@ public class CalendarGridView extends ViewGroup {
   /**
    * The grid lines don't exactly line up on certain devices (Nexus 7, Nexus 5). Fudging the
    * co-ordinates by half a point seems to fix this without breaking other devices.
-   * */
+   */
   private static final float FLOAT_FUDGE = 0.5f;
 
   private final Paint dividerPaint = new Paint();

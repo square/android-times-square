@@ -36,7 +36,7 @@ public class CalendarCellView extends TextView {
   private boolean isHighlighted = false;
   private RangeState rangeState = RangeState.NONE;
 
-  @SuppressWarnings("UnusedDeclaration")
+  @SuppressWarnings("UnusedDeclaration") //
   public CalendarCellView(Context context, AttributeSet attrs) {
     super(context, attrs);
   }
