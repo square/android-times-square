@@ -92,6 +92,7 @@ public class CalendarPickerView extends ListView {
   private DateSelectableFilter dateConfiguredListener;
   private OnInvalidDateSelectedListener invalidDateListener =
       new DefaultOnInvalidDateSelectedListener();
+  private CellClickInterceptor cellClickInterceptor;
 
   public CalendarPickerView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -318,8 +319,7 @@ public class CalendarPickerView extends ListView {
 
   private void scrollToSelectedMonth(final int selectedIndex, final boolean smoothScroll) {
     post(new Runnable() {
-      @Override
-      public void run() {
+      @Override public void run() {
         Logr.d("Scrolling to position %d", selectedIndex);
 
         if (smoothScroll) {
@@ -450,6 +450,9 @@ public class CalendarPickerView extends ListView {
     @Override public void handleClick(MonthCellDescriptor cell) {
       Date clickedDate = cell.getDate();
 
+      if (cellClickInterceptor != null && cellClickInterceptor.onCellClicked(clickedDate)) {
+        return;
+      }
       if (!betweenDates(clickedDate, minCal, maxCal) || !isDateSelectable(clickedDate)) {
         if (invalidDateListener != null) {
           invalidDateListener.onInvalidDateSelected(clickedDate);
@@ -516,10 +519,10 @@ public class CalendarPickerView extends ListView {
       throw new IllegalArgumentException("Selected date must be non-zero.  " + date);
     }
     if (date.before(minCal.getTime()) || date.after(maxCal.getTime())) {
-      throw new IllegalArgumentException(
-          String.format("SelectedDate must be between minDate and maxDate."
-                  + "%nminDate: %s%nmaxDate: %s%nselectedDate: %s",
-                  minCal.getTime(), maxCal.getTime(), date));
+      throw new IllegalArgumentException(String.format(
+          "SelectedDate must be between minDate and maxDate."
+              + "%nminDate: %s%nmaxDate: %s%nselectedDate: %s", minCal.getTime(), maxCal.getTime(),
+          date));
     }
   }
 
@@ -834,6 +837,11 @@ public class CalendarPickerView extends ListView {
     dateConfiguredListener = listener;
   }
 
+  /** Set a listener to intercept clicks on calendar cells. */
+  public void setCellClickInterceptor(CellClickInterceptor listener) {
+    cellClickInterceptor = listener;
+  }
+
   /**
    * Interface to be notified when a new date is selected or unselected. This will only be called
    * when the user initiates the date selection.  If you call {@link #selectDate(Date)} this
@@ -866,6 +874,16 @@ public class CalendarPickerView extends ListView {
    */
   public interface DateSelectableFilter {
     boolean isDateSelectable(Date date);
+  }
+
+  /**
+   * Interface to be notified when a cell is clicked and possibly intercept the click.  Return true
+   * to intercept the click and prevent any selections from changing.
+   *
+   * @see #setCellClickInterceptor(CellClickInterceptor)
+   */
+  public interface CellClickInterceptor {
+    boolean onCellClicked(Date date);
   }
 
   private class DefaultOnInvalidDateSelectedListener implements OnInvalidDateSelectedListener {
