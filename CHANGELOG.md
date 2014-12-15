@@ -1,11 +1,12 @@
 Change Log
 ==========
 
-Version 1.4.2 *(2014-12-10)*
+Version 1.4.2 *(2014-12-??)*
 ----------------------------
 
  * New: Use CellClickInterceptor to implement custom cell-click logic
  * Fix: Correct default header/title text colors.
+ * Fix: Disallow passing > 2 dates to withSelectedDates when in RANGE mode.
 
 Version 1.4.1 *(2014-10-27)*
 ----------------------------
