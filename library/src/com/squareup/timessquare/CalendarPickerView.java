@@ -272,6 +272,10 @@ public class CalendarPickerView extends ListView {
       if (selectionMode == SelectionMode.SINGLE && selectedDates.size() > 1) {
         throw new IllegalArgumentException("SINGLE mode can't be used with multiple selectedDates");
       }
+      if (selectionMode == SelectionMode.RANGE && selectedDates.size() > 2) {
+        throw new IllegalArgumentException(
+            "RANGE mode only allows two selectedDates.  You tried to pass " + selectedDates.size());
+      }
       if (selectedDates != null) {
         for (Date date : selectedDates) {
           selectDate(date);

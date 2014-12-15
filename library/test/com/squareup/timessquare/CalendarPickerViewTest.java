@@ -222,6 +222,23 @@ public class CalendarPickerViewTest {
     }
   }
 
+  @Test public void testInitSeveralWithRangeSelections() throws Exception {
+    List<Date> selectedDates = new ArrayList<Date>();
+    Calendar firstSelection = buildCal(2012, NOVEMBER, 17);
+    selectedDates.add(firstSelection.getTime());
+    Calendar secondSelection = buildCal(2012, NOVEMBER, 21);
+    selectedDates.add(secondSelection.getTime());
+    Calendar thirdSelection = buildCal(2012, NOVEMBER, 25);
+    selectedDates.add(thirdSelection.getTime());
+    try {
+      view.init(minDate, maxDate, locale) //
+          .inMode(RANGE) //
+          .withSelectedDates(selectedDates);
+      fail("Should not have been able to init() with RANGE mode && three selected dates");
+    } catch (IllegalArgumentException expected) {
+    }
+  }
+
   @Test public void testNullInitArguments() throws Exception {
     final Date validDate = today.getTime();
     try {
