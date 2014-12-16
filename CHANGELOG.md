@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-Version 1.4.2 *(2014-12-??)*
+Version 1.5.0 *(2014-12-15)*
 ----------------------------
 
  * New: Use CellClickInterceptor to implement custom cell-click logic
