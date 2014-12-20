@@ -66,6 +66,8 @@ or Gradle:
 compile 'com.squareup:android-times-square:1.5.0@aar'
 ```
 
+Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
+
 
 License
 -------
@@ -87,3 +89,4 @@ License
 
 
  [zip]: https://github.com/square/android-times-square/archive/master.zip
+ [snap]: https://oss.sonatype.org/content/repositories/snapshots/
