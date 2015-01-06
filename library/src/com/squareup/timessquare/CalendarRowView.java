@@ -31,14 +31,14 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
     long start = System.currentTimeMillis();
     final int totalWidth = MeasureSpec.getSize(widthMeasureSpec);
     int rowHeight = 0;
-    // Calculate width of each cell, including rounding off pixels, making sure to cover totalWidth.
-    int l = ((c + 0) * totalWidth) / 7;
-    int r = ((c + 1) * totalWidth) / 7;
-    int cellSize = r - l;
-    int cellWidthSpec = makeMeasureSpec(cellSize, EXACTLY);
-    int cellHeightSpec = isHeaderRow ? makeMeasureSpec(cellSize, AT_MOST) : cellWidthSpec;
     for (int c = 0, numChildren = getChildCount(); c < numChildren; c++) {
       final View child = getChildAt(c);
+      // Calculate width of each cell, including rounding off pixels, making sure to cover totalWidth.
+      int l = ((c + 0) * totalWidth) / 7;
+      int r = ((c + 1) * totalWidth) / 7;
+      int cellSize = r - l;
+      int cellWidthSpec = makeMeasureSpec(cellSize, EXACTLY);
+      int cellHeightSpec = isHeaderRow ? makeMeasureSpec(cellSize, AT_MOST) : cellWidthSpec;
       child.measure(cellWidthSpec, cellHeightSpec);
       // The row height is the height of the tallest cell.
       if (child.getMeasuredHeight() > rowHeight) {
