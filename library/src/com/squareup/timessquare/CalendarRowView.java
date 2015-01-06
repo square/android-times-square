@@ -33,7 +33,7 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
     int rowHeight = 0;
     for (int c = 0, numChildren = getChildCount(); c < numChildren; c++) {
       final View child = getChildAt(c);
-      // Calculate width of each cell, including rounding off pixels, making sure to cover totalWidth.
+      // Calculate width cells, making sure to cover totalWidth.
       int l = ((c + 0) * totalWidth) / 7;
       int r = ((c + 1) * totalWidth) / 7;
       int cellSize = r - l;
