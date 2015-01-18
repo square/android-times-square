@@ -4,6 +4,8 @@ Change Log
 Version 1.5.1 *(2015-01-??)*
 ----------------------------
 
+ * New: init(Collection<Date> datesCollection) - Initiate calendar with Collection of dates,
+   where the date range does not have to be continuous.
  * New: unHighlightAllDates() - Unhighlights all previously highlighted days.
  * New: scrollToDate(Date date) - Scroll to the month that given date belongs to.
  * Fix: When calculating cell width, make sure to cover all of totalWidth.

@@ -67,8 +67,10 @@ public class CalendarPickerView extends ListView {
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
   final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
   final List<MonthCellDescriptor> highlightedCells = new ArrayList<MonthCellDescriptor>();
+  final List<Calendar> selectableCals = new ArrayList<Calendar>();
   final List<Calendar> selectedCals = new ArrayList<Calendar>();
   final List<Calendar> highlightedCals = new ArrayList<Calendar>();
+  private boolean isCheckDayInSelectableCals = false;
   private Locale locale;
   private DateFormat monthNameFormat;
   private DateFormat weekdayNameFormat;
@@ -246,6 +248,77 @@ public class CalendarPickerView extends ListView {
    */
   public FluentInitializer init(Date minDate, Date maxDate) {
     return init(minDate, maxDate, Locale.getDefault());
+  }
+
+  /**
+   * {@code datesCollection} must be non-null and all of it's items' {@link Date#getTime()} must
+   * not return 0. Time of all days will be ignored.
+   * For instance, if you pass in a collection of dates: 11/16/2012, 11/17/2012 and 11/20/2012,
+   * Only these particular dates will be selectable. Meaning that 11/18/2012 and 11/19/2012 will
+   * not be selectable although they will fall into {@code minDate} - {@code maxDate} interval.
+   * {@code minDate} will be set to 11/16/2012 and {@code maxDate} to 11/20/2012.
+   * <p>
+   * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
+   * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
+   * {@link FluentInitializer} this method returns.
+   * <p>
+   * The calendar will be constructed using the given locale. This means that all names
+   * (months, days) will be in the language of the locale and the weeks start with the day
+   * specified by the locale.
+   *
+   * @param datesCollection collection of selectable dates.
+   */
+  public FluentInitializer init(Collection<Date> datesCollection, Locale locale) {
+    if (datesCollection.isEmpty()){
+      throw new IllegalArgumentException(
+          "daysCollection is empty.");
+    }
+    
+    Date minDate = datesCollection.iterator().next();
+    Date maxDate = datesCollection.iterator().next();
+    for (Date date : datesCollection)
+    {
+      Calendar cal = Calendar.getInstance(locale);
+      cal.setTime(date);
+      setMidnight(cal);
+      selectableCals.add(cal);
+      
+      if (date.after(maxDate)) maxDate = date;
+      else if (date.before(minDate)) minDate = date;
+    }
+    
+    // maxDate is exclusive. So it should be one day after max day of datesCollection
+    Calendar cal = Calendar.getInstance(locale); 
+    cal.setTime(maxDate); 
+    cal.add(DATE, 1);
+    maxDate = cal.getTime();
+    
+    // this indicates whether to check if a day is in selectableCals Collection
+    isCheckDayInSelectableCals = true;
+    
+    return init(minDate, maxDate, locale);
+  }
+  
+  /**
+   * {@code datesCollection} must be non-null and all of it's items' {@link Date#getTime()} must
+   * not return 0. Time of all days will be ignored.
+   * For instance, if you pass in a collection of dates: 11/16/2012, 11/17/2012 and 11/20/2012,
+   * only these particular dates will be selectable. Meaning that 11/18/2012 and 11/19/2012 will
+   * not be selectable although they will fall into {@code minDate} - {@code maxDate} interval.
+   * {@code minDate} will be set to 11/16/2012 and {@code maxDate} to 11/20/2012.
+   * <p>
+   * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
+   * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
+   * {@link FluentInitializer} this method returns.
+   * <p>
+   * The calendar will be constructed using the default locale as returned by
+   * {@link java.util.Locale#getDefault()}. If you wish the calendar to be constructed using a
+   * different locale, use {@link #init(java.util.Collection, java.util.Locale)}.
+   *
+   * @param datesCollection collection of selectable dates.
+   */
+  public FluentInitializer init(Collection<Date> datesCollection) {
+    return init(datesCollection, Locale.getDefault());
   }
 
   public class FluentInitializer {
@@ -808,6 +881,12 @@ public class CalendarPickerView extends ListView {
     return cells;
   }
 
+  private boolean containsDate(List<Calendar> selectedCals, Date day) {
+    Calendar cal = Calendar.getInstance(locale);
+    cal.setTime(day);
+    return containsDate(selectedCals, cal);
+  }
+  
   private static boolean containsDate(List<Calendar> selectedCals, Calendar cal) {
     for (Calendar selectedCal : selectedCals) {
       if (sameDate(cal, selectedCal)) {
@@ -855,6 +934,7 @@ public class CalendarPickerView extends ListView {
   }
 
   private boolean isDateSelectable(Date date) {
+    if (isCheckDayInSelectableCals && !containsDate(selectableCals, date)) return false;
     return dateConfiguredListener == null || dateConfiguredListener.isDateSelectable(date);
   }
 
