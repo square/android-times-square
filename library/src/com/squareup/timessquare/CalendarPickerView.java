@@ -359,6 +359,32 @@ public class CalendarPickerView extends ListView {
       scrollToSelectedMonth(todayIndex);
     }
   }
+  
+  /**
+   * Scroll to the month that given date belongs to.
+   *
+   * @param date the day you want to be visible
+   * 
+   * @return true if this day and month is in the view, false otherwise
+   */
+  public boolean scrollToDate(Date date) {
+    Integer selectedIndex = null;
+    
+    Calendar cal = Calendar.getInstance(locale);
+    cal.setTime(date);
+    for (int c = 0; c < months.size(); c++) {
+      MonthDescriptor month = months.get(c);
+      if (sameMonth(cal, month)) {
+        selectedIndex = c;
+        break;
+      }
+    }
+    if (selectedIndex != null) {
+      scrollToSelectedMonth(selectedIndex);
+      return true;
+    }
+    return false;
+  }
 
   /**
    * This method should only be called if the calendar is contained in a dialog, and it should only
@@ -642,6 +668,21 @@ public class CalendarPickerView extends ListView {
         cell.setHighlighted(true);
       }
     }
+
+    adapter.notifyDataSetChanged();
+    setAdapter(adapter);
+  }
+
+  /**
+   * Unhighlights all previously highlighted days.
+   * Also clears {@link #highlightedCells} and {@link #highlightedCals}.
+   */
+  public void unHighlightAllDates() {
+    for (MonthCellDescriptor cal : highlightedCells) {
+      cal.setHighlighted(false);
+    }
+    highlightedCells.clear();
+    highlightedCals.clear();
 
     adapter.notifyDataSetChanged();
     setAdapter(adapter);
