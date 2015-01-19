@@ -67,8 +67,10 @@ public class CalendarPickerView extends ListView {
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
   final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
   final List<MonthCellDescriptor> highlightedCells = new ArrayList<MonthCellDescriptor>();
+  final List<Calendar> selectableCals = new ArrayList<Calendar>();
   final List<Calendar> selectedCals = new ArrayList<Calendar>();
   final List<Calendar> highlightedCals = new ArrayList<Calendar>();
+  private boolean isCheckDayInSelectableCals = false;
   private Locale locale;
   private DateFormat monthNameFormat;
   private DateFormat weekdayNameFormat;
@@ -248,6 +250,42 @@ public class CalendarPickerView extends ListView {
     return init(minDate, maxDate, Locale.getDefault());
   }
 
+  public FluentInitializer init(Collection<Date> datesCollection, Locale locale) {
+    if (datesCollection.isEmpty()) {
+      throw new IllegalArgumentException(
+          "daysCollection is empty.");
+    }
+
+    Date minDate = datesCollection.iterator().next();
+    Date maxDate = datesCollection.iterator().next();
+    for (Date date : datesCollection) {
+      Calendar cal = Calendar.getInstance(locale);
+      cal.setTime(date);
+      setMidnight(cal);
+      selectableCals.add(cal);
+      if (date.after(maxDate)) {
+          maxDate = date;
+      } else if (date.before(minDate)) {
+          minDate = date;
+      }
+    }
+
+    // maxDate is exclusive. So it should be one day after max day of datesCollection
+    Calendar cal = Calendar.getInstance(locale);
+    cal.setTime(maxDate);
+    cal.add(DATE, 1);
+    maxDate = cal.getTime();
+
+    // this indicates whether to check if a day is in selectableCals Collection
+    isCheckDayInSelectableCals = true;
+
+    return init(minDate, maxDate, locale);
+  }
+
+  public FluentInitializer init(Collection<Date> datesCollection) {
+    return init(datesCollection, Locale.getDefault());
+  }
+
   public class FluentInitializer {
     /** Override the {@link SelectionMode} from the default ({@link SelectionMode#SINGLE}). */
     public FluentInitializer inMode(SelectionMode mode) {
@@ -358,6 +396,25 @@ public class CalendarPickerView extends ListView {
     } else if (todayIndex != null) {
       scrollToSelectedMonth(todayIndex);
     }
+  }
+
+  public boolean scrollToDate(Date date) {
+    Integer selectedIndex = null;
+
+    Calendar cal = Calendar.getInstance(locale);
+    cal.setTime(date);
+    for (int c = 0; c < months.size(); c++) {
+      MonthDescriptor month = months.get(c);
+      if (sameMonth(cal, month)) {
+        selectedIndex = c;
+        break;
+      }
+    }
+    if (selectedIndex != null) {
+      scrollToSelectedMonth(selectedIndex);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -644,7 +701,16 @@ public class CalendarPickerView extends ListView {
     }
 
     adapter.notifyDataSetChanged();
-    setAdapter(adapter);
+  }
+
+  public void clearHighlightedDates() {
+    for (MonthCellDescriptor cal : highlightedCells) {
+      cal.setHighlighted(false);
+    }
+    highlightedCells.clear();
+    highlightedCals.clear();
+
+    adapter.notifyDataSetChanged();
   }
 
   /** Hold a cell with a month-index. */
@@ -767,6 +833,12 @@ public class CalendarPickerView extends ListView {
     return cells;
   }
 
+  private boolean containsDate(List<Calendar> selectedCals, Date day) {
+    Calendar cal = Calendar.getInstance(locale);
+    cal.setTime(day);
+    return containsDate(selectedCals, cal);
+  }
+
   private static boolean containsDate(List<Calendar> selectedCals, Calendar cal) {
     for (Calendar selectedCal : selectedCals) {
       if (sameDate(cal, selectedCal)) {
@@ -814,6 +886,9 @@ public class CalendarPickerView extends ListView {
   }
 
   private boolean isDateSelectable(Date date) {
+    if (isCheckDayInSelectableCals && !containsDate(selectableCals, date)) {
+        return false;
+    }
     return dateConfiguredListener == null || dateConfiguredListener.isDateSelectable(date);
   }
 

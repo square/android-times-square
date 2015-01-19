@@ -45,6 +45,15 @@ calendar.init(today, nextYear.getTime())
     .inMode(RANGE);
 ```
 
+If you want to be able to select dates in not continuous range, initiate calendar with collection
+of dates:
+
+```java
+Collection<Date> selectableDates = new ArrayList<Date>() {};
+
+calendar.init(selectableDates);
+```
+
 
 Download
 --------
