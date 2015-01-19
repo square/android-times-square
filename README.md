@@ -49,16 +49,9 @@ If you want to be able to select dates in not continuous range, initiate calenda
 of dates:
 
 ```java
-protected Collection<Date> mSelectableDates = new ArrayList<Date>() {};
-protected long[] timestampArray = new long[count];
+Collection<Date> selectableDates = new ArrayList<Date>() {};
 
-// create all dates you want to be selectable, e.g. dates with events
-for (int i = 0; i < timestampArray.length; i++) {
-    mSelectableDates.add(new Date(timestampArray[i]));
-}
-
-calendar.init(mSelectableDates)
-    .inMode(SelectionMode.SINGLE);
+calendar.init(selectableDates);
 ```
 
 
