@@ -360,6 +360,25 @@ public class CalendarPickerView extends ListView {
     }
   }
 
+  public boolean scrollToDate(Date date) {
+    Integer selectedIndex = null;
+
+    Calendar cal = Calendar.getInstance(locale);
+    cal.setTime(date);
+    for (int c = 0; c < months.size(); c++) {
+      MonthDescriptor month = months.get(c);
+      if (sameMonth(cal, month)) {
+        selectedIndex = c;
+        break;
+      }
+    }
+    if (selectedIndex != null) {
+      scrollToSelectedMonth(selectedIndex);
+      return true;
+    }
+    return false;
+  }
+
   /**
    * This method should only be called if the calendar is contained in a dialog, and it should only
    * be called once, right after the dialog is shown (using
@@ -644,7 +663,16 @@ public class CalendarPickerView extends ListView {
     }
 
     adapter.notifyDataSetChanged();
-    setAdapter(adapter);
+  }
+
+  public void clearHighlightedDates() {
+    for (MonthCellDescriptor cal : highlightedCells) {
+      cal.setHighlighted(false);
+    }
+    highlightedCells.clear();
+    highlightedCals.clear();
+
+    adapter.notifyDataSetChanged();
   }
 
   /** Hold a cell with a month-index. */
@@ -765,6 +793,12 @@ public class CalendarPickerView extends ListView {
       }
     }
     return cells;
+  }
+
+  private boolean containsDate(List<Calendar> selectedCals, Date date) {
+    Calendar cal = Calendar.getInstance(locale);
+    cal.setTime(date);
+    return containsDate(selectedCals, cal);
   }
 
   private static boolean containsDate(List<Calendar> selectedCals, Calendar cal) {
