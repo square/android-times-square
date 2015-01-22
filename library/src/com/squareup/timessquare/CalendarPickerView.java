@@ -662,7 +662,7 @@ public class CalendarPickerView extends ListView {
       }
     }
 
-    adapter.notifyDataSetChanged();
+    validateAndUpdate();
   }
 
   public void clearHighlightedDates() {
@@ -672,7 +672,7 @@ public class CalendarPickerView extends ListView {
     highlightedCells.clear();
     highlightedCals.clear();
 
-    adapter.notifyDataSetChanged();
+    validateAndUpdate();
   }
 
   /** Hold a cell with a month-index. */
