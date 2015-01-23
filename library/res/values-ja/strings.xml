@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2015 Square, Inc. -->
+
+<resources>
+  <string name="invalid_date">日付は%1$s～%2$sの間で設定してください。</string>
+</resources>
