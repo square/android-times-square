@@ -5,6 +5,7 @@ package com.squareup.timessquare;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
+
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 
 public class CalendarCellView extends TextView {
@@ -28,6 +29,9 @@ public class CalendarCellView extends TextView {
   };
   private static final int[] STATE_RANGE_LAST = {
       R.attr.state_range_last
+  };
+  private static final int[] STATE_RANGE_SELECTED_TWICE = {
+      R.attr.state_selected_twice
   };
 
   private boolean isSelectable = false;
@@ -89,8 +93,10 @@ public class CalendarCellView extends TextView {
       mergeDrawableStates(drawableState, STATE_RANGE_FIRST);
     } else if (rangeState == MonthCellDescriptor.RangeState.MIDDLE) {
       mergeDrawableStates(drawableState, STATE_RANGE_MIDDLE);
-    } else if (rangeState == RangeState.LAST) {
+    } else if (rangeState == MonthCellDescriptor.RangeState.LAST) {
       mergeDrawableStates(drawableState, STATE_RANGE_LAST);
+    } else if (rangeState == MonthCellDescriptor.RangeState.SELECTED_TWICE) {
+      mergeDrawableStates(drawableState, STATE_RANGE_SELECTED_TWICE);
     }
 
     return drawableState;

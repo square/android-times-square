@@ -6,6 +6,9 @@
   <item app:state_range_middle="true">
     <color android:color="@color/calendar_selected_range_bg"/>
   </item>
+  <item app:state_selected_twice="true">
+    <color android:color="@color/calendar_selected_twice_day_bg"/>
+  </item>
   <item android:state_selected="true">
     <color android:color="@color/calendar_selected_day_bg"/>
   </item>
