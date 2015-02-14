@@ -79,6 +79,7 @@ public class CalendarPickerView extends ListView {
   private boolean displayOnly;
   SelectionMode selectionMode;
   Calendar today;
+  private boolean supportsSingleDateRange;
   private int dividerColor;
   private int dayBackgroundResId;
   private int dayTextColorResId;
@@ -112,6 +113,7 @@ public class CalendarPickerView extends ListView {
     displayHeader = a.getBoolean(R.styleable.CalendarPickerView_displayHeader, true);
     headerTextColor = a.getColor(R.styleable.CalendarPickerView_headerTextColor,
         res.getColor(R.color.calendar_text_active));
+    supportsSingleDateRange = a.getBoolean(R.styleable.CalendarPickerView_supportsSingleDateRagne, false);
     a.recycle();
 
     adapter = new MonthAdapter();
@@ -584,9 +586,18 @@ public class CalendarPickerView extends ListView {
 
     if (date != null) {
       // Select a new cell.
-      if (selectedCells.size() == 0 || !selectedCells.get(0).equals(cell)) {
-        selectedCells.add(cell);
-        cell.setSelected(true);
+      if (supportsSingleDateRange) {
+          boolean selectedTwice = selectedCells.contains(cell);
+          selectedCells.add(cell);
+          cell.setSelected(true);
+          if (selectedTwice) {
+              cell.setRangeState(RangeState.SELECTED_TWICE);
+          }
+      } else {
+          if (selectedCells.size() == 0 || !selectedCells.get(0).equals(cell)) {
+              selectedCells.add(cell);
+              cell.setSelected(true);
+          }
       }
       selectedCals.add(newlySelectedCal);
 
@@ -594,8 +605,10 @@ public class CalendarPickerView extends ListView {
         // Select all days in between start and end.
         Date start = selectedCells.get(0).getDate();
         Date end = selectedCells.get(1).getDate();
-        selectedCells.get(0).setRangeState(MonthCellDescriptor.RangeState.FIRST);
-        selectedCells.get(1).setRangeState(MonthCellDescriptor.RangeState.LAST);
+        if (supportsSingleDateRange && selectedCells.get(0).getRangeState() != RangeState.SELECTED_TWICE) {
+            selectedCells.get(0).setRangeState(MonthCellDescriptor.RangeState.FIRST);
+            selectedCells.get(1).setRangeState(MonthCellDescriptor.RangeState.LAST);
+        }
 
         for (List<List<MonthCellDescriptor>> month : cells) {
           for (List<MonthCellDescriptor> week : month) {
