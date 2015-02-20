@@ -16,11 +16,21 @@ public class MonthView extends LinearLayout {
   TextView title;
   CalendarGridView grid;
   private Listener listener;
+  private List<CalendarCellDecorator> decorators;
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
       int headerTextColor) {
+    return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
+        dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader, headerTextColor,
+        null);
+  }
+
+  public static MonthView create(ViewGroup parent, LayoutInflater inflater,
+      DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
+      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
+      int headerTextColor, List<CalendarCellDecorator> decorators) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
     view.setDividerColor(dividerColor);
     view.setDayTextColor(dayTextColorResId);
@@ -43,11 +53,20 @@ public class MonthView extends LinearLayout {
     }
     today.set(Calendar.DAY_OF_WEEK, originalDayOfWeek);
     view.listener = listener;
+    view.decorators = decorators;
     return view;
   }
 
   public MonthView(Context context, AttributeSet attrs) {
     super(context, attrs);
+  }
+
+  public void setDecorators(List<CalendarCellDecorator> decorators) {
+    this.decorators = decorators;
+  }
+
+  public List<CalendarCellDecorator> getDecorators() {
+    return decorators;
   }
 
   @Override protected void onFinishInflate() {
@@ -88,6 +107,12 @@ public class MonthView extends LinearLayout {
           cellView.setRangeState(cell.getRangeState());
           cellView.setHighlighted(cell.isHighlighted());
           cellView.setTag(cell);
+
+          if (null != decorators) {
+            for (CalendarCellDecorator decorator : decorators) {
+              decorator.decorate(cellView, cell.getDate());
+            }
+          }
         }
       } else {
         weekRow.setVisibility(GONE);
