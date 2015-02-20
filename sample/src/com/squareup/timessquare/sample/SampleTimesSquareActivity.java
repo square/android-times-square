@@ -10,11 +10,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+import com.squareup.timessquare.CalendarCellDecorator;
 import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -36,10 +38,17 @@ public class SampleTimesSquareActivity extends Activity {
     lastYear.add(Calendar.YEAR, -1);
 
     calendar = (CalendarPickerView) findViewById(R.id.calendar_view);
+    List<CalendarCellDecorator> decorators = new ArrayList<CalendarCellDecorator>();
+    decorators.add(new SampleDecorator());
+    calendar.setDecorators(decorators);
     calendar.init(lastYear.getTime(), nextYear.getTime()) //
         .inMode(SelectionMode.SINGLE) //
         .withSelectedDate(new Date());
 
+    initButtonListeners(nextYear, lastYear);
+  }
+
+  private void initButtonListeners(final Calendar nextYear, final Calendar lastYear) {
     final Button single = (Button) findViewById(R.id.button_single);
     final Button multi = (Button) findViewById(R.id.button_multi);
     final Button range = (Button) findViewById(R.id.button_range);
@@ -110,7 +119,7 @@ public class SampleTimesSquareActivity extends Activity {
 
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.SINGLE) //
-            .withSelectedDate(new Date())
+            .withSelectedDate(new Date()) //
             .displayOnly();
       }
     });
@@ -154,7 +163,8 @@ public class SampleTimesSquareActivity extends Activity {
                   public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
                   }
-                }).create();
+                })
+                .create();
         theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
           @Override
           public void onShow(DialogInterface dialogInterface) {
