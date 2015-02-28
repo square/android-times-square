@@ -634,6 +634,19 @@ public class CalendarPickerView extends ListView {
     for (MonthCellDescriptor selectedCell : selectedCells) {
       // De-select the currently-selected cell.
       selectedCell.setSelected(false);
+
+      if (dateListener != null) {
+        Date selectedDate = selectedCell.getDate();
+
+        if (selectionMode == SelectionMode.RANGE) {
+          int index = selectedCells.indexOf(selectedCell);
+          if (index == 0 || index == selectedCells.size() - 1) {
+            dateListener.onDateUnselected(selectedDate);
+          }
+        } else {
+          dateListener.onDateUnselected(selectedDate);
+        }
+      }
     }
     selectedCells.clear();
     selectedCals.clear();
