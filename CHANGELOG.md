@@ -1,9 +1,10 @@
 Change Log
 ==========
 
-Version 1.5.1 *(2015-01-??)*
+Version 1.6.0 *(2015-04-10)*
 ----------------------------
 
+ * New: `CalendarCellDecorator` - Flexibility to do whatever custom logic you want on top of our cells.
  * New: `clearHighlightedDates()` - Unhighlights all previously highlighted days.
  * New: `scrollToDate(Date date)` - Scroll to the month that given date belongs to.
  * New: `containsDate(List<Calendar> selectedCals, Date date)` - if date is within selectedCals
