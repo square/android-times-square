@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class MonthView extends LinearLayout {
   TextView title;
@@ -26,6 +27,19 @@ public class MonthView extends LinearLayout {
         dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader, headerTextColor,
         null);
   }
+    private static boolean isRTL() {
+        final int directionality = Character.getDirectionality(Locale.getDefault().getDisplayName().charAt(0));
+        return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
+                directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
+    }
+  private static void addDay(Calendar today,int offset,MonthView view,DateFormat weekdayNameFormat,int day){
+
+      final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
+      today.set(Calendar.DAY_OF_WEEK,day);
+      final TextView textView = (TextView) headerRow.getChildAt(offset);
+      textView.setText(weekdayNameFormat.format(today.getTime()));
+  }
+
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
@@ -43,14 +57,20 @@ public class MonthView extends LinearLayout {
     }
 
     final int originalDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
+      int firstDayOfWeek = today.getFirstDayOfWeek();
+      if(isRTL()) {
+          for (int offset = 0; offset < 7; offset++) {
+              addDay(today,offset,view,weekdayNameFormat,7 - offset);
 
-    int firstDayOfWeek = today.getFirstDayOfWeek();
-    final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
-    for (int offset = 0; offset < 7; offset++) {
-      today.set(Calendar.DAY_OF_WEEK, firstDayOfWeek + offset);
-      final TextView textView = (TextView) headerRow.getChildAt(offset);
-      textView.setText(weekdayNameFormat.format(today.getTime()));
-    }
+          }
+      }
+      else{
+
+          for (int offset = 0; offset < 7; offset++) {
+              addDay(today,offset,view,weekdayNameFormat,firstDayOfWeek + offset);
+          }
+      }
+
     today.set(Calendar.DAY_OF_WEEK, originalDayOfWeek);
     view.listener = listener;
     view.decorators = decorators;
@@ -81,6 +101,7 @@ public class MonthView extends LinearLayout {
     long start = System.currentTimeMillis();
     title.setText(month.getLabel());
 
+
     final int numRows = cells.size();
     grid.setNumRows(numRows);
     for (int i = 0; i < 6; i++) {
@@ -89,8 +110,12 @@ public class MonthView extends LinearLayout {
       if (i < numRows) {
         weekRow.setVisibility(VISIBLE);
         List<MonthCellDescriptor> week = cells.get(i);
-        for (int c = 0; c < week.size(); c++) {
-          MonthCellDescriptor cell = week.get(c);
+
+          for (int c = 0; c < week.size(); c++) {
+
+          int DayNumber = isRTL() ? 6-c : c;
+
+          MonthCellDescriptor cell = week.get(DayNumber);
           CalendarCellView cellView = (CalendarCellView) weekRow.getChildAt(c);
 
           String cellDate = Integer.toString(cell.getValue());
