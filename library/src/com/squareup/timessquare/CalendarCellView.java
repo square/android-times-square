@@ -66,6 +66,18 @@ public class CalendarCellView extends TextView {
     refreshDrawableState();
   }
 
+  public boolean isCurrentMonth() {
+    return isCurrentMonth;
+  }
+
+  public boolean isToday() {
+    return isToday;
+  }
+
+  public boolean isSelectable() {
+    return isSelectable;
+  }
+
   @Override protected int[] onCreateDrawableState(int extraSpace) {
     final int[] drawableState = super.onCreateDrawableState(extraSpace + 5);
 
