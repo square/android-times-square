@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.6.1 *(2015-04-13)*
+----------------------------
+
+ * New: CalendarCellView accessors for various states.  Useful for CalendarCellDecorator implementation.
+
 Version 1.6.0 *(2015-04-10)*
 ----------------------------
 
