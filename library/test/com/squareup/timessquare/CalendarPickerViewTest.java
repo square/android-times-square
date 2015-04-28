@@ -271,32 +271,6 @@ public class CalendarPickerViewTest {
     }
   }
 
-  @Test public void testZeroDates() throws Exception {
-    final Date validDate = today.getTime();
-    final Date zeroDate = new Date(0L);
-    try {
-      view.init(validDate, validDate, locale) //
-          .inMode(SINGLE) //
-          .withSelectedDate(zeroDate);
-      fail("Should not have been able to pass in a zero startDate");
-    } catch (IllegalArgumentException expected) {
-    }
-    try {
-      view.init(zeroDate, validDate, locale) //
-          .inMode(SINGLE) //
-          .withSelectedDate(validDate);
-      fail("Should not have been able to pass in a zero minDate");
-    } catch (IllegalArgumentException expected) {
-    }
-    try {
-      view.init(validDate, zeroDate, locale) //
-          .inMode(SINGLE) //
-          .withSelectedDate(validDate);
-      fail("Should not have been able to pass in a zero maxDate");
-    } catch (IllegalArgumentException expected) {
-    }
-  }
-
   @Test public void testMinAndMaxMixup() throws Exception {
     final Date minDate = today.getTime();
     today.add(YEAR, -1);
