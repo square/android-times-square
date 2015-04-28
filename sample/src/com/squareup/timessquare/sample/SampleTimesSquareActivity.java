@@ -15,8 +15,10 @@ import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -26,8 +28,7 @@ public class SampleTimesSquareActivity extends Activity {
   private AlertDialog theDialog;
   private CalendarPickerView dialogView;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sample_calendar_picker);
 
@@ -38,9 +39,6 @@ public class SampleTimesSquareActivity extends Activity {
     lastYear.add(Calendar.YEAR, -1);
 
     calendar = (CalendarPickerView) findViewById(R.id.calendar_view);
-    List<CalendarCellDecorator> decorators = new ArrayList<CalendarCellDecorator>();
-    decorators.add(new SampleDecorator());
-    calendar.setDecorators(decorators);
     calendar.init(lastYear.getTime(), nextYear.getTime()) //
         .inMode(SelectionMode.SINGLE) //
         .withSelectedDate(new Date());
@@ -55,14 +53,17 @@ public class SampleTimesSquareActivity extends Activity {
     final Button displayOnly = (Button) findViewById(R.id.button_display_only);
     final Button dialog = (Button) findViewById(R.id.button_dialog);
     final Button customized = (Button) findViewById(R.id.button_customized);
+    final Button decorator = (Button) findViewById(R.id.button_decorator);
+    final Button rtl = (Button) findViewById(R.id.button_rtl);
     single.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
+      @Override public void onClick(View v) {
         single.setEnabled(false);
         multi.setEnabled(true);
         range.setEnabled(true);
         displayOnly.setEnabled(true);
+        decorator.setEnabled(true);
 
+        calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
         calendar.init(lastYear.getTime(), nextYear.getTime()) //
             .inMode(SelectionMode.SINGLE) //
             .withSelectedDate(new Date());
@@ -70,12 +71,12 @@ public class SampleTimesSquareActivity extends Activity {
     });
 
     multi.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
+      @Override public void onClick(View v) {
         single.setEnabled(true);
         multi.setEnabled(false);
         range.setEnabled(true);
         displayOnly.setEnabled(true);
+        decorator.setEnabled(true);
 
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
@@ -83,6 +84,7 @@ public class SampleTimesSquareActivity extends Activity {
           today.add(Calendar.DAY_OF_MONTH, 3);
           dates.add(today.getTime());
         }
+        calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.MULTIPLE) //
             .withSelectedDates(dates);
@@ -90,12 +92,12 @@ public class SampleTimesSquareActivity extends Activity {
     });
 
     range.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
+      @Override public void onClick(View v) {
         single.setEnabled(true);
         multi.setEnabled(true);
         range.setEnabled(false);
         displayOnly.setEnabled(true);
+        decorator.setEnabled(true);
 
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
@@ -103,6 +105,7 @@ public class SampleTimesSquareActivity extends Activity {
         dates.add(today.getTime());
         today.add(Calendar.DATE, 5);
         dates.add(today.getTime());
+        calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.RANGE) //
             .withSelectedDates(dates);
@@ -110,13 +113,14 @@ public class SampleTimesSquareActivity extends Activity {
     });
 
     displayOnly.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
+      @Override public void onClick(View v) {
         single.setEnabled(true);
         multi.setEnabled(true);
         range.setEnabled(true);
         displayOnly.setEnabled(false);
+        decorator.setEnabled(true);
 
+        calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.SINGLE) //
             .withSelectedDate(new Date()) //
@@ -139,8 +143,7 @@ public class SampleTimesSquareActivity extends Activity {
                 })
                 .create();
         theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-          @Override
-          public void onShow(DialogInterface dialogInterface) {
+          @Override public void onShow(DialogInterface dialogInterface) {
             Log.d(TAG, "onShow: fix the dimens!");
             dialogView.fixDialogDimens();
           }
@@ -150,8 +153,7 @@ public class SampleTimesSquareActivity extends Activity {
     });
 
     customized.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
+      @Override public void onClick(View view) {
         dialogView = (CalendarPickerView) getLayoutInflater() //
             .inflate(R.layout.dialog_customized, null, false);
         dialogView.init(lastYear.getTime(), nextYear.getTime()).withSelectedDate(new Date());
@@ -159,15 +161,54 @@ public class SampleTimesSquareActivity extends Activity {
             new AlertDialog.Builder(SampleTimesSquareActivity.this).setTitle("Pimp my calendar !")
                 .setView(dialogView)
                 .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-                  @Override
-                  public void onClick(DialogInterface dialogInterface, int i) {
+                  @Override public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
                   }
                 })
                 .create();
         theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-          @Override
-          public void onShow(DialogInterface dialogInterface) {
+          @Override public void onShow(DialogInterface dialogInterface) {
+            Log.d(TAG, "onShow: fix the dimens!");
+            dialogView.fixDialogDimens();
+          }
+        });
+        theDialog.show();
+      }
+    });
+
+    decorator.setOnClickListener(new OnClickListener() {
+      @Override public void onClick(View v) {
+        single.setEnabled(true);
+        multi.setEnabled(true);
+        range.setEnabled(true);
+        displayOnly.setEnabled(true);
+        decorator.setEnabled(false);
+
+        List<CalendarCellDecorator> decorators = Collections.<CalendarCellDecorator>emptyList();
+        decorators.add(new SampleDecorator());
+        calendar.setDecorators(decorators);
+        calendar.init(lastYear.getTime(), nextYear.getTime()) //
+            .inMode(SelectionMode.SINGLE) //
+            .withSelectedDate(new Date());
+      }
+    });
+
+    rtl.setOnClickListener(new OnClickListener() {
+      @Override public void onClick(View view) {
+        dialogView = (CalendarPickerView) getLayoutInflater().inflate(R.layout.dialog, null, false);
+        dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("iw", "IL")) //
+            .withSelectedDate(new Date());
+        theDialog = new AlertDialog.Builder(SampleTimesSquareActivity.this) //
+            .setTitle("I'm right-to-left!")
+            .setView(dialogView)
+            .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+              @Override public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+              }
+            })
+            .create();
+        theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+          @Override public void onShow(DialogInterface dialogInterface) {
             Log.d(TAG, "onShow: fix the dimens!");
             dialogView.fixDialogDimens();
           }
@@ -177,8 +218,7 @@ public class SampleTimesSquareActivity extends Activity {
     });
 
     findViewById(R.id.done_button).setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
+      @Override public void onClick(View view) {
         Log.d(TAG, "Selected time in millis: " + calendar.getSelectedDate().getTime());
         String toast = "Selected: " + calendar.getSelectedDate().getTime();
         Toast.makeText(SampleTimesSquareActivity.this, toast, LENGTH_SHORT).show();

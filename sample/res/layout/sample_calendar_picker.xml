@@ -6,57 +6,66 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+  <HorizontalScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:scrollbarStyle="outsideInset">
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:scrollbarStyle="outsideInset">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+      <Button
+          android:id="@+id/button_single"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Single"
+          android:enabled="false"/>
 
-            <Button
-                android:id="@+id/button_single"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Single"
-                android:enabled="false"/>
+      <Button
+          android:id="@+id/button_multi"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Multi"/>
 
-            <Button
-                android:id="@+id/button_multi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Multi" />
+      <Button
+          android:id="@+id/button_range"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Range"/>
 
-            <Button
-                android:id="@+id/button_range"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Range" />
+      <Button
+          android:id="@+id/button_display_only"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="DisplayOnly"/>
 
-            <Button
-                android:id="@+id/button_display_only"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="DisplayOnly" />
+      <Button
+          android:id="@+id/button_dialog"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Dialog"/>
 
-            <Button
-                android:id="@+id/button_dialog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dialog" />
+      <Button
+          android:id="@+id/button_customized"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Customized"/>
 
-            <Button
-                android:id="@+id/button_customized"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Customized" />
+      <Button
+          android:id="@+id/button_decorator"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Decorator"/>
 
-        </LinearLayout>
-
-    </HorizontalScrollView>
+      <Button
+          android:id="@+id/button_rtl"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="RTL"/>
+    </LinearLayout>
+  </HorizontalScrollView>
 
   <com.squareup.timessquare.CalendarPickerView
       android:id="@+id/calendar_view"
@@ -76,5 +85,4 @@
       android:layout_height="wrap_content"
       android:text="Done"
       />
-
 </LinearLayout>
