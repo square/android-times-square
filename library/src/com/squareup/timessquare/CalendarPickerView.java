@@ -175,10 +175,6 @@ public class CalendarPickerView extends ListView {
       throw new IllegalArgumentException(
           "minDate must be before maxDate.  " + dbg(minDate, maxDate));
     }
-    if (minDate.getTime() == 0 || maxDate.getTime() == 0) {
-      throw new IllegalArgumentException(
-          "minDate and maxDate must be non-zero.  " + dbg(minDate, maxDate));
-    }
     if (locale == null) {
       throw new IllegalArgumentException("Locale is null.");
     }
@@ -549,9 +545,6 @@ public class CalendarPickerView extends ListView {
   private void validateDate(Date date) {
     if (date == null) {
       throw new IllegalArgumentException("Selected date must be non-null.");
-    }
-    if (date.getTime() == 0) {
-      throw new IllegalArgumentException("Selected date must be non-zero.  " + date);
     }
     if (date.before(minCal.getTime()) || date.after(maxCal.getTime())) {
       throw new IllegalArgumentException(String.format(
