@@ -11,26 +11,28 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class MonthView extends LinearLayout {
   TextView title;
   CalendarGridView grid;
   private Listener listener;
   private List<CalendarCellDecorator> decorators;
+  private boolean isRtl;
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
-      int headerTextColor) {
+      int headerTextColor, Locale locale) {
     return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
-        dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader, headerTextColor,
-        null);
+        dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader, headerTextColor, null,
+        locale);
   }
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
-      int headerTextColor, List<CalendarCellDecorator> decorators) {
+      int headerTextColor, List<CalendarCellDecorator> decorators, Locale locale) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
     view.setDividerColor(dividerColor);
     view.setDayTextColor(dayTextColorResId);
@@ -44,10 +46,11 @@ public class MonthView extends LinearLayout {
 
     final int originalDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
 
+    view.isRtl = isRtl(locale);
     int firstDayOfWeek = today.getFirstDayOfWeek();
     final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
     for (int offset = 0; offset < 7; offset++) {
-      today.set(Calendar.DAY_OF_WEEK, firstDayOfWeek + offset);
+      today.set(Calendar.DAY_OF_WEEK, getDayOfWeek(firstDayOfWeek, offset, view.isRtl));
       final TextView textView = (TextView) headerRow.getChildAt(offset);
       textView.setText(weekdayNameFormat.format(today.getTime()));
     }
@@ -55,6 +58,21 @@ public class MonthView extends LinearLayout {
     view.listener = listener;
     view.decorators = decorators;
     return view;
+  }
+
+  private static int getDayOfWeek(int firstDayOfWeek, int offset, boolean isRtl) {
+    int dayOfWeek = firstDayOfWeek + offset;
+    if (isRtl) {
+      return 8 - dayOfWeek;
+    }
+    return dayOfWeek;
+  }
+
+  private static boolean isRtl(Locale locale) {
+    // TODO convert the build to gradle and use getLayoutDirection instead of this (on 17+)?
+    final int directionality = Character.getDirectionality(locale.getDisplayName(locale).charAt(0));
+    return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT
+        || directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
   }
 
   public MonthView(Context context, AttributeSet attrs) {
@@ -90,7 +108,7 @@ public class MonthView extends LinearLayout {
         weekRow.setVisibility(VISIBLE);
         List<MonthCellDescriptor> week = cells.get(i);
         for (int c = 0; c < week.size(); c++) {
-          MonthCellDescriptor cell = week.get(c);
+          MonthCellDescriptor cell = week.get(isRtl ? 6 - c : c);
           CalendarCellView cellView = (CalendarCellView) weekRow.getChildAt(c);
 
           String cellDate = Integer.toString(cell.getValue());

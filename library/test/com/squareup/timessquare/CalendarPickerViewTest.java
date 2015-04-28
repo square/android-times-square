@@ -581,6 +581,21 @@ public class CalendarPickerViewTest {
     assertThat(monthView.title).hasTextString("Dezember 2012");
   }
 
+  @Test public void testRightToLeftLocale() throws Exception {
+    view.init(minDate, maxDate, new Locale("iw", "IL"));
+    MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
+    CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
+    TextView firstDay = (TextView) header.getChildAt(0);
+    assertThat(firstDay).hasTextString("ש"); // Last day of the week (Saturday) is the first cell.
+    CalendarRowView firstWeek = (CalendarRowView) monthView.grid.getChildAt(1);
+    TextView firstDate = (TextView) firstWeek.getChildAt(0);
+    assertThat(firstDate).hasTextString("1");
+    CalendarRowView secondWeek = (CalendarRowView) monthView.grid.getChildAt(2);
+    TextView secondDate = (TextView) secondWeek.getChildAt(6);
+    assertThat(secondDate).hasTextString("2");
+    assertThat(monthView.title).hasTextString("דצמבר 2012");
+  }
+
   @Test public void testFirstDayOfWeekIsMonday() throws Exception {
     Locale greatBritain = new Locale("en", "GB");
 
