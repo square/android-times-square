@@ -14,11 +14,13 @@ import com.squareup.timessquare.CalendarCellDecorator;
 import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -27,6 +29,7 @@ public class SampleTimesSquareActivity extends Activity {
   private CalendarPickerView calendar;
   private AlertDialog theDialog;
   private CalendarPickerView dialogView;
+  private final Set<Button> modeButtons = new LinkedHashSet<Button>();
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -55,13 +58,12 @@ public class SampleTimesSquareActivity extends Activity {
     final Button customized = (Button) findViewById(R.id.button_customized);
     final Button decorator = (Button) findViewById(R.id.button_decorator);
     final Button rtl = (Button) findViewById(R.id.button_rtl);
+
+    modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator));
+
     single.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View v) {
-        single.setEnabled(false);
-        multi.setEnabled(true);
-        range.setEnabled(true);
-        displayOnly.setEnabled(true);
-        decorator.setEnabled(true);
+        setButtonsEnabled(single);
 
         calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
         calendar.init(lastYear.getTime(), nextYear.getTime()) //
@@ -72,11 +74,7 @@ public class SampleTimesSquareActivity extends Activity {
 
     multi.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View v) {
-        single.setEnabled(true);
-        multi.setEnabled(false);
-        range.setEnabled(true);
-        displayOnly.setEnabled(true);
-        decorator.setEnabled(true);
+        setButtonsEnabled(multi);
 
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
@@ -93,11 +91,7 @@ public class SampleTimesSquareActivity extends Activity {
 
     range.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View v) {
-        single.setEnabled(true);
-        multi.setEnabled(true);
-        range.setEnabled(false);
-        displayOnly.setEnabled(true);
-        decorator.setEnabled(true);
+        setButtonsEnabled(range);
 
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
@@ -114,11 +108,7 @@ public class SampleTimesSquareActivity extends Activity {
 
     displayOnly.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View v) {
-        single.setEnabled(true);
-        multi.setEnabled(true);
-        range.setEnabled(true);
-        displayOnly.setEnabled(false);
-        decorator.setEnabled(true);
+        setButtonsEnabled(displayOnly);
 
         calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
         calendar.init(new Date(), nextYear.getTime()) //
@@ -178,15 +168,9 @@ public class SampleTimesSquareActivity extends Activity {
 
     decorator.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View v) {
-        single.setEnabled(true);
-        multi.setEnabled(true);
-        range.setEnabled(true);
-        displayOnly.setEnabled(true);
-        decorator.setEnabled(false);
+        setButtonsEnabled(decorator);
 
-        List<CalendarCellDecorator> decorators = Collections.<CalendarCellDecorator>emptyList();
-        decorators.add(new SampleDecorator());
-        calendar.setDecorators(decorators);
+        calendar.setDecorators(Arrays.<CalendarCellDecorator>asList(new SampleDecorator()));
         calendar.init(lastYear.getTime(), nextYear.getTime()) //
             .inMode(SelectionMode.SINGLE) //
             .withSelectedDate(new Date());
@@ -224,6 +208,12 @@ public class SampleTimesSquareActivity extends Activity {
         Toast.makeText(SampleTimesSquareActivity.this, toast, LENGTH_SHORT).show();
       }
     });
+  }
+
+  private void setButtonsEnabled(Button currentButton) {
+    for (Button modeButton : modeButtons) {
+      modeButton.setEnabled(modeButton != currentButton);
+    }
   }
 
   @Override public void onConfigurationChanged(Configuration newConfig) {
