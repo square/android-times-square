@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.6.2 *(2015-04-28)*
+----------------------------
+
+ * New: Right-To-Left layout support.
+ * Fix: applying decorators after views are rendered now works
+
 Version 1.6.1 *(2015-04-13)*
 ----------------------------
 
