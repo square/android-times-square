@@ -120,49 +120,18 @@ public class SampleTimesSquareActivity extends Activity {
 
     dialog.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View view) {
-        dialogView = (CalendarPickerView) getLayoutInflater().inflate(R.layout.dialog, null, false);
+        String title = "I'm a dialog!";
+        showCalendarInDialog(title, R.layout.dialog);
         dialogView.init(lastYear.getTime(), nextYear.getTime()) //
             .withSelectedDate(new Date());
-        theDialog =
-            new AlertDialog.Builder(SampleTimesSquareActivity.this).setTitle("I'm a dialog!")
-                .setView(dialogView)
-                .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-                  @Override public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                  }
-                })
-                .create();
-        theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-          @Override public void onShow(DialogInterface dialogInterface) {
-            Log.d(TAG, "onShow: fix the dimens!");
-            dialogView.fixDialogDimens();
-          }
-        });
-        theDialog.show();
       }
     });
 
     customized.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View view) {
-        dialogView = (CalendarPickerView) getLayoutInflater() //
-            .inflate(R.layout.dialog_customized, null, false);
-        dialogView.init(lastYear.getTime(), nextYear.getTime()).withSelectedDate(new Date());
-        theDialog =
-            new AlertDialog.Builder(SampleTimesSquareActivity.this).setTitle("Pimp my calendar !")
-                .setView(dialogView)
-                .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-                  @Override public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                  }
-                })
-                .create();
-        theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-          @Override public void onShow(DialogInterface dialogInterface) {
-            Log.d(TAG, "onShow: fix the dimens!");
-            dialogView.fixDialogDimens();
-          }
-        });
-        theDialog.show();
+        showCalendarInDialog("Pimp my calendar!", R.layout.dialog_customized);
+        dialogView.init(lastYear.getTime(), nextYear.getTime())
+            .withSelectedDate(new Date());
       }
     });
 
@@ -179,25 +148,9 @@ public class SampleTimesSquareActivity extends Activity {
 
     rtl.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View view) {
-        dialogView = (CalendarPickerView) getLayoutInflater().inflate(R.layout.dialog, null, false);
+        showCalendarInDialog("I'm right-to-left!", R.layout.dialog);
         dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("iw", "IL")) //
             .withSelectedDate(new Date());
-        theDialog = new AlertDialog.Builder(SampleTimesSquareActivity.this) //
-            .setTitle("I'm right-to-left!")
-            .setView(dialogView)
-            .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-              @Override public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-              }
-            })
-            .create();
-        theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-          @Override public void onShow(DialogInterface dialogInterface) {
-            Log.d(TAG, "onShow: fix the dimens!");
-            dialogView.fixDialogDimens();
-          }
-        });
-        theDialog.show();
       }
     });
 
@@ -208,6 +161,26 @@ public class SampleTimesSquareActivity extends Activity {
         Toast.makeText(SampleTimesSquareActivity.this, toast, LENGTH_SHORT).show();
       }
     });
+  }
+
+  private void showCalendarInDialog(String title, int layoutResId) {
+    dialogView = (CalendarPickerView) getLayoutInflater().inflate(layoutResId, null, false);
+    theDialog = new AlertDialog.Builder(this) //
+        .setTitle(title)
+        .setView(dialogView)
+        .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+          @Override public void onClick(DialogInterface dialogInterface, int i) {
+            dialogInterface.dismiss();
+          }
+        })
+        .create();
+    theDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+      @Override public void onShow(DialogInterface dialogInterface) {
+        Log.d(TAG, "onShow: fix the dimens!");
+        dialogView.fixDialogDimens();
+      }
+    });
+    theDialog.show();
   }
 
   private void setButtonsEnabled(Button currentButton) {
