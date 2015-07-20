@@ -70,7 +70,7 @@ public class CalendarCellView extends TextView {
   }
 
   public void setHighlighted(boolean highlighted) {
-    if (this.isHighlighted != isHighlighted) {
+    if (this.isHighlighted != highlighted) {
       isHighlighted = highlighted;
       refreshDrawableState();
     }
