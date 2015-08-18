@@ -42,28 +42,38 @@ public class CalendarCellView extends TextView {
   }
 
   public void setSelectable(boolean isSelectable) {
-    this.isSelectable = isSelectable;
-    refreshDrawableState();
+    if (this.isSelectable != isSelectable) {
+      this.isSelectable = isSelectable;
+      refreshDrawableState();
+    }
   }
 
   public void setCurrentMonth(boolean isCurrentMonth) {
-    this.isCurrentMonth = isCurrentMonth;
-    refreshDrawableState();
+    if (this.isCurrentMonth != isCurrentMonth) {
+      this.isCurrentMonth = isCurrentMonth;
+      refreshDrawableState();
+    }
   }
 
   public void setToday(boolean isToday) {
-    this.isToday = isToday;
-    refreshDrawableState();
+    if (this.isToday != isToday) {
+      this.isToday = isToday;
+      refreshDrawableState();
+    }
   }
 
   public void setRangeState(MonthCellDescriptor.RangeState rangeState) {
-    this.rangeState = rangeState;
-    refreshDrawableState();
+    if (this.rangeState != rangeState) {
+      this.rangeState = rangeState;
+      refreshDrawableState();
+    }
   }
 
-  public void setHighlighted(boolean highlighted) {
-    isHighlighted = highlighted;
-    refreshDrawableState();
+  public void setHighlighted(boolean isHighlighted) {
+    if (this.isHighlighted != isHighlighted) {
+      this.isHighlighted = isHighlighted;
+      refreshDrawableState();
+    }
   }
 
   public boolean isCurrentMonth() {
