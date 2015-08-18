@@ -4,12 +4,12 @@
           xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:state_selected="true" android:drawable="@drawable/bg_circle_selected"/>
     <item android:state_pressed="true" android:drawable="@drawable/bg_circle_selected"/>
-    <item app:state_current_month="false">
+    <item app:tsquare_state_current_month="false">
         <shape android:shape="rectangle">
             <solid android:color="@color/custom_background_disabled"/>
         </shape>
     </item>
-    <item app:state_today="true" android:drawable="@drawable/bg_circle_today"/>
+    <item app:tsquare_state_today="true" android:drawable="@drawable/bg_circle_today"/>
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/custom_background"/>
