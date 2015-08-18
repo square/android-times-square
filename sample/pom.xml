@@ -30,8 +30,6 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
-
     <plugins>
       <plugin>
         <groupId>com.simpligility.maven.plugins</groupId>

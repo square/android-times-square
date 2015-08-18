@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.MULTIPLE;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.RANGE;
@@ -45,6 +46,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 
 @RunWith(RobolectricTestRunner.class) //
+@Config(manifest = "src/main/AndroidManifest.xml")
 public class CalendarPickerViewTest {
 
   static {
