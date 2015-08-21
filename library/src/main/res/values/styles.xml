@@ -1,5 +1,5 @@
 <!-- Copyright 2012 Square, Inc. -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <style name="CalendarTitle">
     <item name="android:textSize">@dimen/calendar_text_medium</item>
     <item name="android:textStyle">bold</item>
@@ -9,7 +9,7 @@
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_weight">1</item>
     <item name="android:gravity">center</item>
-    <item name="android:textAlignment">center</item>
+    <item name="android:textAlignment" tools:targetApi="jelly_bean_mr1">center</item>
   </style>
 
   <style name="CalendarCell.DayHeader">

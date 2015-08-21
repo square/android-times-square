@@ -25,7 +25,7 @@ import java.util.Set;
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class SampleTimesSquareActivity extends Activity {
-  private static final String TAG = "SampleTimesSquareActivity";
+  private static final String TAG = "SampleTimesSquareActivi";
   private CalendarPickerView calendar;
   private AlertDialog theDialog;
   private CalendarPickerView dialogView;

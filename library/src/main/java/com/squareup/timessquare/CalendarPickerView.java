@@ -1,6 +1,7 @@
 // Copyright 2012 Square, Inc.
 package com.squareup.timessquare;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -304,6 +305,7 @@ public class CalendarPickerView extends ListView {
       return withHighlightedDates(Arrays.asList(date));
     }
 
+    @SuppressLint("SimpleDateFormat")
     public FluentInitializer setShortWeekdays(String[] newShortWeekdays) {
       DateFormatSymbols symbols = new DateFormatSymbols(locale);
       symbols.setShortWeekdays(newShortWeekdays);
