@@ -3,32 +3,21 @@
 package com.squareup.timessquare;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 
 public class CalendarCellView extends TextView {
-  private static final int[] STATE_SELECTABLE = {
-      R.attr.tsquare_state_selectable
-  };
-  private static final int[] STATE_CURRENT_MONTH = {
-      R.attr.tsquare_state_current_month
-  };
-  private static final int[] STATE_TODAY = {
-      R.attr.tsquare_state_today
-  };
-  private static final int[] STATE_HIGHLIGHTED = {
-      R.attr.tsquare_state_highlighted
-  };
-  private static final int[] STATE_RANGE_FIRST = {
-      R.attr.tsquare_state_range_first
-  };
-  private static final int[] STATE_RANGE_MIDDLE = {
-      R.attr.tsquare_state_range_middle
-  };
-  private static final int[] STATE_RANGE_LAST = {
-      R.attr.tsquare_state_range_last
-  };
+
+  private final int[] STATE_SELECTABLE;
+  private final int[] STATE_CURRENT_MONTH;
+  private final int[] STATE_TODAY;
+  private final int[] STATE_HIGHLIGHTED;
+  private final int[] STATE_RANGE_FIRST;
+  private final int[] STATE_RANGE_MIDDLE;
+  private final int[] STATE_RANGE_LAST;
+
 
   private boolean isSelectable = false;
   private boolean isCurrentMonth = false;
@@ -39,6 +28,18 @@ public class CalendarCellView extends TextView {
   @SuppressWarnings("UnusedDeclaration") //
   public CalendarCellView(Context context, AttributeSet attrs) {
     super(context, attrs);
+    Resources res = getResources();
+    STATE_SELECTABLE = getAttrIntArray("tsquare_state_selectable");
+    STATE_CURRENT_MONTH = getAttrIntArray("tsquare_state_current_month");
+    STATE_TODAY = getAttrIntArray("tsquare_state_today");
+    STATE_HIGHLIGHTED = getAttrIntArray("tsquare_state_highlighted");
+    STATE_RANGE_FIRST = getAttrIntArray("tsquare_state_range_first");
+    STATE_RANGE_MIDDLE = getAttrIntArray("tsquare_state_range_middle");
+    STATE_RANGE_LAST = getAttrIntArray("tsquare_state_range_last");
+  }
+
+  private int[] getAttrIntArray(String name) {
+    return new int[] {getResources().getIdentifier(name, "attr", getContext().getPackageName())};
   }
 
   public void setSelectable(boolean isSelectable) {
