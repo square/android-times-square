@@ -2,5 +2,5 @@
 <!-- Copyright 2012 Square, Inc. -->
 
 <resources>
-  <string name="month_name_format" translatable="false">LLLL yyyy</string>
+  <string name="month_name_format">LLLL yyyy</string>
 </resources>
