@@ -57,13 +57,13 @@ You can also depend on the library through Maven:
 <dependency>
   <groupId>com.squareup</groupId>
   <artifactId>android-times-square</artifactId>
-  <version>1.5.0</version>
+  <version>1.6.4</version>
   <type>apklib</type>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'com.squareup:android-times-square:1.5.0@aar'
+compile 'com.squareup:android-times-square:1.6.4@aar'
 ```
 
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
