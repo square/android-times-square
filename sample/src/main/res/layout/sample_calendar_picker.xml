@@ -20,50 +20,50 @@
           android:id="@+id/button_single"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Single"
+          android:text="@string/Single"
           android:enabled="false"/>
 
       <Button
           android:id="@+id/button_multi"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Multi"/>
+          android:text="@string/Multi"/>
 
       <Button
           android:id="@+id/button_range"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Range"/>
+          android:text="@string/Range"/>
 
       <Button
           android:id="@+id/button_display_only"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="DisplayOnly"/>
+          android:text="@string/DisplayOnly"/>
 
       <Button
           android:id="@+id/button_dialog"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Dialog"/>
+          android:text="@string/Dialog"/>
 
       <Button
           android:id="@+id/button_customized"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Customized"/>
+          android:text="@string/Customized"/>
 
       <Button
           android:id="@+id/button_decorator"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Decorator"/>
+          android:text="@string/Decorator"/>
 
       <Button
           android:id="@+id/button_rtl"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="RTL"/>
+          android:text="@string/RTL"/>
     </LinearLayout>
   </HorizontalScrollView>
 
@@ -83,6 +83,6 @@
       android:id="@+id/done_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Done"
+      android:text="@string/Done"
       />
 </LinearLayout>

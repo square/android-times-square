@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TimesSquare Sample</string>
+    <string name="Done">Done</string>
+    <string name="Customized">Customized</string>
+    <string name="Decorator">Decorator</string>
+    <string name="RTL">RTL</string>
+    <string name="Dialog">Dialog</string>
+    <string name="DisplayOnly">DisplayOnly</string>
+    <string name="Range">Range</string>
+    <string name="Multi">Multi</string>
+    <string name="Single">Single</string>
 </resources>
 
