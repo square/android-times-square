@@ -2,6 +2,7 @@
 package com.squareup.timessquare;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -33,7 +34,7 @@ public class MonthView extends LinearLayout {
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
       int headerTextColor, List<CalendarCellDecorator> decorators, Locale locale) {
-    final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
+    final MonthView view = (MonthView) inflater.inflate(getLayoutId(inflater.getContext(), "month"), parent, false);
     view.setDividerColor(dividerColor);
     view.setDayTextColor(dayTextColorResId);
     view.setTitleTextColor(titleTextColor);
@@ -58,6 +59,11 @@ public class MonthView extends LinearLayout {
     view.listener = listener;
     view.decorators = decorators;
     return view;
+  }
+
+  private static int getLayoutId(Context ctx, String name) {
+    Resources res = ctx.getResources();
+    return res.getIdentifier(name, "layout", ctx.getPackageName());
   }
 
   private static int getDayOfWeek(int firstDayOfWeek, int offset, boolean isRtl) {
@@ -89,8 +95,12 @@ public class MonthView extends LinearLayout {
 
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
-    title = (TextView) findViewById(R.id.title);
-    grid = (CalendarGridView) findViewById(R.id.calendar_grid);
+    title = (TextView) findViewById(getIdentifier("title"));
+    grid = (CalendarGridView) findViewById(getIdentifier("calendar_grid"));
+  }
+
+  private int getIdentifier(String name) {
+    return getResources().getIdentifier(name, "id", getContext().getPackageName());
   }
 
   public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells,

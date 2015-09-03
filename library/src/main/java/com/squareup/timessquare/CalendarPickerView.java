@@ -43,6 +43,8 @@ import static java.util.Calendar.YEAR;
  * {@link #getSelectedDate()}.
  */
 public class CalendarPickerView extends ListView {
+
+
   public enum SelectionMode {
     /**
      * Only one date will be selectable.  If there is already a selected date and you select a new
@@ -95,6 +97,8 @@ public class CalendarPickerView extends ListView {
       new DefaultOnInvalidDateSelectedListener();
   private CellClickInterceptor cellClickInterceptor;
   private List<CalendarCellDecorator> decorators;
+  private final Context ctx;
+  private final Resources res;
 
   public void setDecorators(List<CalendarCellDecorator> decorators) {
     this.decorators = decorators;
@@ -109,22 +113,22 @@ public class CalendarPickerView extends ListView {
 
   public CalendarPickerView(Context context, AttributeSet attrs) {
     super(context, attrs);
-
-    Resources res = context.getResources();
+    ctx = context;
+    res = context.getResources();
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CalendarPickerView);
     final int bg = a.getColor(R.styleable.CalendarPickerView_android_background,
-        res.getColor(R.color.calendar_bg));
+        getColor("calendar_bg"));
     dividerColor = a.getColor(R.styleable.CalendarPickerView_tsquare_dividerColor,
-        res.getColor(R.color.calendar_divider));
+            getColor("calendar_divider"));
     dayBackgroundResId = a.getResourceId(R.styleable.CalendarPickerView_tsquare_dayBackground,
-        R.drawable.calendar_bg_selector);
+            getDrawableId("calendar_bg_selector"));
     dayTextColorResId = a.getResourceId(R.styleable.CalendarPickerView_tsquare_dayTextColor,
-        R.color.calendar_text_selector);
+            getColorId("calendar_text_selector"));
     titleTextColor = a.getColor(R.styleable.CalendarPickerView_tsquare_titleTextColor,
-        res.getColor(R.color.calendar_text_active));
+            getColor("calendar_text_active"));
     displayHeader = a.getBoolean(R.styleable.CalendarPickerView_tsquare_displayHeader, true);
     headerTextColor = a.getColor(R.styleable.CalendarPickerView_tsquare_headerTextColor,
-        res.getColor(R.color.calendar_text_active));
+            getColor("calendar_text_active"));
     a.recycle();
 
     adapter = new MonthAdapter();
@@ -137,8 +141,8 @@ public class CalendarPickerView extends ListView {
     minCal = Calendar.getInstance(locale);
     maxCal = Calendar.getInstance(locale);
     monthCounter = Calendar.getInstance(locale);
-    monthNameFormat = new SimpleDateFormat(context.getString(R.string.month_name_format), locale);
-    weekdayNameFormat = new SimpleDateFormat(context.getString(R.string.day_name_format), locale);
+    monthNameFormat = new SimpleDateFormat(getString("month_name_format"), locale);
+    weekdayNameFormat = new SimpleDateFormat(getString("day_name_format"), locale);
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
 
     if (isInEditMode()) {
@@ -148,6 +152,22 @@ public class CalendarPickerView extends ListView {
       init(new Date(), nextYear.getTime()) //
           .withSelectedDate(new Date());
     }
+  }
+
+  private int getDrawableId(String name) {
+    return res.getIdentifier(name, "drawable", ctx.getPackageName());
+  }
+
+  private int getColor(String name) {
+    return res.getColor(getColorId(name));
+  }
+
+  private int getColorId(String name) {
+    return res.getIdentifier(name, "color", ctx.getPackageName());
+  }
+
+  private String getString(String name) {
+    return res.getString(res.getIdentifier(name, "string", ctx.getPackageName()));
   }
 
   /**
@@ -187,12 +207,12 @@ public class CalendarPickerView extends ListView {
     maxCal = Calendar.getInstance(locale);
     monthCounter = Calendar.getInstance(locale);
     monthNameFormat =
-        new SimpleDateFormat(getContext().getString(R.string.month_name_format), locale);
+        new SimpleDateFormat(getString("month_name_format"), locale);
     for (MonthDescriptor month : months) {
       month.setLabel(monthNameFormat.format(month.getDate()));
     }
     weekdayNameFormat =
-        new SimpleDateFormat(getContext().getString(R.string.day_name_format), locale);
+        new SimpleDateFormat(getString("day_name_format"), locale);
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
 
     this.selectionMode = SelectionMode.SINGLE;
@@ -310,7 +330,7 @@ public class CalendarPickerView extends ListView {
       DateFormatSymbols symbols = new DateFormatSymbols(locale);
       symbols.setShortWeekdays(newShortWeekdays);
       weekdayNameFormat =
-          new SimpleDateFormat(getContext().getString(R.string.day_name_format), symbols);
+          new SimpleDateFormat(getString("day_name_format"), symbols);
       return this;
     }
 
@@ -949,7 +969,7 @@ public class CalendarPickerView extends ListView {
   private class DefaultOnInvalidDateSelectedListener implements OnInvalidDateSelectedListener {
     @Override public void onInvalidDateSelected(Date date) {
       String errMessage =
-          getResources().getString(R.string.invalid_date, fullDateFormat.format(minCal.getTime()),
+          getResources().getString(getResources().getIdentifier("invalid_date", "string", getContext().getPackageName()), fullDateFormat.format(minCal.getTime()),
               fullDateFormat.format(maxCal.getTime()));
       Toast.makeText(getContext(), errMessage, Toast.LENGTH_SHORT).show();
     }
