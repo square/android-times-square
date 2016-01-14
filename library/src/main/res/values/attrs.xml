@@ -7,6 +7,7 @@
     <attr name="tsquare_dayTextColor" format="color"/>
     <attr name="tsquare_titleTextColor" format="color"/>
     <attr name="tsquare_displayHeader" format="boolean"/>
+    <attr name="tsquare_displayCellDivider" format="boolean"/>
     <attr name="tsquare_headerTextColor" format="color"/>
   </declare-styleable>
 
