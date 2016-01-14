@@ -107,7 +107,7 @@ public class CalendarPickerView extends ListView {
             new DefaultOnInvalidDateSelectedListener();
     private CellClickInterceptor cellClickInterceptor;
     private List<CalendarCellDecorator> decorators;
-    public RangeMode mRangeMode = RangeMode.DEFAULT;
+    private RangeMode mRangeMode = RangeMode.STARTDATE;
 
     public void setDecorators(List<CalendarCellDecorator> decorators) {
         this.decorators = decorators;
@@ -260,8 +260,8 @@ public class CalendarPickerView extends ListView {
      * {@link FluentInitializer} this method returns.
      * <p/>
      * The calendar will be constructed using the default locale as returned by
-     * {@link java.util.Locale#getDefault()}. If you wish the calendar to be constructed using a
-     * different locale, use {@link #init(java.util.Date, java.util.Date, java.util.Locale)}.
+     * {@link Locale#getDefault()}. If you wish the calendar to be constructed using a
+     * different locale, use {@link #init(Date, Date, Locale)}.
      *
      * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
      * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
@@ -361,6 +361,27 @@ public class CalendarPickerView extends ListView {
         });
     }
 
+    public void scrollToStartDate() {
+        smoothScrollToDate(selectedCals.get(0).getTime());
+    }
+
+    public void scrollToEndDate() {
+        Integer selectedIndex = null;
+        int firstIdx = getFirstVisiblePosition();
+        int lastIdx = getLastVisiblePosition();
+        Calendar enddate = selectedCals.get(selectedCals.size() - 1);
+        for (int c = 0; c < months.size(); c++) {
+            MonthDescriptor month = months.get(c);
+            if (sameMonth(enddate, month)) {
+                selectedIndex = c;
+                break;
+            }
+        }
+        if (selectedIndex < firstIdx || selectedIndex > lastIdx) {
+            smoothScrollToDate(enddate.getTime());
+        }
+    }
+
     private void scrollToSelectedDates() {
         Integer selectedIndex = null;
         Integer todayIndex = null;
@@ -384,6 +405,25 @@ public class CalendarPickerView extends ListView {
         } else if (todayIndex != null) {
             scrollToSelectedMonth(todayIndex);
         }
+    }
+
+    public boolean smoothScrollToDate(Date date) {
+        Integer selectedIndex = null;
+
+        Calendar cal = Calendar.getInstance(locale);
+        cal.setTime(date);
+        for (int c = 0; c < months.size(); c++) {
+            MonthDescriptor month = months.get(c);
+            if (sameMonth(cal, month)) {
+                selectedIndex = c;
+                break;
+            }
+        }
+        if (selectedIndex != null) {
+            scrollToSelectedMonth(selectedIndex, true);
+            return true;
+        }
+        return false;
     }
 
     public boolean scrollToDate(Date date) {
@@ -591,7 +631,15 @@ public class CalendarPickerView extends ListView {
 
         switch (selectionMode) {
             case RANGE:
-                if (selectedCals.size() == 2 && (newlySelectedCal.after(selectedCals.get(0)) && newlySelectedCal.before(selectedCals.get(1)) || mRangeMode == RangeMode.ENDDATE)) {
+                if (selectedCals.size() == 2 && mRangeMode == RangeMode.STARTDATE) {
+                    removeFirstdate();
+                    mRangeMode = RangeMode.ENDDATE;
+
+                    break;
+                } else if (selectedCals.size() == 1 && mRangeMode == RangeMode.STARTDATE) {
+                    mRangeMode = RangeMode.ENDDATE;
+                } else if (selectedCals.size() == 2 && (newlySelectedCal.after(selectedCals.get(0)) && newlySelectedCal.before(selectedCals.get(1))
+                        && mRangeMode != RangeMode.STARTDATE || mRangeMode == RangeMode.ENDDATE)) {
                     long diff1 = Math.abs(newlySelectedCal.getTimeInMillis() - selectedCals.get(0).getTimeInMillis());
                     long diff2 = Math.abs(newlySelectedCal.getTimeInMillis() - selectedCals.get(1).getTimeInMillis());
                     if (diff1 < diff2) {
@@ -601,12 +649,7 @@ public class CalendarPickerView extends ListView {
                         removeEnddate();
                     }
                     break;
-                }
-                else if(selectedCals.size() == 2 && mRangeMode == RangeMode.STARTDATE){
-                    removeFirstdate();
-                    break;
-                }
-                else if (selectedCals.size() > 1) {
+                } else if (selectedCals.size() > 1) {
                     // We've already got a range selected: clear the old one.
                     clearOldSelections();
                 } else if (selectedCals.size() == 1 && newlySelectedCal.before(selectedCals.get(0))) {
@@ -943,6 +986,10 @@ public class CalendarPickerView extends ListView {
             }
         }
         return cells;
+    }
+
+    public void setRangeMode(RangeMode rangeMode) {
+        mRangeMode = rangeMode;
     }
 
     private boolean containsDate(List<Calendar> selectedCals, Date date) {
