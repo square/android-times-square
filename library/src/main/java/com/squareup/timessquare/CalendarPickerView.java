@@ -642,12 +642,11 @@ public class CalendarPickerView extends ListView {
                 } else if (selectedCals.size() == 1 && mRangeMode == RangeMode.STARTDATE) {
                     mRangeMode = RangeMode.ENDDATE;
                 } else if (selectedCals.size() == 2 && (newlySelectedCal.after(selectedCals.get(0)) && newlySelectedCal.before(selectedCals.get(1))
-                        && mRangeMode != RangeMode.STARTDATE || mRangeMode == RangeMode.ENDDATE)) {
+                        && mRangeMode != RangeMode.STARTDATE || (mRangeMode == RangeMode.ENDDATE && newlySelectedCal.after(selectedCals.get(0))))) {
                     long diff1 = Math.abs(newlySelectedCal.getTimeInMillis() - selectedCals.get(0).getTimeInMillis());
                     long diff2 = Math.abs(newlySelectedCal.getTimeInMillis() - selectedCals.get(1).getTimeInMillis());
                     if (diff1 < diff2) {
                         removeEnddate();
-                        //removeFirstdate();
                     } else {
                         removeEnddate();
                     }
@@ -655,7 +654,8 @@ public class CalendarPickerView extends ListView {
                 } else if (selectedCals.size() > 1) {
                     // We've already got a range selected: clear the old one.
                     clearOldSelections();
-                } else if (selectedCals.size() == 1 && newlySelectedCal.before(selectedCals.get(0))) {
+                }
+                if (selectedCals.size() == 1 && newlySelectedCal.before(selectedCals.get(0)) && mRangeMode != RangeMode.STARTDATE) {
                     // We're moving the start of the range back in time: clear the old start date.
                     clearOldSelections();
                 }
