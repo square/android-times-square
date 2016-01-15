@@ -365,6 +365,9 @@ public class CalendarPickerView extends ListView {
     }
 
     public void scrollToStartDate() {
+        if (selectedCals.size() == 0) {
+            return;
+        }
         smoothScrollToDate(selectedCals.get(0).getTime());
     }
 
@@ -372,7 +375,7 @@ public class CalendarPickerView extends ListView {
         Integer selectedIndex = null;
         int firstIdx = getFirstVisiblePosition();
         int lastIdx = getLastVisiblePosition();
-        if(selectedCals.size() == 0){
+        if (selectedCals.size() == 0) {
             return;
         }
         Calendar enddate = selectedCals.get(selectedCals.size() - 1);
