@@ -372,6 +372,9 @@ public class CalendarPickerView extends ListView {
         Integer selectedIndex = null;
         int firstIdx = getFirstVisiblePosition();
         int lastIdx = getLastVisiblePosition();
+        if(selectedCals.size() == 0){
+            return;
+        }
         Calendar enddate = selectedCals.get(selectedCals.size() - 1);
         for (int c = 0; c < months.size(); c++) {
             MonthDescriptor month = months.get(c);
