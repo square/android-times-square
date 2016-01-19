@@ -641,9 +641,9 @@ public class CalendarPickerView extends ListView {
         switch (selectionMode) {
             case RANGE:
                 if (selectedCals.size() == 2 && mRangeMode == RangeMode.STARTDATE) {
-                    if(newlySelectedCal.before(selectedCals.get(1))){
+                    if (newlySelectedCal.before(selectedCals.get(1)) || newlySelectedCal.before(selectedCals.get(0))) {
                         removeFirstdate();
-                    }else {
+                    } else {
                         clearOldSelections();
                     }
                     mRangeMode = RangeMode.ENDDATE;
@@ -768,7 +768,7 @@ public class CalendarPickerView extends ListView {
         lastCell.setRangeState(RangeState.LAST);
         selectedCells.clear();
         selectedCells.add(lastCell);
-        if (!selectedCals.get(1).after(selectedCals.get(0))) {
+        if (selectedCals.get(0).before(selectedCals.get(1))) {
             selectedCals.remove(0);
         }
     }
