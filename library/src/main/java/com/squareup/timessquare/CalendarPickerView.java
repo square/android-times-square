@@ -641,7 +641,11 @@ public class CalendarPickerView extends ListView {
         switch (selectionMode) {
             case RANGE:
                 if (selectedCals.size() == 2 && mRangeMode == RangeMode.STARTDATE) {
-                    removeFirstdate();
+                    if(newlySelectedCal.before(selectedCals.get(1))){
+                        removeFirstdate();
+                    }else {
+                        clearOldSelections();
+                    }
                     mRangeMode = RangeMode.ENDDATE;
 
                     break;
@@ -756,12 +760,15 @@ public class CalendarPickerView extends ListView {
                 }
             }
         }
+        if (selectedCells.size() < 2) {
+            return;
+        }
         MonthCellDescriptor lastCell = selectedCells.get(1);
         lastCell.setSelected(true);
         lastCell.setRangeState(RangeState.LAST);
         selectedCells.clear();
         selectedCells.add(lastCell);
-        if (selectedCals.get(0).before(selectedCals.get(1))) {
+        if (!selectedCals.get(1).after(selectedCals.get(0))) {
             selectedCals.remove(0);
         }
     }
