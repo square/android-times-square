@@ -640,34 +640,32 @@ public class CalendarPickerView extends ListView {
 
         switch (selectionMode) {
             case RANGE:
-                if (selectedCals.size() == 2 && mRangeMode == RangeMode.STARTDATE) {
-                    if (newlySelectedCal.before(selectedCals.get(1)) || newlySelectedCal.before(selectedCals.get(0))) {
-                        removeFirstdate();
-                    } else {
-                        clearOldSelections();
+                if (mRangeMode == RangeMode.STARTDATE) {
+                    if (selectedCals.size() == 2) {
+                        if (newlySelectedCal.after(selectedCals.get(1))) {
+                            //click after enddate
+                            clearOldSelections();
+                        } else if (selectedCals.get(0).equals(selectedCals.get(1))) {
+                            //click on same date
+                            removeFirstdate();
+                        } else {
+                            removeFirstdate();
+                        }
                     }
-                    mRangeMode = RangeMode.ENDDATE;
-
-                    break;
-                } else if (selectedCals.size() == 1 && mRangeMode == RangeMode.STARTDATE) {
-                    mRangeMode = RangeMode.ENDDATE;
-                } else if (selectedCals.size() == 2 && (newlySelectedCal.after(selectedCals.get(0)) && newlySelectedCal.before(selectedCals.get(1))
-                        && mRangeMode != RangeMode.STARTDATE || (mRangeMode == RangeMode.ENDDATE && newlySelectedCal.after(selectedCals.get(0))))) {
-                    long diff1 = Math.abs(newlySelectedCal.getTimeInMillis() - selectedCals.get(0).getTimeInMillis());
-                    long diff2 = Math.abs(newlySelectedCal.getTimeInMillis() - selectedCals.get(1).getTimeInMillis());
-                    if (diff1 < diff2) {
-                        removeEnddate();
-                    } else {
-                        removeEnddate();
+                } else if (mRangeMode == RangeMode.ENDDATE) {
+                    if (selectedCals.size() == 2) {
+                        // click before startdate
+                        if (newlySelectedCal.before(selectedCals.get(0))) {
+                            clearOldSelections();
+                        } else {
+                            //click on same date
+                            removeEnddate();
+                        }
                     }
-                    break;
-                } else if (selectedCals.size() > 1) {
-                    // We've already got a range selected: clear the old one.
-                    clearOldSelections();
                 }
-                if (selectedCals.size() == 1 && newlySelectedCal.before(selectedCals.get(0)) && mRangeMode != RangeMode.STARTDATE) {
-                    // We're moving the start of the range back in time: clear the old start date.
-                    clearOldSelections();
+                // switch range mode when startdate was selected.
+                if (selectedCals.size() == 1 && mRangeMode == RangeMode.STARTDATE) {
+                    mRangeMode = RangeMode.ENDDATE;
                 }
                 break;
 
@@ -760,15 +758,17 @@ public class CalendarPickerView extends ListView {
                 }
             }
         }
-        if (selectedCells.size() < 2) {
-            return;
-        }
-        MonthCellDescriptor lastCell = selectedCells.get(1);
+
+        MonthCellDescriptor lastCell = selectedCells.get(selectedCells.size() > 1 ? 1 : 0);
         lastCell.setSelected(true);
         lastCell.setRangeState(RangeState.LAST);
         selectedCells.clear();
         selectedCells.add(lastCell);
-        if (selectedCals.get(0).before(selectedCals.get(1))) {
+        if (selectedCals.size() < 2) {
+            return;
+        }
+
+        if (selectedCals.get(0).before(selectedCals.get(1)) || selectedCals.get(0).equals(selectedCals.get(1))) {
             selectedCals.remove(0);
         }
     }
@@ -796,10 +796,8 @@ public class CalendarPickerView extends ListView {
         firstCell.setRangeState(RangeState.FIRST);
         selectedCells.clear();
         selectedCells.add(firstCell);
-        if (selectedCals.get(0).before(selectedCals.get(1))) {
+        if (selectedCals.get(0).before(selectedCals.get(1)) || selectedCals.get(0).equals(selectedCals.get(1))) {
             selectedCals.remove(1);
-        } else {
-            //     selectedCals.remove(0);
         }
     }
 
