@@ -386,7 +386,7 @@ public class CalendarPickerView extends ListView {
                 break;
             }
         }
-        if (selectedIndex < firstIdx || selectedIndex > lastIdx) {
+        if (selectedIndex < firstIdx || selectedIndex >= lastIdx) {
             smoothScrollToDate(enddate.getTime());
         }
     }
