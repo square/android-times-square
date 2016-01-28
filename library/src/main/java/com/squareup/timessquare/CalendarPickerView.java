@@ -640,7 +640,15 @@ public class CalendarPickerView extends ListView {
 
         switch (selectionMode) {
             case RANGE:
-                if (mRangeMode == RangeMode.STARTDATE) {
+                if (mRangeMode == RangeMode.DEFAULT) {
+                    if (selectedCals.size() > 1) {
+                        // We've already got a range selected: clear the old one.
+                        clearOldSelections();
+                    } else if (selectedCals.size() == 1 && newlySelectedCal.before(selectedCals.get(0))) {
+                        // We're moving the start of the range back in time: clear the old start date.
+                        clearOldSelections();
+                    }
+                } else if (mRangeMode == RangeMode.STARTDATE) {
                     if (selectedCals.size() == 2) {
                         if (newlySelectedCal.after(selectedCals.get(1))) {
                             //click after enddate
@@ -662,11 +670,12 @@ public class CalendarPickerView extends ListView {
                             removeEnddate();
                         }
                     }
+                    // switch range mode when startdate was selected.
+                    if (selectedCals.size() == 1 && mRangeMode == RangeMode.STARTDATE) {
+                        mRangeMode = RangeMode.ENDDATE;
+                    }
                 }
-                // switch range mode when startdate was selected.
-                if (selectedCals.size() == 1 && mRangeMode == RangeMode.STARTDATE) {
-                    mRangeMode = RangeMode.ENDDATE;
-                }
+
                 break;
 
             case MULTIPLE:
