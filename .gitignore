@@ -9,6 +9,7 @@ build
 out
 lib
 
+local.properties
 release.properties
 
 .idea

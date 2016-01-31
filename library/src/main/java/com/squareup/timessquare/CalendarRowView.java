@@ -79,6 +79,16 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
     this.listener = listener;
   }
 
+  public void setDayViewAdapter(DayViewAdapter adapter) {
+    for (int i = 0; i < getChildCount(); i++) {
+      if (getChildAt(i) instanceof CalendarCellView) {
+        CalendarCellView cell = ((CalendarCellView) getChildAt(i));
+        cell.removeAllViews();
+        adapter.makeCellView(cell);
+      }
+    }
+  }
+
   public void setCellBackground(int resId) {
     for (int i = 0; i < getChildCount(); i++) {
       getChildAt(i).setBackgroundResource(resId);
@@ -87,19 +97,31 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
 
   public void setCellTextColor(int resId) {
     for (int i = 0; i < getChildCount(); i++) {
-      ((TextView) getChildAt(i)).setTextColor(resId);
+      if (getChildAt(i) instanceof CalendarCellView) {
+        ((CalendarCellView) getChildAt(i)).getDayOfMonthTextView().setTextColor(resId);
+      } else {
+        ((TextView) getChildAt(i)).setTextColor(resId);
+      }
     }
   }
 
   public void setCellTextColor(ColorStateList colors) {
     for (int i = 0; i < getChildCount(); i++) {
-      ((TextView) getChildAt(i)).setTextColor(colors);
+      if (getChildAt(i) instanceof CalendarCellView) {
+        ((CalendarCellView) getChildAt(i)).getDayOfMonthTextView().setTextColor(colors);
+      } else {
+        ((TextView) getChildAt(i)).setTextColor(colors);
+      }
     }
   }
 
   public void setTypeface(Typeface typeface) {
     for (int i = 0; i < getChildCount(); i++) {
-      ((TextView) getChildAt(i)).setTypeface(typeface);
+      if (getChildAt(i) instanceof CalendarCellView) {
+        ((CalendarCellView) getChildAt(i)).getDayOfMonthTextView().setTypeface(typeface);
+      } else {
+        ((TextView) getChildAt(i)).setTypeface(typeface);
+      }
     }
   }
 }

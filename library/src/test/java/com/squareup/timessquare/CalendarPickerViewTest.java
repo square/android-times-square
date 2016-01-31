@@ -564,10 +564,10 @@ public class CalendarPickerViewTest {
     TextView firstDay = (TextView) header.getChildAt(0);
     assertThat(firstDay).hasTextString("ש"); // Last day of the week (Saturday) is the first cell.
     CalendarRowView firstWeek = (CalendarRowView) monthView.grid.getChildAt(1);
-    TextView firstDate = (TextView) firstWeek.getChildAt(0);
+    TextView firstDate = ((CalendarCellView) firstWeek.getChildAt(0)).getDayOfMonthTextView();
     assertThat(firstDate).hasTextString("1");
     CalendarRowView secondWeek = (CalendarRowView) monthView.grid.getChildAt(2);
-    TextView secondDate = (TextView) secondWeek.getChildAt(6);
+    TextView secondDate = ((CalendarCellView) secondWeek.getChildAt(6)).getDayOfMonthTextView();
     assertThat(secondDate).hasTextString("2");
     assertThat(monthView.title).hasTextString("דצמבר 2012");
   }

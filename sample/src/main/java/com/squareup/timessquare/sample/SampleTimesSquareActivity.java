@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.squareup.timessquare.CalendarCellDecorator;
 import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
+import com.squareup.timessquare.DefaultDayViewAdapter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -58,13 +60,15 @@ public class SampleTimesSquareActivity extends Activity {
     final Button customized = (Button) findViewById(R.id.button_customized);
     final Button decorator = (Button) findViewById(R.id.button_decorator);
     final Button rtl = (Button) findViewById(R.id.button_rtl);
+    final Button customView = (Button) findViewById(R.id.button_custom_view);
 
-    modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator));
+    modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator, customView));
 
     single.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View v) {
         setButtonsEnabled(single);
 
+        calendar.setCustomDayView(new DefaultDayViewAdapter());
         calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
         calendar.init(lastYear.getTime(), nextYear.getTime()) //
             .inMode(SelectionMode.SINGLE) //
@@ -76,6 +80,7 @@ public class SampleTimesSquareActivity extends Activity {
       @Override public void onClick(View v) {
         setButtonsEnabled(multi);
 
+        calendar.setCustomDayView(new DefaultDayViewAdapter());
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
         for (int i = 0; i < 5; i++) {
@@ -93,6 +98,7 @@ public class SampleTimesSquareActivity extends Activity {
       @Override public void onClick(View v) {
         setButtonsEnabled(range);
 
+        calendar.setCustomDayView(new DefaultDayViewAdapter());
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
         today.add(Calendar.DATE, 3);
@@ -110,6 +116,7 @@ public class SampleTimesSquareActivity extends Activity {
       @Override public void onClick(View v) {
         setButtonsEnabled(displayOnly);
 
+        calendar.setCustomDayView(new DefaultDayViewAdapter());
         calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.SINGLE) //
@@ -139,6 +146,7 @@ public class SampleTimesSquareActivity extends Activity {
       @Override public void onClick(View v) {
         setButtonsEnabled(decorator);
 
+        calendar.setCustomDayView(new DefaultDayViewAdapter());
         calendar.setDecorators(Arrays.<CalendarCellDecorator>asList(new SampleDecorator()));
         calendar.init(lastYear.getTime(), nextYear.getTime()) //
             .inMode(SelectionMode.SINGLE) //
@@ -150,7 +158,19 @@ public class SampleTimesSquareActivity extends Activity {
       @Override public void onClick(View view) {
         showCalendarInDialog("I'm right-to-left!", R.layout.dialog);
         dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("iw", "IL")) //
-            .withSelectedDate(new Date());
+                .withSelectedDate(new Date());
+      }
+    });
+
+    customView.setOnClickListener(new OnClickListener() {
+      @Override public void onClick(View view) {
+        setButtonsEnabled(customView);
+
+        calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
+        calendar.setCustomDayView(new SampleDayViewAdapter());
+        calendar.init(lastYear.getTime(), nextYear.getTime())
+                .inMode(SelectionMode.SINGLE)
+                .withSelectedDate(new Date());
       }
     });
 
