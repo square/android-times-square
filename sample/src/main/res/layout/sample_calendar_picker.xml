@@ -64,6 +64,12 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/RTL"/>
+
+      <Button
+          android:id="@+id/button_custom_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/CustomView"/>
     </LinearLayout>
   </HorizontalScrollView>
 

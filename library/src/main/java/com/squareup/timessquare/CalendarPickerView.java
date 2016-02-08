@@ -95,6 +95,7 @@ public class CalendarPickerView extends ListView {
       new DefaultOnInvalidDateSelectedListener();
   private CellClickInterceptor cellClickInterceptor;
   private List<CalendarCellDecorator> decorators;
+  private DayViewAdapter dayViewAdapter = new DefaultDayViewAdapter();
 
   public void setDecorators(List<CalendarCellDecorator> decorators) {
     this.decorators = decorators;
@@ -753,11 +754,13 @@ public class CalendarPickerView extends ListView {
 
     @Override public View getView(int position, View convertView, ViewGroup parent) {
       MonthView monthView = (MonthView) convertView;
-      if (monthView == null) {
+      if (monthView == null
+             || !monthView.getTag(R.id.day_view_adapter_class).equals(dayViewAdapter.getClass())) {
         monthView =
             MonthView.create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
                 dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader,
-                headerTextColor, decorators, locale);
+                headerTextColor, decorators, locale, dayViewAdapter);
+        monthView.setTag(R.id.day_view_adapter_class, dayViewAdapter.getClass());
       } else {
         monthView.setDecorators(decorators);
       }
@@ -895,6 +898,20 @@ public class CalendarPickerView extends ListView {
    */
   public void setDateSelectableFilter(DateSelectableFilter listener) {
     dateConfiguredListener = listener;
+  }
+
+
+  /**
+   * Set an adapter used to initialize {@link CalendarCellView} with custom layout.
+   * <p>
+   * Important: set this before you call {@link #init(Date, Date)} methods.  If called afterwards,
+   * it will not be consistently applied.
+   */
+  public void setCustomDayView(DayViewAdapter dayViewAdapter) {
+    this.dayViewAdapter = dayViewAdapter;
+    if (null != adapter) {
+      adapter.notifyDataSetChanged();
+    }
   }
 
   /** Set a listener to intercept clicks on calendar cells. */

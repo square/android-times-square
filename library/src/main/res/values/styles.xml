@@ -18,7 +18,6 @@
 
   <style name="CalendarCell.CalendarDate">
     <item name="android:textSize">@dimen/calendar_text_medium</item>
-    <item name="android:clickable">true</item>
     <item name="android:textStyle">bold</item>
   </style>
 </resources>

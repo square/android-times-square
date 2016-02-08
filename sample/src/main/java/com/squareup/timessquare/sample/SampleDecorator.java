@@ -14,6 +14,6 @@ public class SampleDecorator implements CalendarCellDecorator {
     SpannableString string = new SpannableString(dateString + "\ntitle");
     string.setSpan(new RelativeSizeSpan(0.5f), 0, dateString.length(),
         Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-    cellView.setText(string);
+    cellView.getDayOfMonthTextView().setText(string);
   }
 }
