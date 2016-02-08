@@ -60,10 +60,16 @@
           android:text="@string/Decorator"/>
 
       <Button
-          android:id="@+id/button_rtl"
+          android:id="@+id/button_hebrew"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/RTL"/>
+          android:text="@string/Hebrew"/>
+
+      <Button
+          android:id="@+id/button_arabic"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Arabic"/>
 
       <Button
           android:id="@+id/button_custom_view"
