@@ -4,7 +4,8 @@
     <string name="Done">Done</string>
     <string name="Customized">Customized</string>
     <string name="Decorator">Decorator</string>
-    <string name="RTL">RTL</string>
+    <string name="Hebrew">Hebrew</string>
+    <string name="Arabic">Arabic</string>
     <string name="CustomView">Custom View</string>
     <string name="Dialog">Dialog</string>
     <string name="DisplayOnly">DisplayOnly</string>

@@ -59,7 +59,8 @@ public class SampleTimesSquareActivity extends Activity {
     final Button dialog = (Button) findViewById(R.id.button_dialog);
     final Button customized = (Button) findViewById(R.id.button_customized);
     final Button decorator = (Button) findViewById(R.id.button_decorator);
-    final Button rtl = (Button) findViewById(R.id.button_rtl);
+    final Button hebrew = (Button) findViewById(R.id.button_hebrew);
+    final Button arabic = (Button) findViewById(R.id.button_arabic);
     final Button customView = (Button) findViewById(R.id.button_custom_view);
 
     modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator, customView));
@@ -154,11 +155,19 @@ public class SampleTimesSquareActivity extends Activity {
       }
     });
 
-    rtl.setOnClickListener(new OnClickListener() {
+    hebrew.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View view) {
-        showCalendarInDialog("I'm right-to-left!", R.layout.dialog);
+        showCalendarInDialog("I'm Hebrew!", R.layout.dialog);
         dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("iw", "IL")) //
                 .withSelectedDate(new Date());
+      }
+    });
+
+    arabic.setOnClickListener(new OnClickListener() {
+      @Override public void onClick(View view) {
+        showCalendarInDialog("I'm Arabic!", R.layout.dialog);
+        dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("ar", "EG")) //
+            .withSelectedDate(new Date());
       }
     });
 
