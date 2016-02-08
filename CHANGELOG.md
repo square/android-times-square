@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+Version 1.6.5 *(2016-02-08)*
+---------------------------
+
+ * New: Support for arabic numbers
+ * New: Performance improvement in CalendarCellView
+ * New: Support for completely custom cell views
+ * New: Support for a custom "highlighted" color
+ * New language: Polish!
+
 Version 1.6.4 *(2015-09-01)*
 ----------------------------
 
