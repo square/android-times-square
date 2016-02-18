@@ -670,10 +670,6 @@ public class CalendarPickerView extends ListView {
                             removeEnddate();
                         }
                     }
-                    // switch range mode when startdate was selected.
-                    if (selectedCals.size() == 1 && mRangeMode == RangeMode.STARTDATE) {
-                        mRangeMode = RangeMode.ENDDATE;
-                    }
                 }
 
                 break;
@@ -1013,6 +1009,10 @@ public class CalendarPickerView extends ListView {
 
     public void setRangeMode(RangeMode rangeMode) {
         mRangeMode = rangeMode;
+    }
+
+    public RangeMode getRangeMode() {
+        return mRangeMode;
     }
 
     private boolean containsDate(List<Calendar> selectedCals, Date date) {
