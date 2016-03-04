@@ -520,6 +520,15 @@ public class CalendarPickerView extends ListView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    public void clear() {
+        // Clear any remaining range state.
+        for (MonthCellDescriptor selectedCell : selectedCells) {
+            selectedCell.setRangeState(RangeState.NONE);
+        }
+        clearOldSelections();
+        validateAndUpdate();
+    }
+
     public Date getSelectedDate() {
         return (selectedCals.size() > 0 ? selectedCals.get(0).getTime() : null);
     }
@@ -573,6 +582,18 @@ public class CalendarPickerView extends ListView {
                 }
             }
         }
+    }
+
+    public boolean selectDates(Date firstDate, Date secondDate) {
+        Calendar firstCal = Calendar.getInstance(locale);
+        firstCal.setTime(firstDate);
+        setMidnight(firstCal);
+        MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(firstDate);
+
+        selectedCells.add(monthCellWithMonthIndex.cell);
+        monthCellWithMonthIndex.cell.setSelected(true);
+        selectedCals.add(firstCal);
+        return selectDate(secondDate);
     }
 
     /**
@@ -661,11 +682,11 @@ public class CalendarPickerView extends ListView {
                         }
                     }
                 } else if (mRangeMode == RangeMode.ENDDATE) {
-                    if (selectedCals.size() == 2) {
+                    if (selectedCals.size() >= 1) {
                         // click before startdate
                         if (newlySelectedCal.before(selectedCals.get(0))) {
                             clearOldSelections();
-                        } else {
+                        } else if(selectedCals.size() == 2){
                             //click on same date
                             removeEnddate();
                         }
