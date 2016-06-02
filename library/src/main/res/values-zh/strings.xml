@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="invalid_date">日期必须在 %1$s 和 %2$s 之间.</string>
+</resources>
