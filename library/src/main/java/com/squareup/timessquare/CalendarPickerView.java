@@ -575,6 +575,8 @@ public class CalendarPickerView extends ListView {
         } else if (selectedCals.size() == 1 && newlySelectedCal.before(selectedCals.get(0))) {
           // We're moving the start of the range back in time: clear the old start date.
           clearOldSelections();
+        } else if (date != null && selectedCals.size() == 1) {
+          checkForUnSelectableDate(newlySelectedCal);
         }
         break;
 
@@ -625,6 +627,23 @@ public class CalendarPickerView extends ListView {
     // Update the adapter.
     validateAndUpdate();
     return date != null;
+  }
+
+  private void checkForUnSelectableDate(Calendar newlySelectedCal) {
+    for (List<List<MonthCellDescriptor>> month : cells) {
+      for (List<MonthCellDescriptor> week : month) {
+        for (MonthCellDescriptor singleCell : week) {
+          if (singleCell.getDate().after(selectedCals.get(0).getTime())
+              && singleCell.getDate().before(newlySelectedCal.getTime())
+              && ((!singleCell.isSelectable() && previouslyUnSelectableCell == null)
+              || (singleCell.isSelectable() && previouslyUnSelectableCell.equals(singleCell)))
+              && singleCell.isCurrentMonth()) {
+            clearOldSelections();
+            return;
+          }
+        }
+      }
+    }
   }
 
   private void setLastDateSelectable(Date start) {
