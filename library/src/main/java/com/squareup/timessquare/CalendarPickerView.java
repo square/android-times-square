@@ -609,6 +609,12 @@ public class CalendarPickerView extends ListView {
         selectedCells.get(0).setRangeState(MonthCellDescriptor.RangeState.FIRST);
         selectedCells.get(1).setRangeState(MonthCellDescriptor.RangeState.LAST);
 
+        if (previouslyUnSelectableCell != null
+            && !previouslyUnSelectableCell.getDate().equals(end)) {
+          previouslyUnSelectableCell.setSelectable(false);
+          previouslyUnSelectableCell = null;
+        }
+
         for (List<List<MonthCellDescriptor>> month : cells) {
           for (List<MonthCellDescriptor> week : month) {
             for (MonthCellDescriptor singleCell : week) {
