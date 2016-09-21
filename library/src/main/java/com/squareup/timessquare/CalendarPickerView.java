@@ -486,7 +486,8 @@ public class CalendarPickerView extends ListView {
       if (cellClickInterceptor != null && cellClickInterceptor.onCellClicked(clickedDate)) {
         return;
       }
-      if (!betweenDates(clickedDate, minCal, maxCal) || !isDateSelectable(clickedDate)) {
+      if (!betweenDates(clickedDate, minCal, maxCal)
+          || (!cell.isSelectable())) {
         if (invalidDateListener != null) {
           invalidDateListener.onInvalidDateSelected(clickedDate);
         }
