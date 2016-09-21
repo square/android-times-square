@@ -15,7 +15,7 @@ class MonthCellDescriptor {
   private final boolean isCurrentMonth;
   private boolean isSelected;
   private final boolean isToday;
-  private final boolean isSelectable;
+  private boolean isSelectable;
   private boolean isHighlighted;
   private RangeState rangeState;
 
@@ -49,6 +49,10 @@ class MonthCellDescriptor {
 
   public void setSelected(boolean selected) {
     isSelected = selected;
+  }
+
+  public void setSelectable(boolean selectable) {
+    isSelectable = selectable;
   }
 
   boolean isHighlighted() {

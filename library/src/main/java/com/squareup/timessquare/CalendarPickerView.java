@@ -65,6 +65,7 @@ public class CalendarPickerView extends ListView {
   final MonthView.Listener listener = new CellClickedListener();
   final List<MonthDescriptor> months = new ArrayList<>();
   final List<MonthCellDescriptor> selectedCells = new ArrayList<>();
+  MonthCellDescriptor previouslyUnSelectableCell;
   final List<MonthCellDescriptor> highlightedCells = new ArrayList<>();
   final List<Calendar> selectedCals = new ArrayList<>();
   final List<Calendar> highlightedCals = new ArrayList<>();
@@ -595,7 +596,9 @@ public class CalendarPickerView extends ListView {
         cell.setSelected(true);
       }
       selectedCals.add(newlySelectedCal);
-
+      if (selectionMode == SelectionMode.RANGE && selectedCells.size() == 1) {
+        setLastDateSelectable(selectedCells.get(0).getDate());
+      }
       if (selectionMode == SelectionMode.RANGE && selectedCells.size() > 1) {
         // Select all days in between start and end.
         Date start = selectedCells.get(0).getDate();
@@ -624,7 +627,27 @@ public class CalendarPickerView extends ListView {
     return date != null;
   }
 
+  private void setLastDateSelectable(Date start) {
+    for (List<List<MonthCellDescriptor>> month : cells) {
+      for (List<MonthCellDescriptor> week : month) {
+        for (MonthCellDescriptor singleCell : week) {
+          if (singleCell.getDate().after(start)
+              && !singleCell.isSelectable()
+              && singleCell.isCurrentMonth()) {
+            singleCell.setSelectable(true);
+            previouslyUnSelectableCell = singleCell;
+            return;
+          }
+        }
+      }
+    }
+  }
+
   private void clearOldSelections() {
+    if (previouslyUnSelectableCell != null) {
+      previouslyUnSelectableCell.setSelectable(false);
+      previouslyUnSelectableCell = null;
+    }
     for (MonthCellDescriptor selectedCell : selectedCells) {
       // De-select the currently-selected cell.
       selectedCell.setSelected(false);
