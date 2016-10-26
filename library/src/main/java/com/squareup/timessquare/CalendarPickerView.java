@@ -283,8 +283,8 @@ public class CalendarPickerView extends ListView {
    * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
    * {@link FluentInitializer} this method returns.
    * <p>
-   * The calendar will be constructed using the given time zone and the default locale as returned by
-   * {@link java.util.Locale#getDefault()}. This means that all dates will be in given time zone.
+   * The calendar will be constructed using the given time zone and the default locale as returned
+   * by {@link java.util.Locale#getDefault()}. This means that all dates will be in given time zone.
    * If you wish the calendar to be constructed using a different locale, use
    * {@link #init(java.util.Date, java.util.Date, java.util.Locale)} or
    * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale)}.
