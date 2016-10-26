@@ -739,7 +739,7 @@ public class CalendarPickerView extends ListView {
 
       MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
       if (monthCellWithMonthIndex != null) {
-        Calendar newlyHighlightedCal = Calendar.getInstance();
+        Calendar newlyHighlightedCal = Calendar.getInstance(timeZone, locale);
         newlyHighlightedCal.setTime(date);
         MonthCellDescriptor cell = monthCellWithMonthIndex.cell;
 
