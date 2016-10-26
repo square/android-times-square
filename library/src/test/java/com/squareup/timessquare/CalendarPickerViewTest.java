@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
+
 import org.intellij.lang.annotations.MagicConstant;
 import org.junit.Before;
 import org.junit.Test;
@@ -265,10 +267,17 @@ public class CalendarPickerViewTest {
     } catch (IllegalArgumentException expected) {
     }
     try {
-      view.init(validDate, validDate, null) //
-          .inMode(SINGLE) //
-          .withSelectedDate(validDate);
+      view.init(validDate, validDate, (Locale) null) //
+              .inMode(SINGLE) //
+              .withSelectedDate(validDate);
       fail("Should not have been able to pass in a null locale");
+    } catch (IllegalArgumentException expected) {
+    }
+    try {
+      view.init(validDate, validDate, (TimeZone) null) //
+              .inMode(SINGLE) //
+              .withSelectedDate(validDate);
+      fail("Should not have been able to pass in a null time zone");
     } catch (IllegalArgumentException expected) {
     }
   }
