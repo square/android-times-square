@@ -19,7 +19,6 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static android.R.attr.timeZone;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.MULTIPLE;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.RANGE;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.SINGLE;
