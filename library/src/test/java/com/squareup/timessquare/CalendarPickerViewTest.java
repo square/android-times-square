@@ -268,15 +268,15 @@ public class CalendarPickerViewTest {
     }
     try {
       view.init(validDate, validDate, (Locale) null) //
-              .inMode(SINGLE) //
-              .withSelectedDate(validDate);
+          .inMode(SINGLE) //
+          .withSelectedDate(validDate);
       fail("Should not have been able to pass in a null locale");
     } catch (IllegalArgumentException expected) {
     }
     try {
       view.init(validDate, validDate, (TimeZone) null) //
-              .inMode(SINGLE) //
-              .withSelectedDate(validDate);
+          .inMode(SINGLE) //
+          .withSelectedDate(validDate);
       fail("Should not have been able to pass in a null time zone");
     } catch (IllegalArgumentException expected) {
     }
