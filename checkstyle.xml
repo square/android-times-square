@@ -9,10 +9,10 @@
     <module name="FileTabCharacter"/>
 
     <!-- Trailing spaces -->
-    <module name="RegexpSingleline">
-        <property name="format" value="\s+$"/>
-        <property name="message" value="Line has trailing spaces."/>
-    </module>
+    <!--<module name="RegexpSingleline">-->
+        <!--<property name="format" value="\s+$"/>-->
+        <!--<property name="message" value="Line has trailing spaces."/>-->
+    <!--</module>-->
 
     <!-- Space after 'for' and 'if' -->
     <module name="RegexpSingleline">

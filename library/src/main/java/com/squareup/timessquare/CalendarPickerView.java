@@ -65,6 +65,7 @@ public class CalendarPickerView extends ListView {
   final MonthView.Listener listener = new CellClickedListener();
   final List<MonthDescriptor> months = new ArrayList<>();
   final List<MonthCellDescriptor> selectedCells = new ArrayList<>();
+  MonthCellDescriptor previouslyUnSelectableCell;
   final List<MonthCellDescriptor> highlightedCells = new ArrayList<>();
   final List<Calendar> selectedCals = new ArrayList<>();
   final List<Calendar> highlightedCals = new ArrayList<>();
@@ -485,7 +486,8 @@ public class CalendarPickerView extends ListView {
       if (cellClickInterceptor != null && cellClickInterceptor.onCellClicked(clickedDate)) {
         return;
       }
-      if (!betweenDates(clickedDate, minCal, maxCal) || !isDateSelectable(clickedDate)) {
+      if (!betweenDates(clickedDate, minCal, maxCal)
+          || (!cell.isSelectable())) {
         if (invalidDateListener != null) {
           invalidDateListener.onInvalidDateSelected(clickedDate);
         }
@@ -574,6 +576,8 @@ public class CalendarPickerView extends ListView {
         } else if (selectedCals.size() == 1 && newlySelectedCal.before(selectedCals.get(0))) {
           // We're moving the start of the range back in time: clear the old start date.
           clearOldSelections();
+        } else if (date != null && selectedCals.size() == 1) {
+          checkForUnSelectableDate(newlySelectedCal);
         }
         break;
 
@@ -595,13 +599,21 @@ public class CalendarPickerView extends ListView {
         cell.setSelected(true);
       }
       selectedCals.add(newlySelectedCal);
-
+      if (selectionMode == SelectionMode.RANGE && selectedCells.size() == 1) {
+        setLastDateSelectable(selectedCells.get(0).getDate());
+      }
       if (selectionMode == SelectionMode.RANGE && selectedCells.size() > 1) {
         // Select all days in between start and end.
         Date start = selectedCells.get(0).getDate();
         Date end = selectedCells.get(1).getDate();
         selectedCells.get(0).setRangeState(MonthCellDescriptor.RangeState.FIRST);
         selectedCells.get(1).setRangeState(MonthCellDescriptor.RangeState.LAST);
+
+        if (previouslyUnSelectableCell != null
+            && !previouslyUnSelectableCell.getDate().equals(end)) {
+          previouslyUnSelectableCell.setSelectable(false);
+          previouslyUnSelectableCell = null;
+        }
 
         for (List<List<MonthCellDescriptor>> month : cells) {
           for (List<MonthCellDescriptor> week : month) {
@@ -624,7 +636,44 @@ public class CalendarPickerView extends ListView {
     return date != null;
   }
 
+  private void checkForUnSelectableDate(Calendar newlySelectedCal) {
+    for (List<List<MonthCellDescriptor>> month : cells) {
+      for (List<MonthCellDescriptor> week : month) {
+        for (MonthCellDescriptor singleCell : week) {
+          if (singleCell.getDate().after(selectedCals.get(0).getTime())
+              && singleCell.getDate().before(newlySelectedCal.getTime())
+              && ((!singleCell.isSelectable() && previouslyUnSelectableCell == null)
+              || (singleCell.isSelectable() && previouslyUnSelectableCell.equals(singleCell)))
+              && singleCell.isCurrentMonth()) {
+            clearOldSelections();
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  private void setLastDateSelectable(Date start) {
+    for (List<List<MonthCellDescriptor>> month : cells) {
+      for (List<MonthCellDescriptor> week : month) {
+        for (MonthCellDescriptor singleCell : week) {
+          if (singleCell.getDate().after(start)
+              && !singleCell.isSelectable()
+              && singleCell.isCurrentMonth()) {
+            singleCell.setSelectable(true);
+            previouslyUnSelectableCell = singleCell;
+            return;
+          }
+        }
+      }
+    }
+  }
+
   private void clearOldSelections() {
+    if (previouslyUnSelectableCell != null) {
+      previouslyUnSelectableCell.setSelectable(false);
+      previouslyUnSelectableCell = null;
+    }
     for (MonthCellDescriptor selectedCell : selectedCells) {
       // De-select the currently-selected cell.
       selectedCell.setSelected(false);
