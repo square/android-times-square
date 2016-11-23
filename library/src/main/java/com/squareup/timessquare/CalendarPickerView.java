@@ -88,6 +88,8 @@ public class CalendarPickerView extends ListView {
   private int headerTextColor;
   private Typeface titleTypeface;
   private Typeface dateTypeface;
+  private Context c = null;
+  private AttributeSet at = null;
 
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
@@ -111,6 +113,8 @@ public class CalendarPickerView extends ListView {
   public CalendarPickerView(Context context, AttributeSet attrs) {
     super(context, attrs);
 
+    c = context;
+    at = attrs;
     Resources res = context.getResources();
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CalendarPickerView);
     final int bg = a.getColor(R.styleable.CalendarPickerView_android_background,
@@ -329,6 +333,18 @@ public class CalendarPickerView extends ListView {
     public FluentInitializer inMode(SelectionMode mode) {
       selectionMode = mode;
       validateAndUpdate();
+      return this;
+    }
+
+    /**
+     * Sets custom colors
+     * @param colorResource custom xml resource specifying the colors.
+     * @return
+       */
+    public FluentInitializer setCustomHighlightColors(int colorResource) {
+      TypedArray a = c.obtainStyledAttributes(at, R.styleable.CalendarPickerView);
+      dayBackgroundResId = a.getResourceId(R.styleable.CalendarPickerView_tsquare_dayBackground,
+              colorResource);
       return this;
     }
 

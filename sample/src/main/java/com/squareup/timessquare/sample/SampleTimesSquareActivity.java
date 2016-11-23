@@ -46,7 +46,8 @@ public class SampleTimesSquareActivity extends Activity {
     calendar = (CalendarPickerView) findViewById(R.id.calendar_view);
     calendar.init(lastYear.getTime(), nextYear.getTime()) //
         .inMode(SelectionMode.SINGLE) //
-        .withSelectedDate(new Date());
+        .withSelectedDate(new Date()) //
+        .setCustomHighlightColors(R.drawable.custom_calendar_bg);
 
     initButtonListeners(nextYear, lastYear);
   }
