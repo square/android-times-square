@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 Square, Inc. -->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item app:tsquare_state_range_middle="true">
+        <color android:color="#ff96caff"/>
+    </item>
+    <item android:state_selected="true">
+        <color android:color="#FF0000"/>
+    </item>
+    <item android:state_pressed="true">
+        <color android:color="#ff379bff"/>
+    </item>
+    <item app:tsquare_state_current_month="false">
+        <color android:color="#ffd7d9db"/>
+    </item>
+    <item app:tsquare_state_highlighted="true">
+        <color android:color="#ccffcc"/>
+    </item>
+    <item app:tsquare_state_today="true">
+        <color android:color="#ff778088"/>
+    </item>
+    <item>
+        <color android:color="#fff5f7f9"/>
+    </item>
+</selector>
