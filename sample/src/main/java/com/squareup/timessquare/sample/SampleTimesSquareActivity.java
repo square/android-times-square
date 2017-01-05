@@ -1,15 +1,17 @@
 package com.squareup.timessquare.sample;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.squareup.timessquare.CalendarCellDecorator;
 import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
@@ -26,12 +28,13 @@ import java.util.Set;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class SampleTimesSquareActivity extends Activity {
+public class SampleTimesSquareActivity extends AppCompatActivity {
   private static final String TAG = "SampleTimesSquareActivi";
   private CalendarPickerView calendar;
   private AlertDialog theDialog;
   private CalendarPickerView dialogView;
   private final Set<Button> modeButtons = new LinkedHashSet<Button>();
+
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -62,6 +65,7 @@ public class SampleTimesSquareActivity extends Activity {
     final Button hebrew = (Button) findViewById(R.id.button_hebrew);
     final Button arabic = (Button) findViewById(R.id.button_arabic);
     final Button customView = (Button) findViewById(R.id.button_custom_view);
+    final Button bottomSheetDialog = (Button) findViewById(R.id.button_bottom_sheet_dialog);
 
     modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator, customView));
 
@@ -180,6 +184,14 @@ public class SampleTimesSquareActivity extends Activity {
         calendar.init(lastYear.getTime(), nextYear.getTime())
                 .inMode(SelectionMode.SINGLE)
                 .withSelectedDate(new Date());
+      }
+    });
+
+    bottomSheetDialog.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        BottomSheetDialogFragment bottomSheetDialogFragment = new CalendarBottomSheetDialog();
+        bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
       }
     });
 

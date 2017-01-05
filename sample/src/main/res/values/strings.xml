@@ -12,5 +12,6 @@
     <string name="Range">Range</string>
     <string name="Multi">Multi</string>
     <string name="Single">Single</string>
+    <string name="BottomSheetDialog">Bottom Sheet Dialog</string>
 </resources>
 

@@ -52,6 +52,7 @@ public class MonthView extends LinearLayout {
 
     view.isRtl = isRtl(locale);
     view.locale = locale;
+
     int firstDayOfWeek = today.getFirstDayOfWeek();
     final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
     for (int offset = 0; offset < 7; offset++) {
