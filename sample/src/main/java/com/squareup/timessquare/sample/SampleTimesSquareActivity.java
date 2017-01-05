@@ -62,6 +62,7 @@ public class SampleTimesSquareActivity extends Activity {
     final Button hebrew = (Button) findViewById(R.id.button_hebrew);
     final Button arabic = (Button) findViewById(R.id.button_arabic);
     final Button customView = (Button) findViewById(R.id.button_custom_view);
+    final Button bottomSheetDialog = (Button) findViewById(R.id.button_bottom_sheet_dialog);
 
     modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator, customView));
 
@@ -179,6 +180,16 @@ public class SampleTimesSquareActivity extends Activity {
         calendar.setCustomDayView(new SampleDayViewAdapter());
         calendar.init(lastYear.getTime(), nextYear.getTime())
                 .inMode(SelectionMode.SINGLE)
+                .withSelectedDate(new Date());
+      }
+    });
+
+    bottomSheetDialog.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        String title = "I'm a dialog!";
+        showCalendarInDialog(title, R.layout.dialog);
+        dialogView.init(lastYear.getTime(), nextYear.getTime()) //
                 .withSelectedDate(new Date());
       }
     });

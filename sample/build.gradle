@@ -20,4 +20,6 @@ android {
 
 dependencies {
   compile project(':library')
+
+  compile "com.android.support:design:25.1.0"
 }
