@@ -102,7 +102,8 @@ public class CalendarCellView extends FrameLayout {
     return isSelectable;
   }
 
-  public boolean isBlocked() { return isBlocked; }
+  public boolean isBlocked() {
+    return isBlocked; }
 
   public boolean isHighlighted() {
     return isHighlighted;

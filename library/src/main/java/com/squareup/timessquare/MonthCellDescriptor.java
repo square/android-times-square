@@ -81,9 +81,13 @@ class MonthCellDescriptor {
     return value;
   }
 
-  public boolean isBlocked() { return isBlocked; }
+  public boolean isBlocked() {
+    return isBlocked;
+  }
 
-  public void setBlocked(boolean blocked) { isBlocked = blocked; }
+  public void setBlocked(boolean blocked) {
+    isBlocked = blocked;
+  }
 
   @Override public String toString() {
     return "MonthCellDescriptor{"

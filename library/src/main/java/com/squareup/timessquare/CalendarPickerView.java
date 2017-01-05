@@ -640,7 +640,7 @@ public class CalendarPickerView extends ListView {
     switch (selectionMode) {
       case RANGE:
         if (selectedCals.size() > 1) {
-          if(!isDateSelectable(date)){
+          if (!isDateSelectable(date)) {
             return false;
           }
           // We've already got a range selected: clear the old one.
@@ -715,7 +715,9 @@ public class CalendarPickerView extends ListView {
           if (singleCell.getDate().after(selectedCals.get(0).getTime())
               && singleCell.getDate().before(newlySelectedCal.getTime())
               && ((!singleCell.isSelectable() && previouslyUnSelectableCell == null)
-              || (singleCell.isSelectable() && previouslyUnSelectableCell != null && previouslyUnSelectableCell.equals(singleCell)))
+              || (singleCell.isSelectable()
+              && previouslyUnSelectableCell != null
+              && previouslyUnSelectableCell.equals(singleCell)))
               && singleCell.isCurrentMonth()) {
             clearOldSelections();
             return;
