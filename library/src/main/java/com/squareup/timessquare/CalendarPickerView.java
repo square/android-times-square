@@ -90,6 +90,7 @@ public class CalendarPickerView extends ListView {
 
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
+  private DateBlockedFilter dateBlockedListener;
   private OnInvalidDateSelectedListener invalidDateListener =
       new DefaultOnInvalidDateSelectedListener();
   private CellClickInterceptor cellClickInterceptor;
@@ -860,10 +861,10 @@ public class CalendarPickerView extends ListView {
             rangeState = MonthCellDescriptor.RangeState.MIDDLE;
           }
         }
-
+        boolean isBlocked = isDateBlocked(date);
         weekCells.add(
             new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday,
-                isHighlighted, value, rangeState));
+                isHighlighted, value, rangeState, isBlocked));
         cal.add(DATE, 1);
       }
     }
@@ -930,6 +931,10 @@ public class CalendarPickerView extends ListView {
     dateListener = listener;
   }
 
+  private boolean isDateBlocked(Date date) {
+    return dateBlockedListener != null && dateBlockedListener.isDateBlocked(date);
+  }
+
   /**
    * Set a listener to react to user selection of a disabled date.
    *
@@ -950,6 +955,16 @@ public class CalendarPickerView extends ListView {
     dateConfiguredListener = listener;
   }
 
+  /**
+   * Set a listener used to discriminate between blocked and unblocked dates. Set this to
+   * disable arbitrary dates as they are rendered.
+   * <p>
+   * Important: set this before you call {@link #init(Date, Date)} methods.  If called afterwards,
+   * it will not be consistently applied.
+   */
+  public void setDateBlockedFilter(DateBlockedFilter listener) {
+    dateBlockedListener = listener;
+  }
 
   /**
    * Set an adapter used to initialize {@link CalendarCellView} with custom layout.
@@ -1001,6 +1016,16 @@ public class CalendarPickerView extends ListView {
    */
   public interface DateSelectableFilter {
     boolean isDateSelectable(Date date);
+  }
+
+  /**
+   * Interface used for determining if a date cell is blocked when it is configured for
+   * display on the calendar.
+   *
+   * @see #setDateBlockedFilter(DateBlockedFilter)
+   */
+  public interface DateBlockedFilter {
+    boolean isDateBlocked(Date date);
   }
 
   /**

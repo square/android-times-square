@@ -31,10 +31,15 @@ public class CalendarCellView extends FrameLayout {
       R.attr.tsquare_state_range_last
   };
 
+  private static final int[] STATE_BLOCKED = {
+      R.attr.tsquare_state_blocked
+  };
+
   private boolean isSelectable = false;
   private boolean isCurrentMonth = false;
   private boolean isToday = false;
   private boolean isHighlighted = false;
+  private boolean isBlocked = false;
   private RangeState rangeState = RangeState.NONE;
   private TextView dayOfMonthTextView;
 
@@ -78,6 +83,13 @@ public class CalendarCellView extends FrameLayout {
     }
   }
 
+  public void setBlocked(boolean isBlocked) {
+    if (this.isBlocked != isBlocked) {
+      this.isBlocked = isBlocked;
+      refreshDrawableState();
+    }
+  }
+
   public boolean isCurrentMonth() {
     return isCurrentMonth;
   }
@@ -89,6 +101,8 @@ public class CalendarCellView extends FrameLayout {
   public boolean isSelectable() {
     return isSelectable;
   }
+
+  public boolean isBlocked() { return isBlocked; }
 
   @Override protected int[] onCreateDrawableState(int extraSpace) {
     final int[] drawableState = super.onCreateDrawableState(extraSpace + 5);
@@ -117,6 +131,9 @@ public class CalendarCellView extends FrameLayout {
       mergeDrawableStates(drawableState, STATE_RANGE_LAST);
     }
 
+    if (isBlocked) {
+      mergeDrawableStates(drawableState, STATE_BLOCKED);
+    }
     return drawableState;
   }
 

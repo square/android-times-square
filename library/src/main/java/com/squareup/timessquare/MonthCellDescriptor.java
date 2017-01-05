@@ -17,10 +17,11 @@ class MonthCellDescriptor {
   private final boolean isToday;
   private boolean isSelectable;
   private boolean isHighlighted;
+  private boolean isBlocked;
   private RangeState rangeState;
 
   MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
-      boolean today, boolean highlighted, int value, RangeState rangeState) {
+      boolean today, boolean highlighted, int value, RangeState rangeState, boolean isBlocked) {
     this.date = date;
     isCurrentMonth = currentMonth;
     isSelectable = selectable;
@@ -29,6 +30,7 @@ class MonthCellDescriptor {
     isToday = today;
     this.value = value;
     this.rangeState = rangeState;
+    this.isBlocked = isBlocked;
   }
 
   public Date getDate() {
@@ -79,6 +81,10 @@ class MonthCellDescriptor {
     return value;
   }
 
+  public boolean isBlocked() { return isBlocked; }
+
+  public void setBlocked(boolean blocked) { isBlocked = blocked; }
+
   @Override public String toString() {
     return "MonthCellDescriptor{"
         + "date="
@@ -97,6 +103,8 @@ class MonthCellDescriptor {
         + isHighlighted
         + ", rangeState="
         + rangeState
+        + ", isBlocked="
+        + isBlocked
         + '}';
   }
 }
