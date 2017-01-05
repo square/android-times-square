@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
+
 import org.intellij.lang.annotations.MagicConstant;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,9 +56,13 @@ public class CalendarPickerViewTest {
     // the CalendarPickerView does not rely on any other locale than the configured one --
     // especially not the default locale.
     Locale.setDefault(Locale.GERMANY);
+
+    // The same for time zone
+    TimeZone.setDefault(TimeZone.getTimeZone("GMT+01:00"));
   }
 
   private Activity activity;
+  private TimeZone timeZone;
   private Locale locale;
   private CalendarPickerView view;
   private Calendar today;
@@ -65,16 +71,17 @@ public class CalendarPickerViewTest {
 
   @Before public void setUp() throws Exception {
     activity = Robolectric.buildActivity(Activity.class).create().start().resume().get();
+    timeZone = TimeZone.getTimeZone("GMT+06:00");
     locale = Locale.US;
     view = new CalendarPickerView(activity, null);
-    today = Calendar.getInstance(locale);
+    today = Calendar.getInstance(timeZone, locale);
     today.set(2012, NOVEMBER, 16, 0, 0);
     minDate = today.getTime();
     today.set(2013, NOVEMBER, 16, 0, 0);
     maxDate = today.getTime();
     today.set(2012, NOVEMBER, 16, 0, 0);
     Date startDate = today.getTime();
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(startDate);
 
@@ -85,7 +92,7 @@ public class CalendarPickerViewTest {
   @Test public void testInitDecember() throws Exception {
     Calendar dec2012 = buildCal(2012, DECEMBER, 1);
     Calendar dec2013 = buildCal(2013, DECEMBER, 1);
-    view.init(dec2012.getTime(), dec2013.getTime(), locale) //
+    view.init(dec2012.getTime(), dec2013.getTime(), timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(dec2012.getTime());
     assertThat(view.months).hasSize(12);
@@ -94,7 +101,7 @@ public class CalendarPickerViewTest {
   @Test public void testInitJanuary() throws Exception {
     Calendar jan2012 = buildCal(2012, JANUARY, 1);
     Calendar jan2013 = buildCal(2013, JANUARY, 1);
-    view.init(jan2012.getTime(), jan2013.getTime(), locale) //
+    view.init(jan2012.getTime(), jan2013.getTime(), timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(jan2012.getTime());
     assertThat(view.months).hasSize(12);
@@ -103,7 +110,7 @@ public class CalendarPickerViewTest {
   @Test public void testInitMidyear() throws Exception {
     Calendar may2012 = buildCal(2012, MAY, 1);
     Calendar may2013 = buildCal(2013, MAY, 1);
-    view.init(may2012.getTime(), may2013.getTime(), locale) //
+    view.init(may2012.getTime(), may2013.getTime(), timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(may2012.getTime());
     assertThat(view.months).hasSize(12);
@@ -208,7 +215,7 @@ public class CalendarPickerViewTest {
     List<Date> selectedDates = new ArrayList<Date>();
     selectedDates.add(minDate);
     // This one should work.
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDates(selectedDates);
 
@@ -216,7 +223,7 @@ public class CalendarPickerViewTest {
     Calendar secondSelection = buildCal(2012, NOVEMBER, 17);
     selectedDates.add(secondSelection.getTime());
     try {
-      view.init(minDate, maxDate, locale) //
+      view.init(minDate, maxDate, timeZone, locale) //
           .inMode(SINGLE) //
           .withSelectedDates(selectedDates);
       fail("Should not have been able to init() with SINGLE mode && multiple selected dates");
@@ -233,7 +240,7 @@ public class CalendarPickerViewTest {
     Calendar thirdSelection = buildCal(2012, NOVEMBER, 25);
     selectedDates.add(thirdSelection.getTime());
     try {
-      view.init(minDate, maxDate, locale) //
+      view.init(minDate, maxDate, timeZone, locale) //
           .inMode(RANGE) //
           .withSelectedDates(selectedDates);
       fail("Should not have been able to init() with RANGE mode && three selected dates");
@@ -244,31 +251,38 @@ public class CalendarPickerViewTest {
   @Test public void testNullInitArguments() throws Exception {
     final Date validDate = today.getTime();
     try {
-      view.init(validDate, validDate, locale) //
+      view.init(validDate, validDate, timeZone, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(null);
       fail("Should not have been able to pass in a null startDate");
     } catch (IllegalArgumentException expected) {
     }
     try {
-      view.init(null, validDate, locale) //
+      view.init(null, validDate, timeZone, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(validDate);
       fail("Should not have been able to pass in a null minDate");
     } catch (IllegalArgumentException expected) {
     }
     try {
-      view.init(validDate, null, locale) //
+      view.init(validDate, null, timeZone, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(validDate);
       fail("Should not have been able to pass in a null maxDate");
     } catch (IllegalArgumentException expected) {
     }
     try {
-      view.init(validDate, validDate, null) //
+      view.init(validDate, validDate, (Locale) null) //
           .inMode(SINGLE) //
           .withSelectedDate(validDate);
       fail("Should not have been able to pass in a null locale");
+    } catch (IllegalArgumentException expected) {
+    }
+    try {
+      view.init(validDate, validDate, (TimeZone) null) //
+          .inMode(SINGLE) //
+          .withSelectedDate(validDate);
+      fail("Should not have been able to pass in a null time zone");
     } catch (IllegalArgumentException expected) {
     }
   }
@@ -278,7 +292,7 @@ public class CalendarPickerViewTest {
     today.add(YEAR, -1);
     final Date maxDate = today.getTime();
     try {
-      view.init(minDate, maxDate, locale) //
+      view.init(minDate, maxDate, timeZone, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(minDate);
       fail("Should not have been able to pass in a maxDate < minDate");
@@ -293,7 +307,7 @@ public class CalendarPickerViewTest {
     today.add(YEAR, 1);
     Date selectedDate = today.getTime();
     try {
-      view.init(minDate, maxDate, locale) //
+      view.init(minDate, maxDate, timeZone, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(selectedDate);
       fail("Should not have been able to pass in a selectedDate > maxDate");
@@ -302,7 +316,7 @@ public class CalendarPickerViewTest {
     today.add(YEAR, -5);
     selectedDate = today.getTime();
     try {
-      view.init(minDate, maxDate, locale) //
+      view.init(minDate, maxDate, timeZone, locale) //
           .inMode(SINGLE) //
           .withSelectedDate(selectedDate);
       fail("Should not have been able to pass in a selectedDate < minDate");
@@ -316,7 +330,7 @@ public class CalendarPickerViewTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testSelectedNotInRange_maxDateExcluded() throws Exception {
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(maxDate);
   }
@@ -333,14 +347,14 @@ public class CalendarPickerViewTest {
   @Test public void testShowingOnlyOneMonth() throws Exception {
     Calendar feb1 = buildCal(2013, FEBRUARY, 1);
     Calendar mar1 = buildCal(2013, MARCH, 1);
-    view.init(feb1.getTime(), mar1.getTime(), locale) //
+    view.init(feb1.getTime(), mar1.getTime(), timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(feb1.getTime());
     assertThat(view.months).hasSize(1);
   }
 
   @Test public void selectDateThrowsExceptionForDatesOutOfRange() {
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
     Calendar outOfRange = buildCal(2015, FEBRUARY, 1);
@@ -352,7 +366,7 @@ public class CalendarPickerViewTest {
   }
 
   @Test public void selectDateReturnsTrueForDateInRange() {
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
     Calendar inRange = buildCal(2013, FEBRUARY, 1);
@@ -361,7 +375,7 @@ public class CalendarPickerViewTest {
   }
 
   @Test public void selectDateDoesntSelectDisabledCell() {
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
     Calendar jumpToCal = buildCal(2013, FEBRUARY, 1);
@@ -371,7 +385,7 @@ public class CalendarPickerViewTest {
   }
 
   @Test public void testMultiselectWithNoInitialSelections() throws Exception {
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(MULTIPLE);
     assertThat(view.selectionMode).isEqualTo(MULTIPLE);
     assertThat(view.getSelectedDates()).isEmpty();
@@ -386,7 +400,7 @@ public class CalendarPickerViewTest {
   }
 
   @Test public void testOnDateConfiguredListener() {
-    final Calendar testCal = Calendar.getInstance(locale);
+    final Calendar testCal = Calendar.getInstance(timeZone, locale);
     view.setDateSelectableFilter(new CalendarPickerView.DateSelectableFilter() {
       @Override public boolean isDateSelectable(Date date) {
         testCal.setTime(date);
@@ -394,10 +408,10 @@ public class CalendarPickerViewTest {
         return dayOfWeek > 1 && dayOfWeek < 7;
       }
     });
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
-    Calendar jumpToCal = Calendar.getInstance(locale);
+    Calendar jumpToCal = Calendar.getInstance(timeZone, locale);
     jumpToCal.setTime(today.getTime());
     jumpToCal.add(MONTH, 2);
     jumpToCal.set(DAY_OF_WEEK, 1);
@@ -410,11 +424,11 @@ public class CalendarPickerViewTest {
   }
 
   @Test public void testWithoutDateSelectedListener() throws Exception {
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(SINGLE) //
         .withSelectedDate(today.getTime());
 
-    Calendar jumpToCal = Calendar.getInstance(locale);
+    Calendar jumpToCal = Calendar.getInstance(timeZone, locale);
     jumpToCal.setTime(today.getTime());
     jumpToCal.add(DATE, 1);
     MonthCellDescriptor cellToClick =
@@ -426,7 +440,7 @@ public class CalendarPickerViewTest {
   }
 
   @Test public void testRangeSelectionWithNoInitialSelection() throws Exception {
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(RANGE);
     assertThat(view.selectedCals).hasSize(0);
     assertThat(view.selectedCells).hasSize(0);
@@ -443,7 +457,7 @@ public class CalendarPickerViewTest {
   }
 
   @Test public void testInitWithoutHighlightingCells() {
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(SINGLE);
 
     assertThat(view.highlightedCals).hasSize(0);
@@ -453,7 +467,7 @@ public class CalendarPickerViewTest {
   @Test public void testHighlightingCells() {
     final Calendar highlightedCal = buildCal(2012, NOVEMBER, 20);
 
-    view.init(minDate, maxDate, locale)
+    view.init(minDate, maxDate, timeZone, locale)
         .inMode(SINGLE)
         .withHighlightedDate(highlightedCal.getTime());
 
@@ -489,7 +503,7 @@ public class CalendarPickerViewTest {
     Calendar nov18 = buildCal(2012, NOVEMBER, 18);
     Calendar nov24 = buildCal(2012, NOVEMBER, 24);
     List<Date> selectedDates = Arrays.asList(nov18.getTime(), nov24.getTime());
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(RANGE) //
         .withSelectedDates(selectedDates);
     assertRangeSelected();
@@ -501,7 +515,7 @@ public class CalendarPickerViewTest {
     Calendar nov18 = buildCal(2012, NOVEMBER, 18);
     Calendar nov24 = buildCal(2012, NOVEMBER, 24);
     List<Date> selectedDates = Arrays.asList(nov18.getTime());
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(RANGE) //
         .withSelectedDates(selectedDates);
     assertOneDateSelected();
@@ -528,7 +542,7 @@ public class CalendarPickerViewTest {
     Calendar startCal = buildCal(2012, NOVEMBER, 17);
     Calendar endCal = buildCal(2012, NOVEMBER, 24);
 
-    view.init(minDate, maxDate, locale) //
+    view.init(minDate, maxDate, timeZone, locale) //
         .inMode(RANGE);
 
     boolean wasAbleToSetDate = view.selectDate(startCal.getTime());
@@ -576,10 +590,10 @@ public class CalendarPickerViewTest {
     Locale greatBritain = new Locale("en", "GB");
 
     // Verify that firstDayOfWeek is actually Monday.
-    Calendar cal = Calendar.getInstance(greatBritain);
+    Calendar cal = Calendar.getInstance(timeZone, greatBritain);
     assertThat(cal.getFirstDayOfWeek()).isEqualTo(Calendar.MONDAY);
 
-    view.init(minDate, maxDate, greatBritain);
+    view.init(minDate, maxDate, timeZone, greatBritain);
     MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
     CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
     TextView firstDay = (TextView) header.getChildAt(0);
@@ -638,6 +652,29 @@ public class CalendarPickerViewTest {
     assertThat(view.selectedCals.get(0).get(DATE)).isEqualTo(17);
   }
 
+
+  @Test public void testTimeZoneNotEqualDefault() throws Exception {
+    // Time zone that used for test should be different from default.
+    assertThat(timeZone).isNotEqualTo(TimeZone.getDefault());
+  }
+
+  @Test public void testTimeZone() throws Exception {
+    Calendar cal = buildCal(2016, FEBRUARY, 1);
+    Date startDate = cal.getTime();
+    cal.add(Calendar.MONTH, 2);
+    view.init(startDate, cal.getTime(), timeZone, locale)
+        .inMode(SINGLE)
+        .withSelectedDate(startDate);
+
+    assertThat(view.getSelectedDate()).isEqualTo(startDate);
+
+    Calendar calendarDefault = Calendar.getInstance();
+    calendarDefault.set(2016, FEBRUARY, 1);
+    CalendarPickerView.setMidnight(calendarDefault);
+
+    assertThat(view.getSelectedDate()).isNotEqualTo(calendarDefault.getTime());
+  }
+
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
       int expectedVal, boolean expectedCurrentMonth, boolean expectedSelected,
       boolean expectedToday, boolean expectedSelectable,
@@ -658,7 +695,7 @@ public class CalendarPickerViewTest {
   }
 
   private List<List<MonthCellDescriptor>> getCells(int month, int year) {
-    Calendar cal = Calendar.getInstance(locale);
+    Calendar cal = Calendar.getInstance(timeZone, locale);
     cal.set(DAY_OF_MONTH, 1);
     cal.set(YEAR, year);
     cal.set(MONTH, month);
@@ -669,7 +706,7 @@ public class CalendarPickerViewTest {
       JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER,
       DECEMBER
   }) int month, int day) {
-    Calendar jumpToCal = Calendar.getInstance(locale);
+    Calendar jumpToCal = Calendar.getInstance(timeZone, locale);
     jumpToCal.set(year, month, day);
     CalendarPickerView.setMidnight(jumpToCal);
     return jumpToCal;
