@@ -2,6 +2,7 @@
 package com.squareup.timessquare;
 
 import android.app.Activity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -564,7 +565,7 @@ public class CalendarPickerViewTest {
 
   @Test public void testLocaleSetting() throws Exception {
     view.init(minDate, maxDate, Locale.GERMAN);
-    MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
+    MonthView monthView = (MonthView) view.getLinearLayoutManager().findViewByPosition(1);
     CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
     TextView firstDay = (TextView) header.getChildAt(0);
     assertThat(firstDay).hasTextString("Mo"); // Montag = Monday
@@ -573,7 +574,7 @@ public class CalendarPickerViewTest {
 
   @Test public void testRightToLeftLocale() throws Exception {
     view.init(minDate, maxDate, new Locale("iw", "IL"));
-    MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
+    MonthView monthView = (MonthView) view.getLinearLayoutManager().findViewByPosition(1);
     CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
     TextView firstDay = (TextView) header.getChildAt(0);
     assertThat(firstDay).hasTextString("ש"); // Last day of the week (Saturday) is the first cell.
@@ -594,7 +595,7 @@ public class CalendarPickerViewTest {
     assertThat(cal.getFirstDayOfWeek()).isEqualTo(Calendar.MONDAY);
 
     view.init(minDate, maxDate, timeZone, greatBritain);
-    MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
+    MonthView monthView = (MonthView) view.getLinearLayoutManager().findViewByPosition(1);
     CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
     TextView firstDay = (TextView) header.getChildAt(0);
     assertThat(firstDay).hasTextString("Mon"); // Monday!
@@ -614,7 +615,7 @@ public class CalendarPickerViewTest {
 
     view.init(minDate, maxDate, Locale.getDefault()) //
         .setShortWeekdays(capitalDays);
-    MonthView monthView = (MonthView) view.getAdapter().getView(1, null, null);
+    MonthView monthView = (MonthView) view.getLinearLayoutManager().findViewByPosition(1);
     CalendarRowView header = (CalendarRowView) monthView.grid.getChildAt(0);
     TextView firstDay = (TextView) header.getChildAt(0);
     assertThat(firstDay).hasTextString("M"); // Monday!

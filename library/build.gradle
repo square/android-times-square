@@ -33,10 +33,15 @@ android {
 }
 
 dependencies {
+
+  compile deps.recyclerview
+  
   testCompile deps.festandroid
   testCompile deps.junit
   testCompile deps.robolectric
   testCompile deps.intellijannotations
+
+
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

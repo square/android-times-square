@@ -5,6 +5,7 @@
 
     <application
         android:label="@string/app_name"
+        android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
         android:icon="@drawable/icon"
         android:allowBackup="false"
         android:supportsRtl="true"
