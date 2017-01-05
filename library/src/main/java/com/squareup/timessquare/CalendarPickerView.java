@@ -571,6 +571,9 @@ public class CalendarPickerView extends ListView {
     switch (selectionMode) {
       case RANGE:
         if (selectedCals.size() > 1) {
+          if(!isDateSelectable(date)){
+            return false;
+          }
           // We've already got a range selected: clear the old one.
           clearOldSelections();
         } else if (selectedCals.size() == 1 && newlySelectedCal.before(selectedCals.get(0))) {
@@ -643,7 +646,7 @@ public class CalendarPickerView extends ListView {
           if (singleCell.getDate().after(selectedCals.get(0).getTime())
               && singleCell.getDate().before(newlySelectedCal.getTime())
               && ((!singleCell.isSelectable() && previouslyUnSelectableCell == null)
-              || (singleCell.isSelectable() && previouslyUnSelectableCell.equals(singleCell)))
+              || (singleCell.isSelectable() && previouslyUnSelectableCell != null && previouslyUnSelectableCell.equals(singleCell)))
               && singleCell.isCurrentMonth()) {
             clearOldSelections();
             return;
@@ -658,7 +661,7 @@ public class CalendarPickerView extends ListView {
       for (List<MonthCellDescriptor> week : month) {
         for (MonthCellDescriptor singleCell : week) {
           if (singleCell.getDate().after(start)
-              && !singleCell.isSelectable()
+              && !isDateSelectable(singleCell.getDate())
               && singleCell.isCurrentMonth()) {
             singleCell.setSelectable(true);
             previouslyUnSelectableCell = singleCell;
