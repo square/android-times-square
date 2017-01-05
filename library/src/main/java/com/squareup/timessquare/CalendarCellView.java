@@ -104,6 +104,14 @@ public class CalendarCellView extends FrameLayout {
 
   public boolean isBlocked() { return isBlocked; }
 
+  public boolean isHighlighted() {
+    return isHighlighted;
+  }
+
+  public RangeState getRangeState() {
+    return rangeState;
+  }
+
   @Override protected int[] onCreateDrawableState(int extraSpace) {
     final int[] drawableState = super.onCreateDrawableState(extraSpace + 5);
 

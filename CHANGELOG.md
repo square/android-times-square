@@ -1,8 +1,14 @@
 Change Log
 ==========
 
+Version 1.7.0 *(2016-10-26)*
+----------------------------
+
+ * New: Support for specifying the timezone
+ * New languages: Serbian and Russian!
+
 Version 1.6.5 *(2016-02-08)*
----------------------------
+----------------------------
 
  * New: Support for arabic numbers
  * New: Performance improvement in CalendarCellView
