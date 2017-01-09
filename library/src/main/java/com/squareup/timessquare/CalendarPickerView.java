@@ -93,6 +93,8 @@ public class CalendarPickerView extends ListView {
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
   private DateBlockedFilter dateBlockedListener;
+  private SurfingDateFilter surfingDateListener;
+  private HostingDateFilter hostingDateListener;
   private OnInvalidDateSelectedListener invalidDateListener =
       new DefaultOnInvalidDateSelectedListener();
   private CellClickInterceptor cellClickInterceptor;
@@ -931,10 +933,45 @@ public class CalendarPickerView extends ListView {
             rangeState = MonthCellDescriptor.RangeState.MIDDLE;
           }
         }
+
         boolean isBlocked = isDateBlocked(date);
+
+        MonthCellDescriptor.RangeState surfingState = MonthCellDescriptor.RangeState.NONE;
+        if (isSurfingDate(date)) {
+          Calendar calendar = (Calendar) cal.clone();
+          calendar.add(Calendar.DAY_OF_MONTH, -1);
+          Date previousDate = calendar.getTime();
+          calendar.add(Calendar.DAY_OF_MONTH, 2);
+          Date nextDate = calendar.getTime();
+
+          if (!isSurfingDate(previousDate)) {
+            surfingState = RangeState.FIRST;
+          } else if (!isSurfingDate(nextDate)) {
+            surfingState = RangeState.LAST;
+          } else {
+            surfingState = RangeState.MIDDLE;
+          }
+        }
+
+        MonthCellDescriptor.RangeState hostingState = MonthCellDescriptor.RangeState.NONE;
+        if (isHostingDate(date)) {
+          Calendar calendar = (Calendar) cal.clone();
+          calendar.add(Calendar.DAY_OF_MONTH, -1);
+          Date previousDate = calendar.getTime();
+          calendar.add(Calendar.DAY_OF_MONTH, 2);
+          Date nextDate = calendar.getTime();
+
+          if (!isHostingDate(previousDate)) {
+            hostingState = RangeState.FIRST;
+          } else if (!isHostingDate(nextDate)) {
+            hostingState = RangeState.LAST;
+          } else {
+            hostingState = RangeState.MIDDLE;
+          }
+        }
         weekCells.add(
             new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday,
-                isHighlighted, value, rangeState, isBlocked));
+                isHighlighted, value, rangeState, isBlocked, surfingState, hostingState));
         cal.add(DATE, 1);
       }
     }
@@ -1005,6 +1042,14 @@ public class CalendarPickerView extends ListView {
     return dateBlockedListener != null && dateBlockedListener.isDateBlocked(date);
   }
 
+  private boolean isSurfingDate(Date date) {
+    return surfingDateListener != null && surfingDateListener.isSurfingDate(date);
+  }
+
+  private boolean isHostingDate(Date date) {
+    return hostingDateListener != null && hostingDateListener.isHostingDate(date);
+  }
+
   /**
    * Set a listener to react to user selection of a disabled date.
    *
@@ -1034,6 +1079,26 @@ public class CalendarPickerView extends ListView {
    */
   public void setDateBlockedFilter(DateBlockedFilter listener) {
     dateBlockedListener = listener;
+  }
+
+  /**
+   * Set a listener used to discriminate between surfing and non surfing dates.
+   * <p>
+   * Important: set this before you call {@link #init(Date, Date)} methods.  If called afterwards,
+   * it will not be consistently applied.
+   */
+  public void setSurfingDateFilter(SurfingDateFilter listener) {
+    surfingDateListener = listener;
+  }
+
+  /**
+   * Set a listener used to discriminate between hosting and non hosting dates.
+   * <p>
+   * Important: set this before you call {@link #init(Date, Date)} methods.  If called afterwards,
+   * it will not be consistently applied.
+   */
+  public void setHostingDateFilter(HostingDateFilter listener) {
+    hostingDateListener = listener;
   }
 
   /**
@@ -1096,6 +1161,26 @@ public class CalendarPickerView extends ListView {
    */
   public interface DateBlockedFilter {
     boolean isDateBlocked(Date date);
+  }
+
+  /**
+   * Interface used for determining if a date is a surfing date when it is configured for
+   * display on the calendar.
+   *
+   * @see #setSurfingDateFilter(SurfingDateFilter)
+   */
+  public interface SurfingDateFilter {
+    boolean isSurfingDate(Date date);
+  }
+
+  /**
+   * Interface used for determining if a date is a hosting date when it is configured for
+   * display on the calendar.
+   *
+   * @see #setHostingDateFilter(HostingDateFilter)
+   */
+  public interface HostingDateFilter {
+    boolean isHostingDate(Date date);
   }
 
   /**

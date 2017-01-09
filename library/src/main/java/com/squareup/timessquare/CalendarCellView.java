@@ -30,16 +30,34 @@ public class CalendarCellView extends FrameLayout {
   private static final int[] STATE_RANGE_LAST = {
       R.attr.tsquare_state_range_last
   };
-
   private static final int[] STATE_BLOCKED = {
       R.attr.tsquare_state_blocked
   };
-
+  private static final int[] STATE_SURFING_FIRST = {
+      R.attr.tsquare_state_surfing_first
+  };
+  private static final int[] STATE_SURFING_MIDDLE = {
+      R.attr.tsquare_state_surfing_middle
+  };
+  private static final int[] STATE_SURFING_LAST = {
+      R.attr.tsquare_state_surfing_last
+  };
+  private static final int[] STATE_HOSTING_FIRST = {
+      R.attr.tsquare_state_hosting_first
+  };
+  private static final int[] STATE_HOSTING_MIDDLE = {
+      R.attr.tsquare_state_hosting_middle
+  };
+  private static final int[] STATE_HOSTING_LAST = {
+      R.attr.tsquare_state_hosting_last
+  };
   private boolean isSelectable = false;
   private boolean isCurrentMonth = false;
   private boolean isToday = false;
   private boolean isHighlighted = false;
   private boolean isBlocked = false;
+  private RangeState surfingState = RangeState.NONE;
+  private RangeState hostingState = RangeState.NONE;
   private RangeState rangeState = RangeState.NONE;
   private TextView dayOfMonthTextView;
 
@@ -90,6 +108,20 @@ public class CalendarCellView extends FrameLayout {
     }
   }
 
+  public void setSurfingState(RangeState surfingState) {
+    if (this.surfingState != surfingState) {
+      this.surfingState = surfingState;
+      refreshDrawableState();
+    }
+  }
+
+  public void setHostingState(RangeState hostingState) {
+    if (this.hostingState != hostingState) {
+      this.hostingState = hostingState;
+      refreshDrawableState();
+    }
+  }
+
   public boolean isCurrentMonth() {
     return isCurrentMonth;
   }
@@ -103,7 +135,16 @@ public class CalendarCellView extends FrameLayout {
   }
 
   public boolean isBlocked() {
-    return isBlocked; }
+    return isBlocked;
+  }
+
+  public RangeState getHostingState() {
+    return hostingState;
+  }
+
+  public RangeState getSurfingState() {
+    return surfingState;
+  }
 
   public boolean isHighlighted() {
     return isHighlighted;
@@ -132,9 +173,9 @@ public class CalendarCellView extends FrameLayout {
       mergeDrawableStates(drawableState, STATE_HIGHLIGHTED);
     }
 
-    if (rangeState == MonthCellDescriptor.RangeState.FIRST) {
+    if (rangeState == RangeState.FIRST) {
       mergeDrawableStates(drawableState, STATE_RANGE_FIRST);
-    } else if (rangeState == MonthCellDescriptor.RangeState.MIDDLE) {
+    } else if (rangeState == RangeState.MIDDLE) {
       mergeDrawableStates(drawableState, STATE_RANGE_MIDDLE);
     } else if (rangeState == RangeState.LAST) {
       mergeDrawableStates(drawableState, STATE_RANGE_LAST);
@@ -143,6 +184,23 @@ public class CalendarCellView extends FrameLayout {
     if (isBlocked) {
       mergeDrawableStates(drawableState, STATE_BLOCKED);
     }
+
+    if (surfingState == RangeState.FIRST) {
+      mergeDrawableStates(drawableState, STATE_SURFING_FIRST);
+    } else if (surfingState == RangeState.MIDDLE) {
+      mergeDrawableStates(drawableState, STATE_SURFING_MIDDLE);
+    } else if (surfingState == RangeState.LAST) {
+      mergeDrawableStates(drawableState, STATE_SURFING_LAST);
+    }
+
+    if (hostingState == RangeState.FIRST) {
+      mergeDrawableStates(drawableState, STATE_HOSTING_FIRST);
+    } else if (hostingState == RangeState.MIDDLE) {
+      mergeDrawableStates(drawableState, STATE_HOSTING_MIDDLE);
+    } else if (hostingState == RangeState.LAST) {
+      mergeDrawableStates(drawableState, STATE_HOSTING_LAST);
+    }
+
     return drawableState;
   }
 
