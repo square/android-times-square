@@ -66,6 +66,7 @@ public class CalendarPickerView extends ListView {
   final MonthView.Listener listener = new CellClickedListener();
   final List<MonthDescriptor> months = new ArrayList<>();
   final List<MonthCellDescriptor> selectedCells = new ArrayList<>();
+  MonthCellDescriptor previouslyUnSelectableCell;
   final List<MonthCellDescriptor> highlightedCells = new ArrayList<>();
   final List<Calendar> selectedCals = new ArrayList<>();
   final List<Calendar> highlightedCals = new ArrayList<>();
@@ -91,6 +92,9 @@ public class CalendarPickerView extends ListView {
 
   private OnDateSelectedListener dateListener;
   private DateSelectableFilter dateConfiguredListener;
+  private DateBlockedFilter dateBlockedListener;
+  private SurfingDateFilter surfingDateListener;
+  private HostingDateFilter hostingDateListener;
   private OnInvalidDateSelectedListener invalidDateListener =
       new DefaultOnInvalidDateSelectedListener();
   private CellClickInterceptor cellClickInterceptor;
@@ -553,7 +557,8 @@ public class CalendarPickerView extends ListView {
       if (cellClickInterceptor != null && cellClickInterceptor.onCellClicked(clickedDate)) {
         return;
       }
-      if (!betweenDates(clickedDate, minCal, maxCal) || !isDateSelectable(clickedDate)) {
+      if (!betweenDates(clickedDate, minCal, maxCal)
+          || (!cell.isSelectable())) {
         if (invalidDateListener != null) {
           invalidDateListener.onInvalidDateSelected(clickedDate);
         }
@@ -637,11 +642,16 @@ public class CalendarPickerView extends ListView {
     switch (selectionMode) {
       case RANGE:
         if (selectedCals.size() > 1) {
+          if (!isDateSelectable(date)) {
+            return false;
+          }
           // We've already got a range selected: clear the old one.
           clearOldSelections();
         } else if (selectedCals.size() == 1 && newlySelectedCal.before(selectedCals.get(0))) {
           // We're moving the start of the range back in time: clear the old start date.
           clearOldSelections();
+        } else if (date != null && selectedCals.size() == 1) {
+          checkForUnSelectableDate(newlySelectedCal);
         }
         break;
 
@@ -663,13 +673,21 @@ public class CalendarPickerView extends ListView {
         cell.setSelected(true);
       }
       selectedCals.add(newlySelectedCal);
-
+      if (selectionMode == SelectionMode.RANGE && selectedCells.size() == 1) {
+        setLastDateSelectable(selectedCells.get(0).getDate());
+      }
       if (selectionMode == SelectionMode.RANGE && selectedCells.size() > 1) {
         // Select all days in between start and end.
         Date start = selectedCells.get(0).getDate();
         Date end = selectedCells.get(1).getDate();
         selectedCells.get(0).setRangeState(MonthCellDescriptor.RangeState.FIRST);
         selectedCells.get(1).setRangeState(MonthCellDescriptor.RangeState.LAST);
+
+        if (previouslyUnSelectableCell != null
+            && !previouslyUnSelectableCell.getDate().equals(end)) {
+          previouslyUnSelectableCell.setSelectable(false);
+          previouslyUnSelectableCell = null;
+        }
 
         for (List<List<MonthCellDescriptor>> month : cells) {
           for (List<MonthCellDescriptor> week : month) {
@@ -692,7 +710,46 @@ public class CalendarPickerView extends ListView {
     return date != null;
   }
 
+  private void checkForUnSelectableDate(Calendar newlySelectedCal) {
+    for (List<List<MonthCellDescriptor>> month : cells) {
+      for (List<MonthCellDescriptor> week : month) {
+        for (MonthCellDescriptor singleCell : week) {
+          if (singleCell.getDate().after(selectedCals.get(0).getTime())
+              && singleCell.getDate().before(newlySelectedCal.getTime())
+              && ((!singleCell.isSelectable() && previouslyUnSelectableCell == null)
+              || (singleCell.isSelectable()
+              && previouslyUnSelectableCell != null
+              && previouslyUnSelectableCell.equals(singleCell)))
+              && singleCell.isCurrentMonth()) {
+            clearOldSelections();
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  private void setLastDateSelectable(Date start) {
+    for (List<List<MonthCellDescriptor>> month : cells) {
+      for (List<MonthCellDescriptor> week : month) {
+        for (MonthCellDescriptor singleCell : week) {
+          if (singleCell.getDate().after(start)
+              && !isDateSelectable(singleCell.getDate())
+              && singleCell.isCurrentMonth()) {
+            singleCell.setSelectable(true);
+            previouslyUnSelectableCell = singleCell;
+            return;
+          }
+        }
+      }
+    }
+  }
+
   private void clearOldSelections() {
+    if (previouslyUnSelectableCell != null) {
+      previouslyUnSelectableCell.setSelectable(false);
+      previouslyUnSelectableCell = null;
+    }
     for (MonthCellDescriptor selectedCell : selectedCells) {
       // De-select the currently-selected cell.
       selectedCell.setSelected(false);
@@ -877,9 +934,44 @@ public class CalendarPickerView extends ListView {
           }
         }
 
+        boolean isBlocked = isDateBlocked(date);
+
+        MonthCellDescriptor.RangeState surfingState = MonthCellDescriptor.RangeState.NONE;
+        if (isSurfingDate(date)) {
+          Calendar calendar = (Calendar) cal.clone();
+          calendar.add(Calendar.DAY_OF_MONTH, -1);
+          Date previousDate = calendar.getTime();
+          calendar.add(Calendar.DAY_OF_MONTH, 2);
+          Date nextDate = calendar.getTime();
+
+          if (!isSurfingDate(previousDate)) {
+            surfingState = RangeState.FIRST;
+          } else if (!isSurfingDate(nextDate)) {
+            surfingState = RangeState.LAST;
+          } else {
+            surfingState = RangeState.MIDDLE;
+          }
+        }
+
+        MonthCellDescriptor.RangeState hostingState = MonthCellDescriptor.RangeState.NONE;
+        if (isHostingDate(date)) {
+          Calendar calendar = (Calendar) cal.clone();
+          calendar.add(Calendar.DAY_OF_MONTH, -1);
+          Date previousDate = calendar.getTime();
+          calendar.add(Calendar.DAY_OF_MONTH, 2);
+          Date nextDate = calendar.getTime();
+
+          if (!isHostingDate(previousDate)) {
+            hostingState = RangeState.FIRST;
+          } else if (!isHostingDate(nextDate)) {
+            hostingState = RangeState.LAST;
+          } else {
+            hostingState = RangeState.MIDDLE;
+          }
+        }
         weekCells.add(
             new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday,
-                isHighlighted, value, rangeState));
+                isHighlighted, value, rangeState, isBlocked, surfingState, hostingState));
         cal.add(DATE, 1);
       }
     }
@@ -946,6 +1038,18 @@ public class CalendarPickerView extends ListView {
     dateListener = listener;
   }
 
+  private boolean isDateBlocked(Date date) {
+    return dateBlockedListener != null && dateBlockedListener.isDateBlocked(date);
+  }
+
+  private boolean isSurfingDate(Date date) {
+    return surfingDateListener != null && surfingDateListener.isSurfingDate(date);
+  }
+
+  private boolean isHostingDate(Date date) {
+    return hostingDateListener != null && hostingDateListener.isHostingDate(date);
+  }
+
   /**
    * Set a listener to react to user selection of a disabled date.
    *
@@ -966,6 +1070,36 @@ public class CalendarPickerView extends ListView {
     dateConfiguredListener = listener;
   }
 
+  /**
+   * Set a listener used to discriminate between blocked and unblocked dates. Set this to
+   * disable arbitrary dates as they are rendered.
+   * <p>
+   * Important: set this before you call {@link #init(Date, Date)} methods.  If called afterwards,
+   * it will not be consistently applied.
+   */
+  public void setDateBlockedFilter(DateBlockedFilter listener) {
+    dateBlockedListener = listener;
+  }
+
+  /**
+   * Set a listener used to discriminate between surfing and non surfing dates.
+   * <p>
+   * Important: set this before you call {@link #init(Date, Date)} methods.  If called afterwards,
+   * it will not be consistently applied.
+   */
+  public void setSurfingDateFilter(SurfingDateFilter listener) {
+    surfingDateListener = listener;
+  }
+
+  /**
+   * Set a listener used to discriminate between hosting and non hosting dates.
+   * <p>
+   * Important: set this before you call {@link #init(Date, Date)} methods.  If called afterwards,
+   * it will not be consistently applied.
+   */
+  public void setHostingDateFilter(HostingDateFilter listener) {
+    hostingDateListener = listener;
+  }
 
   /**
    * Set an adapter used to initialize {@link CalendarCellView} with custom layout.
@@ -1017,6 +1151,36 @@ public class CalendarPickerView extends ListView {
    */
   public interface DateSelectableFilter {
     boolean isDateSelectable(Date date);
+  }
+
+  /**
+   * Interface used for determining if a date cell is blocked when it is configured for
+   * display on the calendar.
+   *
+   * @see #setDateBlockedFilter(DateBlockedFilter)
+   */
+  public interface DateBlockedFilter {
+    boolean isDateBlocked(Date date);
+  }
+
+  /**
+   * Interface used for determining if a date is a surfing date when it is configured for
+   * display on the calendar.
+   *
+   * @see #setSurfingDateFilter(SurfingDateFilter)
+   */
+  public interface SurfingDateFilter {
+    boolean isSurfingDate(Date date);
+  }
+
+  /**
+   * Interface used for determining if a date is a hosting date when it is configured for
+   * display on the calendar.
+   *
+   * @see #setHostingDateFilter(HostingDateFilter)
+   */
+  public interface HostingDateFilter {
+    boolean isHostingDate(Date date);
   }
 
   /**

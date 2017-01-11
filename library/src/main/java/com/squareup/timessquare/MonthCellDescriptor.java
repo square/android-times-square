@@ -15,12 +15,16 @@ class MonthCellDescriptor {
   private final boolean isCurrentMonth;
   private boolean isSelected;
   private final boolean isToday;
-  private final boolean isSelectable;
+  private boolean isSelectable;
   private boolean isHighlighted;
+  private boolean isBlocked;
+  private RangeState hostingState;
+  private RangeState surfingState;
   private RangeState rangeState;
 
   MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
-      boolean today, boolean highlighted, int value, RangeState rangeState) {
+      boolean today, boolean highlighted, int value, RangeState rangeState, boolean isBlocked,
+      RangeState surfingState, RangeState hostingState) {
     this.date = date;
     isCurrentMonth = currentMonth;
     isSelectable = selectable;
@@ -29,6 +33,9 @@ class MonthCellDescriptor {
     isToday = today;
     this.value = value;
     this.rangeState = rangeState;
+    this.isBlocked = isBlocked;
+    this.hostingState = hostingState;
+    this.surfingState = surfingState;
   }
 
   public Date getDate() {
@@ -49,6 +56,10 @@ class MonthCellDescriptor {
 
   public void setSelected(boolean selected) {
     isSelected = selected;
+  }
+
+  public void setSelectable(boolean selectable) {
+    isSelectable = selectable;
   }
 
   boolean isHighlighted() {
@@ -75,6 +86,30 @@ class MonthCellDescriptor {
     return value;
   }
 
+  public boolean isBlocked() {
+    return isBlocked;
+  }
+
+  public void setBlocked(boolean blocked) {
+    isBlocked = blocked;
+  }
+
+  public RangeState getHostingState() {
+    return hostingState;
+  }
+
+  public void setHostingState(RangeState hostingState) {
+    this.hostingState = hostingState;
+  }
+
+  public RangeState getSurfingState() {
+    return surfingState;
+  }
+
+  public void setSurfingState(RangeState surfingState) {
+    this.surfingState = surfingState;
+  }
+
   @Override public String toString() {
     return "MonthCellDescriptor{"
         + "date="
@@ -93,6 +128,12 @@ class MonthCellDescriptor {
         + isHighlighted
         + ", rangeState="
         + rangeState
+        + ", isBlocked="
+        + isBlocked
+        + ", hostingState="
+        + hostingState
+        + ", surfingState="
+        + surfingState
         + '}';
   }
 }
