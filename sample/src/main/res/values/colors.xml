@@ -5,6 +5,7 @@
     <color name="custom_background">#F0F8DB</color>
     <color name="custom_background_today">#FF9105</color>
     <color name="custom_background_disabled">#F0F8DB</color>
+    <color name="custom_background_first_and_last">#555fff</color>
     <color name="custom_text_selected">#FFFFFFFF</color>
     <color name="custom_text_inactive">#7f778088</color>
     <color name="transparent">#00000000</color>

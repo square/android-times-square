@@ -23,6 +23,7 @@ import static com.squareup.timessquare.CalendarPickerView.SelectionMode.MULTIPLE
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.RANGE;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.SINGLE;
 import static com.squareup.timessquare.MonthCellDescriptor.RangeState.FIRST;
+import static com.squareup.timessquare.MonthCellDescriptor.RangeState.FIRST_AND_LAST;
 import static com.squareup.timessquare.MonthCellDescriptor.RangeState.LAST;
 import static com.squareup.timessquare.MonthCellDescriptor.RangeState.MIDDLE;
 import static com.squareup.timessquare.MonthCellDescriptor.RangeState.NONE;
@@ -494,6 +495,13 @@ public class CalendarPickerViewTest {
     view.selectDate(nov24.getTime());
     assertOneDateSelected();
 
+    // Finish that range with same date.
+    Calendar sameDay = buildCal(2012, NOVEMBER, 24);
+    view.selectDate(sameDay.getTime());
+    assertThat(view.selectedCals).hasSize(2);
+    assertThat(view.selectedCells).hasSize(1);
+    assertThat(view.getSelectedDates()).hasSize(1);
+
     // Only Nov 24 is selected: going backward should start a new range.
     view.selectDate(nov20.getTime());
     assertOneDateSelected();
@@ -560,6 +568,23 @@ public class CalendarPickerViewTest {
     assertCell(cells, 3, 4, 22, true, false, false, true, MIDDLE);
     assertCell(cells, 3, 5, 23, true, false, false, true, MIDDLE);
     assertCell(cells, 3, 6, 24, true, true, false, true, LAST);
+  }
+
+  @Test public void testRangeStateForSameDateSelection() {
+    Calendar startCal = buildCal(2012, NOVEMBER, 17);
+    Calendar endCal = buildCal(2012, NOVEMBER, 17);
+
+    view.init(minDate, maxDate, timeZone, locale) //
+        .inMode(RANGE);
+
+    boolean wasAbleToSetDate = view.selectDate(startCal.getTime());
+    assertThat(wasAbleToSetDate).isTrue();
+
+    wasAbleToSetDate = view.selectDate(endCal.getTime());
+    assertThat(wasAbleToSetDate).isTrue();
+
+    List<List<MonthCellDescriptor>> cells = getCells(NOVEMBER, 2012);
+    assertCell(cells, 2, 6, 17, true, true, false, true, FIRST_AND_LAST);
   }
 
   @Test public void testLocaleSetting() throws Exception {

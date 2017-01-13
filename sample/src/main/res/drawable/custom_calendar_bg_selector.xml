@@ -2,6 +2,7 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item app:tsquare_state_range_first_and_last="true" android:drawable="@drawable/bg_circle_first_and_last"/>
     <item android:state_selected="true" android:drawable="@drawable/bg_circle_selected"/>
     <item android:state_pressed="true" android:drawable="@drawable/bg_circle_selected"/>
     <item app:tsquare_state_current_month="false">

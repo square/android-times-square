@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.7.1 *(2017-01-13)*
+----------------------------
+
+ * New: Added ability to select 1 date in range mode (for return trips etc)
+
 Version 1.7.0 *(2016-10-26)*
 ----------------------------
 

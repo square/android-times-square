@@ -30,6 +30,9 @@ public class CalendarCellView extends FrameLayout {
   private static final int[] STATE_RANGE_LAST = {
       R.attr.tsquare_state_range_last
   };
+  private static final int[] STATE_RANGE_FIRST_AND_LAST = {
+      R.attr.tsquare_state_range_first_and_last
+  };
 
   private boolean isSelectable = false;
   private boolean isCurrentMonth = false;
@@ -123,6 +126,8 @@ public class CalendarCellView extends FrameLayout {
       mergeDrawableStates(drawableState, STATE_RANGE_MIDDLE);
     } else if (rangeState == RangeState.LAST) {
       mergeDrawableStates(drawableState, STATE_RANGE_LAST);
+    } else if (rangeState == RangeState.FIRST_AND_LAST) {
+      mergeDrawableStates(drawableState, STATE_RANGE_FIRST_AND_LAST);
     }
 
     return drawableState;

@@ -139,6 +139,7 @@ public class SampleTimesSquareActivity extends Activity {
       @Override public void onClick(View view) {
         showCalendarInDialog("Pimp my calendar!", R.layout.dialog_customized);
         dialogView.init(lastYear.getTime(), nextYear.getTime())
+            .inMode(SelectionMode.RANGE)
             .withSelectedDate(new Date());
       }
     });

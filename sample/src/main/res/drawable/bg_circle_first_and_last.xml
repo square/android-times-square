@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/custom_background"/>
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/custom_background_first_and_last"/>
+            <stroke android:width="@dimen/dimen_margin_circle"
+                    android:color="@color/transparent"/>
+        </shape>
+    </item>
+</layer-list>

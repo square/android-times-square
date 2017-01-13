@@ -17,6 +17,7 @@
     <attr name="tsquare_state_range_first" format="boolean" />
     <attr name="tsquare_state_range_middle" format="boolean" />
     <attr name="tsquare_state_range_last" format="boolean" />
+    <attr name="tsquare_state_range_first_and_last" format="boolean" />
     <attr name="tsquare_state_highlighted" format="boolean" />
   </declare-styleable>
 </resources>
