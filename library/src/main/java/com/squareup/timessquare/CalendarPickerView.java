@@ -658,7 +658,8 @@ public class CalendarPickerView extends ListView {
 
     if (date != null) {
       // Select a new cell.
-      if (selectedCells.size() == 0 || !selectedCells.get(0).equals(cell)) {
+      if (selectedCells.size() == 0 || !selectedCells.get(0).equals(cell)
+            || (selectionMode == SelectionMode.RANGE && selectedCells.get(0).equals(cell))) {
         selectedCells.add(cell);
         cell.setSelected(true);
       }
@@ -668,8 +669,13 @@ public class CalendarPickerView extends ListView {
         // Select all days in between start and end.
         Date start = selectedCells.get(0).getDate();
         Date end = selectedCells.get(1).getDate();
-        selectedCells.get(0).setRangeState(MonthCellDescriptor.RangeState.FIRST);
-        selectedCells.get(1).setRangeState(MonthCellDescriptor.RangeState.LAST);
+        if (start.before(end)) {
+          selectedCells.get(0).setRangeState(MonthCellDescriptor.RangeState.FIRST);
+          selectedCells.get(1).setRangeState(MonthCellDescriptor.RangeState.LAST);
+        } else if (start.compareTo(end) == 0) {
+          selectedCells.remove(selectedCells.size() - 1);
+          selectedCells.get(0).setRangeState(MonthCellDescriptor.RangeState.FIRST_AND_LAST);
+        }
 
         for (List<List<MonthCellDescriptor>> month : cells) {
           for (List<MonthCellDescriptor> week : month) {
@@ -868,9 +874,11 @@ public class CalendarPickerView extends ListView {
 
         MonthCellDescriptor.RangeState rangeState = MonthCellDescriptor.RangeState.NONE;
         if (selectedCals.size() > 1) {
-          if (sameDate(minSelectedCal, cal)) {
+          if (sameDate(minSelectedCal, cal) && sameDate(maxSelectedCal, cal)) {
+            rangeState = MonthCellDescriptor.RangeState.FIRST_AND_LAST;
+          } else if (sameDate(minSelectedCal, cal)) {
             rangeState = MonthCellDescriptor.RangeState.FIRST;
-          } else if (sameDate(maxDate(selectedCals), cal)) {
+          } else if (sameDate(maxSelectedCal, cal)) {
             rangeState = MonthCellDescriptor.RangeState.LAST;
           } else if (betweenDates(cal, minSelectedCal, maxSelectedCal)) {
             rangeState = MonthCellDescriptor.RangeState.MIDDLE;
