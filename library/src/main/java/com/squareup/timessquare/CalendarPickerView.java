@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -733,23 +735,8 @@ public class CalendarPickerView extends ListView {
     return date;
   }
 
-  public void highlightDates(Collection<Date> dates) {
-    for (Date date : dates) {
-      validateDate(date);
-
-      MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
-      if (monthCellWithMonthIndex != null) {
-        Calendar newlyHighlightedCal = Calendar.getInstance(timeZone, locale);
-        newlyHighlightedCal.setTime(date);
-        MonthCellDescriptor cell = monthCellWithMonthIndex.cell;
-
-        highlightedCells.add(cell);
-        highlightedCals.add(newlyHighlightedCal);
-        cell.setHighlighted(true);
-      }
-    }
-
-    validateAndUpdate();
+  @SuppressWarnings("unchecked") public void highlightDates(Collection<Date> dates) {
+    new HighlightCalendarCells().execute(dates);
   }
 
   public void clearHighlightedDates() {
@@ -1035,6 +1022,32 @@ public class CalendarPickerView extends ListView {
           getResources().getString(R.string.invalid_date, fullDateFormat.format(minCal.getTime()),
               fullDateFormat.format(maxCal.getTime()));
       Toast.makeText(getContext(), errMessage, Toast.LENGTH_SHORT).show();
+    }
+  }
+
+  private class HighlightCalendarCells extends AsyncTask<Collection<Date>, Void, Void> {
+
+    @Override protected Void doInBackground(Collection<Date>... dates) {
+      for (Date date : dates[0]) {
+        validateDate(date);
+
+        MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
+        if (monthCellWithMonthIndex != null) {
+          Calendar newlyHighlightedCal = Calendar.getInstance(timeZone, locale);
+          newlyHighlightedCal.setTime(date);
+          MonthCellDescriptor cell = monthCellWithMonthIndex.cell;
+
+          highlightedCells.add(cell);
+          highlightedCals.add(newlyHighlightedCal);
+          cell.setHighlighted(true);
+        }
+      }
+      return null;
+    }
+
+    @Override protected void onPostExecute(Void aVoid) {
+      super.onPostExecute(aVoid);
+      validateAndUpdate();
     }
   }
 }
