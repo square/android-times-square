@@ -106,11 +106,10 @@ public class SampleTimesSquareActivity extends Activity {
 
         calendar.setCustomDayView(new DefaultDayViewAdapter());
         calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
-        calendar.init(getDateWithYear(2000), getDateWithYear(2020)) // 20 years enough to show performance failure
+        calendar.init(getDateWithYear(2000), getDateWithYear(2020)) // 20 years, enough to show performance failure
                 .inMode(SelectionMode.SINGLE)
                 .withSelectedDate(c.getTime());
 
-        // TODO add a lot of dates
         calendar.highlightDates(getHighlightedDaysForMonth( // Adds some highlighted days
                 c.get(Calendar.MONTH) - 1,
                 c.get(Calendar.MONTH),
