@@ -543,7 +543,7 @@ public class CalendarPickerView extends ListView {
     return wasSelected;
   }
 
-  private void validateDate(Date date) {
+  protected void validateDate(Date date) {
     if (date == null) {
       throw new IllegalArgumentException("Selected date must be non-null.");
     }
@@ -555,7 +555,7 @@ public class CalendarPickerView extends ListView {
     }
   }
 
-  private boolean doSelectDate(Date date, MonthCellDescriptor cell) {
+  protected boolean doSelectDate(Date date, MonthCellDescriptor cell) {
     Calendar newlySelectedCal = Calendar.getInstance(locale);
     newlySelectedCal.setTime(date);
     // Sanitize input: clear out the hours/minutes/seconds/millis.
@@ -624,7 +624,7 @@ public class CalendarPickerView extends ListView {
     return date != null;
   }
 
-  private void clearOldSelections() {
+  protected void clearOldSelections() {
     for (MonthCellDescriptor selectedCell : selectedCells) {
       // De-select the currently-selected cell.
       selectedCell.setSelected(false);
@@ -695,7 +695,7 @@ public class CalendarPickerView extends ListView {
   }
 
   /** Hold a cell with a month-index. */
-  private static class MonthCellWithMonthIndex {
+  protected static class MonthCellWithMonthIndex {
     public MonthCellDescriptor cell;
     public int monthIndex;
 
@@ -706,7 +706,7 @@ public class CalendarPickerView extends ListView {
   }
 
   /** Return cell and month-index (for scrolling) for a given Date. */
-  private MonthCellWithMonthIndex getMonthCellWithIndexByDate(Date date) {
+  protected MonthCellWithMonthIndex getMonthCellWithIndexByDate(Date date) {
     int index = 0;
     Calendar searchCal = Calendar.getInstance(locale);
     searchCal.setTime(date);
