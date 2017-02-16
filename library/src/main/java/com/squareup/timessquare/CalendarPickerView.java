@@ -760,6 +760,7 @@ public class CalendarPickerView extends ListView {
         cell.setHighlighted(true);
       }
     }
+
     validateAndUpdate();
   }
 
