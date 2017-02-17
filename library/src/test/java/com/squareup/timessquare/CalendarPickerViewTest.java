@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
 import org.intellij.lang.annotations.MagicConstant;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +47,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 
 @RunWith(RobolectricTestRunner.class) //
-@Config(manifest = "src/main/AndroidManifest.xml")
+@Config(constants = BuildConfig.class)
 public class CalendarPickerViewTest {
 
   static {
