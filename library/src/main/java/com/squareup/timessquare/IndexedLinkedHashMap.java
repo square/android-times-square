@@ -1,7 +1,7 @@
 package com.squareup.timessquare;
 
+import android.util.SparseArray;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Take advantage of LinkedHashMap's iterable ordering but also keep track of the indexes and allow
@@ -9,13 +9,11 @@ import java.util.Map;
  * - Fast index lookup by key
  */
 class IndexedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
-  private final Map<Integer, K> indexToKey = new LinkedHashMap<>();
-  private final Map<K, Integer> keyToIndex = new LinkedHashMap<>();
+  private final SparseArray<K> indexLookup = new SparseArray<>();
   private int index = 0;
 
   @Override public V put(K key, V value) {
-    indexToKey.put(index, key);
-    keyToIndex.put(key, index);
+    indexLookup.put(index, key);
     index++;
     return super.put(key, value);
   }
@@ -23,8 +21,7 @@ class IndexedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
   @Override public void clear() {
     super.clear();
     index = 0;
-    indexToKey.clear();
-    keyToIndex.clear();
+    indexLookup.clear();
   }
 
   @Override public V remove(Object key) {
@@ -32,10 +29,10 @@ class IndexedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
   }
 
   V getValueAtIndex(int index) {
-    return get(indexToKey.get(index));
+    return get(indexLookup.get(index));
   }
 
   int getIndexOfKey(K key) {
-    return keyToIndex.get(key);
+    return indexLookup.indexOfValue(key);
   }
 }
