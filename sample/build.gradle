@@ -16,6 +16,7 @@ android {
     versionCode 1
     versionName '1.0.0'
   }
+  buildToolsVersion '25.0.2'
 }
 
 dependencies {

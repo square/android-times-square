@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ public class SampleTimesSquareActivity extends Activity {
   private void initButtonListeners(final Calendar nextYear, final Calendar lastYear) {
     final Button single = (Button) findViewById(R.id.button_single);
     final Button multi = (Button) findViewById(R.id.button_multi);
+    final Button highlight = (Button) findViewById(R.id.button_highlight);
     final Button range = (Button) findViewById(R.id.button_range);
     final Button displayOnly = (Button) findViewById(R.id.button_display_only);
     final Button dialog = (Button) findViewById(R.id.button_dialog);
@@ -92,6 +94,26 @@ public class SampleTimesSquareActivity extends Activity {
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.MULTIPLE) //
             .withSelectedDates(dates);
+      }
+    });
+
+    highlight.setOnClickListener(new OnClickListener() {
+      @Override public void onClick(View view) {
+        setButtonsEnabled(highlight);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+
+        calendar.setCustomDayView(new DefaultDayViewAdapter());
+        calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
+        calendar.init(getDateWithYear(2000), getDateWithYear(2020)) // 20 years, enough to show performance failure
+                .inMode(SelectionMode.SINGLE)
+                .withSelectedDate(c.getTime());
+
+        calendar.highlightDates(getHighlightedDaysForMonth( // Adds some highlighted days
+                c.get(Calendar.MONTH) - 1,
+                c.get(Calendar.MONTH),
+                c.get(Calendar.MONTH) + 1));
       }
     });
 
@@ -216,6 +238,47 @@ public class SampleTimesSquareActivity extends Activity {
     for (Button modeButton : modeButtons) {
       modeButton.setEnabled(modeButton != currentButton);
     }
+  }
+
+  private Date getDateWithYear(int year) {
+    final Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.YEAR, year);
+    cal.set(Calendar.MONTH, 0);
+    cal.set(Calendar.DAY_OF_MONTH, 1);
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+
+    return cal.getTime();
+  }
+
+  private Date getDateWithYearAndMonthForDay(int year, int month, int day) {
+    final Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.YEAR, year);
+    cal.set(Calendar.MONTH, month);
+    cal.set(Calendar.DAY_OF_MONTH, day);
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+
+    return cal.getTime();
+  }
+
+  private List<Date> getHighlightedDaysForMonth(int... month) {
+    List<Date> dateList = new ArrayList<>();
+
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+
+    for (int i = 0; i < month.length; i++) {
+      for (int j = 0; j < 25; j++) {
+        dateList.add(getDateWithYearAndMonthForDay(c.get(Calendar.YEAR), i, j));
+      }
+    }
+
+    return dateList;
   }
 
   @Override public void onConfigurationChanged(Configuration newConfig) {

@@ -30,6 +30,7 @@ android {
     textReport true
     textOutput 'stdout'
   }
+  buildToolsVersion '25.0.2'
 }
 
 dependencies {

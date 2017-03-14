@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.7.1 *(2017-02-28)*
+----------------------------
+
+ * Improved: significant performance improvement for large calendar ranges
+ * New: isHighlighted() and getRangeState()
+
 Version 1.7.0 *(2016-10-26)*
 ----------------------------
 
