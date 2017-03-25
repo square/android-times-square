@@ -196,12 +196,7 @@ public class CalendarPickerView extends ListView {
     minCal = Calendar.getInstance(timeZone, locale);
     maxCal = Calendar.getInstance(timeZone, locale);
     monthCounter = Calendar.getInstance(timeZone, locale);
-    monthNameFormat =
-        new SimpleDateFormat(getContext().getString(R.string.month_name_format), locale);
-    monthNameFormat.setTimeZone(timeZone);
-    for (MonthDescriptor month : months) {
-      month.setLabel(monthNameFormat.format(month.getDate()));
-    }
+    monthNameFormat(getContext().getString(R.string.month_name_format));
     weekdayNameFormat =
         new SimpleDateFormat(getContext().getString(R.string.day_name_format), locale);
     weekdayNameFormat.setTimeZone(timeZone);
@@ -371,6 +366,12 @@ public class CalendarPickerView extends ListView {
 
     public FluentInitializer withHighlightedDate(Date date) {
       return withHighlightedDates(Collections.singletonList(date));
+    }
+
+    public FluentInitializer withMonthNameFormat(String pattern) {
+      monthNameFormat(pattern);
+      validateAndUpdate();
+      return this;
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -762,6 +763,14 @@ public class CalendarPickerView extends ListView {
     }
 
     validateAndUpdate();
+  }
+
+  private void monthNameFormat(String pattern) {
+    monthNameFormat = new SimpleDateFormat(pattern, locale);
+    monthNameFormat.setTimeZone(timeZone);
+    for (MonthDescriptor month : months) {
+      month.setLabel(monthNameFormat.format(month.getDate()));
+    }
   }
 
   public void clearHighlightedDates() {
