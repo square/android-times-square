@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.7.2 *(2017-04-06)*
+----------------------------
+
+ * New: clearSelectedDates() method so you can clear an entire RANGE
+
 Version 1.7.1 *(2017-02-28)*
 ----------------------------
 
