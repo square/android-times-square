@@ -85,6 +85,7 @@ public class CalendarPickerView extends ListView {
   private int dayBackgroundResId;
   private int dayTextColorResId;
   private int titleTextColor;
+  private int maximum = -1;
   private boolean displayHeader;
   private int headerTextColor;
   private Typeface titleTypeface;
@@ -361,6 +362,11 @@ public class CalendarPickerView extends ListView {
       scrollToSelectedDates();
 
       validateAndUpdate();
+      return this;
+    }
+
+    public FluentInitializer setMaxRange(int max) {
+      maximum = max;
       return this;
     }
 
@@ -671,6 +677,7 @@ public class CalendarPickerView extends ListView {
         Date end = selectedCells.get(1).getDate();
         selectedCells.get(0).setRangeState(MonthCellDescriptor.RangeState.FIRST);
         selectedCells.get(1).setRangeState(MonthCellDescriptor.RangeState.LAST);
+        int count = 2;
 
         int startMonthIndex = cells.getIndexOfKey(monthKey(selectedCals.get(0)));
         int endMonthIndex = cells.getIndexOfKey(monthKey(selectedCals.get(1)));
@@ -681,6 +688,22 @@ public class CalendarPickerView extends ListView {
               if (singleCell.getDate().after(start)
                   && singleCell.getDate().before(end)
                   && singleCell.isSelectable()) {
+                count++;
+              }
+            }
+          }
+        }
+
+        if (count > maximum && maximum > 0) {
+          return false;
+        }
+
+        for (List<List<MonthCellDescriptor>> month : cells) {
+          for (List<MonthCellDescriptor> week : month) {
+            for (MonthCellDescriptor singleCell : week) {
+              if (singleCell.getDate().after(start)
+                      && singleCell.getDate().before(end)
+                      && singleCell.isSelectable()) {
                 singleCell.setSelected(true);
                 singleCell.setRangeState(MonthCellDescriptor.RangeState.MIDDLE);
                 selectedCells.add(singleCell);

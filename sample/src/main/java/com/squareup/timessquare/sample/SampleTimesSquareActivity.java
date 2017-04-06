@@ -131,7 +131,8 @@ public class SampleTimesSquareActivity extends Activity {
         calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
         calendar.init(new Date(), nextYear.getTime()) //
             .inMode(SelectionMode.RANGE) //
-            .withSelectedDates(dates);
+            .withSelectedDates(dates) //
+            .setMaxRange(5);
       }
     });
 
