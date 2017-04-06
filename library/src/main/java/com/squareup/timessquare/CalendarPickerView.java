@@ -764,6 +764,15 @@ public class CalendarPickerView extends ListView {
     validateAndUpdate();
   }
 
+  public void clearSelectedDates() {
+      for (MonthCellDescriptor selectedCell : selectedCells) {
+          selectedCell.setRangeState(RangeState.NONE);
+      }
+
+      clearOldSelections();
+      validateAndUpdate();
+  }
+
   public void clearHighlightedDates() {
     for (MonthCellDescriptor cal : highlightedCells) {
       cal.setHighlighted(false);
