@@ -109,7 +109,7 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
         for (int i = 0; i < getChildCount(); i++) {
             if (getChildAt(i) instanceof CalendarCellView) {
                 CalendarCellView calendarCellView = (CalendarCellView) getChildAt(i);
-                if(calendarCellView.isWeekend()) {
+                if (calendarCellView.isWeekend()) {
                     calendarCellView.getDayOfMonthTextView().setTextColor(resId);
                 }
             } else {
