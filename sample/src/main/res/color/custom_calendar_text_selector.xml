@@ -8,5 +8,6 @@
     <item app:tsquare_state_current_month="false" android:color="@color/custom_text_inactive"/>
     <item app:tsquare_state_today="true" android:color="@color/custom_text_selected"/>
     <item app:tsquare_state_selectable="false" android:color="@color/custom_text_inactive" />
+    <item app:tsquare_state_weekend="true" android:color="@color/custom_text_weekend" />
     <item android:color="@color/custom_background_today"/>
 </selector>
