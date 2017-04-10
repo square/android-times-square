@@ -3,9 +3,11 @@
 package com.squareup.timessquare;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 
 public class CalendarCellView extends FrameLayout {
@@ -31,17 +33,29 @@ public class CalendarCellView extends FrameLayout {
       R.attr.tsquare_state_range_last
   };
 
+  private static final int[] STATE_WEEKEND = {
+      R.attr.tsquare_state_weekend
+  };
+
   private boolean isSelectable = false;
   private boolean isCurrentMonth = false;
   private boolean isToday = false;
   private boolean isHighlighted = false;
   private RangeState rangeState = RangeState.NONE;
   private TextView dayOfMonthTextView;
+  private boolean weekend;
 
   @SuppressWarnings("UnusedDeclaration") //
   public CalendarCellView(Context context, AttributeSet attrs) {
     super(context, attrs);
+      init(context, attrs);
   }
+
+    private void init(Context context, AttributeSet attrs) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.calendar_cell);
+        weekend = a.getBoolean(R.styleable.calendar_cell_tsquare_state_weekend, false);
+        a.recycle();
+    }
 
   public void setSelectable(boolean isSelectable) {
     if (this.isSelectable != isSelectable) {
@@ -117,11 +131,15 @@ public class CalendarCellView extends FrameLayout {
       mergeDrawableStates(drawableState, STATE_HIGHLIGHTED);
     }
 
+    if (isWeekend()) {
+      mergeDrawableStates(drawableState, STATE_WEEKEND);
+    }
+
     if (rangeState == MonthCellDescriptor.RangeState.FIRST) {
       mergeDrawableStates(drawableState, STATE_RANGE_FIRST);
     } else if (rangeState == MonthCellDescriptor.RangeState.MIDDLE) {
       mergeDrawableStates(drawableState, STATE_RANGE_MIDDLE);
-    } else if (rangeState == RangeState.LAST) {
+    } else if (rangeState == MonthCellDescriptor.RangeState.LAST) {
       mergeDrawableStates(drawableState, STATE_RANGE_LAST);
     }
 
@@ -140,4 +158,8 @@ public class CalendarCellView extends FrameLayout {
     }
     return dayOfMonthTextView;
   }
+
+    public boolean isWeekend() {
+        return weekend;
+    }
 }

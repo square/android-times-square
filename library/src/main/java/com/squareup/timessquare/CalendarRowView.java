@@ -105,6 +105,29 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
     }
   }
 
+    public void setWeekendTextColor(int resId) {
+        for (int i = 0; i < getChildCount(); i++) {
+            if (getChildAt(i) instanceof CalendarCellView) {
+                CalendarCellView calendarCellView = (CalendarCellView) getChildAt(i);
+                if (calendarCellView.isWeekend()) {
+                    calendarCellView.getDayOfMonthTextView().setTextColor(resId);
+                }
+            } else {
+                ((TextView) getChildAt(i)).setTextColor(resId);
+            }
+        }
+    }
+
+  public void setWeekendTextColor(ColorStateList colors) {
+    for (int i = 0; i < getChildCount(); i++) {
+      if (getChildAt(i) instanceof CalendarCellView) {
+        ((CalendarCellView) getChildAt(i)).getDayOfMonthTextView().setTextColor(colors);
+      } else {
+        ((TextView) getChildAt(i)).setTextColor(colors);
+      }
+    }
+  }
+
   public void setCellTextColor(ColorStateList colors) {
     for (int i = 0; i < getChildCount(); i++) {
       if (getChildAt(i) instanceof CalendarCellView) {
