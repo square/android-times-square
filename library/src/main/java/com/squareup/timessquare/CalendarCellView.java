@@ -123,7 +123,7 @@ public class CalendarCellView extends FrameLayout {
       mergeDrawableStates(drawableState, STATE_HIGHLIGHTED);
     }
 
-    if(isWeekend()) {
+    if (isWeekend()) {
       mergeDrawableStates(drawableState, STATE_WEEKEND);
     }
 
@@ -131,7 +131,7 @@ public class CalendarCellView extends FrameLayout {
       mergeDrawableStates(drawableState, STATE_RANGE_FIRST);
     } else if (rangeState == MonthCellDescriptor.RangeState.MIDDLE) {
       mergeDrawableStates(drawableState, STATE_RANGE_MIDDLE);
-    } else if (rangeState == RangeState.LAST) {
+    } else if (rangeState == MonthCellDescriptor.RangeState.LAST) {
       mergeDrawableStates(drawableState, STATE_RANGE_LAST);
     }
 
