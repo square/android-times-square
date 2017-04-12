@@ -795,7 +795,7 @@ public class CalendarPickerView extends ListView {
     String monthKey = monthKey(searchCal);
     Calendar actCal = Calendar.getInstance(timeZone, locale);
 
-    int index = cells.getIndexOfKey(monthKey);
+    index = cells.getIndexOfKey(monthKey);
     List<List<MonthCellDescriptor>> monthCells = cells.get(monthKey);
     for (List<MonthCellDescriptor> weekCells : monthCells) {
       for (MonthCellDescriptor actCell : weekCells) {
@@ -952,7 +952,7 @@ public class CalendarPickerView extends ListView {
     return (cal.get(MONTH) == month.getMonth() && cal.get(YEAR) == month.getYear());
   }
 
-  private boolean isDateSelectable(Date date) {
+  protected boolean isDateSelectable(Date date) {
     return dateConfiguredListener == null || dateConfiguredListener.isDateSelectable(date);
   }
 
