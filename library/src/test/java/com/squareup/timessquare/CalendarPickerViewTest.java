@@ -22,10 +22,10 @@ import org.robolectric.annotation.Config;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.MULTIPLE;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.RANGE;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.SINGLE;
-import static com.squareup.timessquare.MonthCellDescriptor.RangeState.FIRST;
-import static com.squareup.timessquare.MonthCellDescriptor.RangeState.LAST;
-import static com.squareup.timessquare.MonthCellDescriptor.RangeState.MIDDLE;
-import static com.squareup.timessquare.MonthCellDescriptor.RangeState.NONE;
+import static com.squareup.timessquare.RangeState.FIRST;
+import static com.squareup.timessquare.RangeState.LAST;
+import static com.squareup.timessquare.RangeState.MIDDLE;
+import static com.squareup.timessquare.RangeState.NONE;
 import static java.util.Calendar.APRIL;
 import static java.util.Calendar.AUGUST;
 import static java.util.Calendar.DATE;
@@ -433,7 +433,7 @@ public class CalendarPickerViewTest {
     jumpToCal.add(DATE, 1);
     MonthCellDescriptor cellToClick =
         new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, 0,
-            MonthCellDescriptor.RangeState.NONE);
+            RangeState.NONE);
     view.listener.handleClick(cellToClick);
 
     assertThat(view.selectedCals.get(0).get(DATE)).isEqualTo(jumpToCal.get(DATE));
@@ -639,14 +639,14 @@ public class CalendarPickerViewTest {
     jumpToCal.set(DAY_OF_MONTH, 17);
     MonthCellDescriptor cellToClick =
         new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, 0,
-            MonthCellDescriptor.RangeState.NONE);
+            RangeState.NONE);
     view.listener.handleClick(cellToClick);
 
     assertThat(view.selectedCals.get(0).get(DATE)).isEqualTo(17);
 
     jumpToCal.set(DAY_OF_MONTH, 18);
     cellToClick = new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, 0,
-        MonthCellDescriptor.RangeState.NONE);
+        RangeState.NONE);
     view.listener.handleClick(cellToClick);
 
     assertThat(view.selectedCals.get(0).get(DATE)).isEqualTo(17);
@@ -678,7 +678,7 @@ public class CalendarPickerViewTest {
   private static void assertCell(List<List<MonthCellDescriptor>> cells, int row, int col,
       int expectedVal, boolean expectedCurrentMonth, boolean expectedSelected,
       boolean expectedToday, boolean expectedSelectable,
-      MonthCellDescriptor.RangeState expectedRangeState) {
+      RangeState expectedRangeState) {
     final MonthCellDescriptor cell = cells.get(row).get(col);
     assertThat(cell.getValue()).isEqualTo(expectedVal);
     assertThat(cell.isCurrentMonth()).isEqualTo(expectedCurrentMonth);
