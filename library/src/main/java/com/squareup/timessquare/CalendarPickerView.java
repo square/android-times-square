@@ -97,12 +97,23 @@ public class CalendarPickerView extends ListView {
   private List<CalendarCellDecorator> decorators;
   private DayViewAdapter dayViewAdapter = new DefaultDayViewAdapter();
 
+  private boolean monthsReverseOrder;
+
   public void setDecorators(List<CalendarCellDecorator> decorators) {
     this.decorators = decorators;
     if (null != adapter) {
       adapter.notifyDataSetChanged();
     }
   }
+
+  public boolean isMonthsReverseOrder() {
+    return monthsReverseOrder;
+  }
+
+  public void setMonthsReverseOrder(boolean monthsReverseOrder) {
+    this.monthsReverseOrder = monthsReverseOrder;
+  }
+
 
   public List<CalendarCellDecorator> getDecorators() {
     return decorators;
@@ -126,6 +137,8 @@ public class CalendarPickerView extends ListView {
     displayHeader = a.getBoolean(R.styleable.CalendarPickerView_tsquare_displayHeader, true);
     headerTextColor = a.getColor(R.styleable.CalendarPickerView_tsquare_headerTextColor,
         res.getColor(R.color.calendar_text_active));
+    monthsReverseOrder = a.getBoolean(R.styleable.CalendarPickerView_tsquare_monthsReverseOrder,
+            false);
     a.recycle();
 
     adapter = new MonthAdapter();
@@ -848,6 +861,9 @@ public class CalendarPickerView extends ListView {
         monthView.setTag(R.id.day_view_adapter_class, dayViewAdapter.getClass());
       } else {
         monthView.setDecorators(decorators);
+      }
+      if (isMonthsReverseOrder()) {
+        position = months.size() - position - 1;
       }
       monthView.init(months.get(position), cells.getValueAtIndex(position), displayOnly,
           titleTypeface, dateTypeface);
