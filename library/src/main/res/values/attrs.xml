@@ -8,7 +8,6 @@
     <attr name="tsquare_titleTextColor" format="color"/>
     <attr name="tsquare_displayHeader" format="boolean"/>
     <attr name="tsquare_headerTextColor" format="color"/>
-    <attr name="tsquare_monthsReverseOrder" format="boolean"/>
   </declare-styleable>
 
   <declare-styleable name="calendar_cell">

@@ -114,7 +114,6 @@ public class CalendarPickerView extends ListView {
     this.monthsReverseOrder = monthsReverseOrder;
   }
 
-
   public List<CalendarCellDecorator> getDecorators() {
     return decorators;
   }
@@ -137,8 +136,6 @@ public class CalendarPickerView extends ListView {
     displayHeader = a.getBoolean(R.styleable.CalendarPickerView_tsquare_displayHeader, true);
     headerTextColor = a.getColor(R.styleable.CalendarPickerView_tsquare_headerTextColor,
         res.getColor(R.color.calendar_text_active));
-    monthsReverseOrder = a.getBoolean(R.styleable.CalendarPickerView_tsquare_monthsReverseOrder,
-            false);
     a.recycle();
 
     adapter = new MonthAdapter();
@@ -396,6 +393,11 @@ public class CalendarPickerView extends ListView {
 
     public FluentInitializer displayOnly() {
       displayOnly = true;
+      return this;
+    }
+
+    public FluentInitializer withMonthsReverseOrder(boolean monthsRevOrder) {
+      monthsReverseOrder = monthsRevOrder;
       return this;
     }
   }
