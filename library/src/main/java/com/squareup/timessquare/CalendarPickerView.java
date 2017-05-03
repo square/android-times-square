@@ -97,6 +97,8 @@ public class CalendarPickerView extends ListView {
   private List<CalendarCellDecorator> decorators;
   private DayViewAdapter dayViewAdapter = new DefaultDayViewAdapter();
 
+  private boolean monthsReverseOrder;
+
   public void setDecorators(List<CalendarCellDecorator> decorators) {
     this.decorators = decorators;
     if (null != adapter) {
@@ -383,6 +385,11 @@ public class CalendarPickerView extends ListView {
 
     public FluentInitializer displayOnly() {
       displayOnly = true;
+      return this;
+    }
+
+    public FluentInitializer withMonthsReverseOrder(boolean monthsRevOrder) {
+      monthsReverseOrder = monthsRevOrder;
       return this;
     }
   }
@@ -848,6 +855,9 @@ public class CalendarPickerView extends ListView {
         monthView.setTag(R.id.day_view_adapter_class, dayViewAdapter.getClass());
       } else {
         monthView.setDecorators(decorators);
+      }
+      if (monthsReverseOrder) {
+        position = months.size() - position - 1;
       }
       monthView.init(months.get(position), cells.getValueAtIndex(position), displayOnly,
           titleTypeface, dateTypeface);
