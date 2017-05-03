@@ -106,14 +106,6 @@ public class CalendarPickerView extends ListView {
     }
   }
 
-  public boolean isMonthsReverseOrder() {
-    return monthsReverseOrder;
-  }
-
-  public void setMonthsReverseOrder(boolean monthsReverseOrder) {
-    this.monthsReverseOrder = monthsReverseOrder;
-  }
-
   public List<CalendarCellDecorator> getDecorators() {
     return decorators;
   }
@@ -864,7 +856,7 @@ public class CalendarPickerView extends ListView {
       } else {
         monthView.setDecorators(decorators);
       }
-      if (isMonthsReverseOrder()) {
+      if (monthsReverseOrder) {
         position = months.size() - position - 1;
       }
       monthView.init(months.get(position), cells.getValueAtIndex(position), displayOnly,
