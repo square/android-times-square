@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.7.3 *(2017-05-03)*
+----------------------------
+
+ * New: withMonthsReverseOrder for reversing the order of months
+ * New: RangeState is now accessible so getRangeState actually works
+ * New language: Esperanto
+
 Version 1.7.2 *(2017-04-06)*
 ----------------------------
 
