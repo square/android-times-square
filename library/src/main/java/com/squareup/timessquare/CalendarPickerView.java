@@ -618,7 +618,7 @@ public class CalendarPickerView extends ListView {
     return wasSelected;
   }
 
-  private void validateDate(Date date) {
+  protected void validateDate(Date date) {
     if (date == null) {
       throw new IllegalArgumentException("Selected date must be non-null.");
     }
@@ -630,8 +630,10 @@ public class CalendarPickerView extends ListView {
     }
   }
 
-  private boolean doSelectDate(Date date, MonthCellDescriptor cell) {
+
+  protected boolean doSelectDate(Date date, MonthCellDescriptor cell) {
     Calendar newlySelectedCal = Calendar.getInstance(timeZone, locale);
+
     newlySelectedCal.setTime(date);
     // Sanitize input: clear out the hours/minutes/seconds/millis.
     setMidnight(newlySelectedCal);
@@ -710,7 +712,7 @@ public class CalendarPickerView extends ListView {
     return month.getYear() + "-" + month.getMonth();
   }
 
-  private void clearOldSelections() {
+  protected void clearOldSelections() {
     for (MonthCellDescriptor selectedCell : selectedCells) {
       // De-select the currently-selected cell.
       selectedCell.setSelected(false);
@@ -790,7 +792,7 @@ public class CalendarPickerView extends ListView {
   }
 
   /** Hold a cell with a month-index. */
-  private static class MonthCellWithMonthIndex {
+  protected static class MonthCellWithMonthIndex {
     public MonthCellDescriptor cell;
     public int monthIndex;
 
@@ -801,13 +803,14 @@ public class CalendarPickerView extends ListView {
   }
 
   /** Return cell and month-index (for scrolling) for a given Date. */
-  private MonthCellWithMonthIndex getMonthCellWithIndexByDate(Date date) {
+  protected MonthCellWithMonthIndex getMonthCellWithIndexByDate(Date date) {
+    int index = 0;
     Calendar searchCal = Calendar.getInstance(timeZone, locale);
     searchCal.setTime(date);
     String monthKey = monthKey(searchCal);
     Calendar actCal = Calendar.getInstance(timeZone, locale);
 
-    int index = cells.getIndexOfKey(monthKey);
+    index = cells.getIndexOfKey(monthKey);
     List<List<MonthCellDescriptor>> monthCells = cells.get(monthKey);
     for (List<MonthCellDescriptor> weekCells : monthCells) {
       for (MonthCellDescriptor actCell : weekCells) {
@@ -967,7 +970,7 @@ public class CalendarPickerView extends ListView {
     return (cal.get(MONTH) == month.getMonth() && cal.get(YEAR) == month.getYear());
   }
 
-  private boolean isDateSelectable(Date date) {
+  protected boolean isDateSelectable(Date date) {
     return dateConfiguredListener == null || dateConfiguredListener.isDateSelectable(date);
   }
 
