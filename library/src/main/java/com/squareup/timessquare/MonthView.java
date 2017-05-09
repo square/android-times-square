@@ -26,15 +26,16 @@ public class MonthView extends LinearLayout {
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
       int headerTextColor, Locale locale, DayViewAdapter adapter) {
-    return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
+    return create(parent, inflater, weekdayNameFormat, listener, today, -1, dividerColor,
         dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader, headerTextColor, null,
         locale, adapter);
   }
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
-      DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
-      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
-      int headerTextColor, List<CalendarCellDecorator> decorators, Locale locale,
+      DateFormat weekdayNameFormat, Listener listener, Calendar today, int firstDayOfWeek,
+      int dividerColor, int dayBackgroundResId, int dayTextColorResId, int titleTextColor,
+      boolean displayHeader, int headerTextColor, List<CalendarCellDecorator> decorators,
+      Locale locale,
       DayViewAdapter adapter) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
     view.setDayViewAdapter(adapter);
@@ -52,7 +53,8 @@ public class MonthView extends LinearLayout {
 
     view.isRtl = isRtl(locale);
     view.locale = locale;
-    int firstDayOfWeek = today.getFirstDayOfWeek();
+    if (firstDayOfWeek < 0)
+      firstDayOfWeek = today.getFirstDayOfWeek();
     final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
     for (int offset = 0; offset < 7; offset++) {
       today.set(Calendar.DAY_OF_WEEK, getDayOfWeek(firstDayOfWeek, offset, view.isRtl));

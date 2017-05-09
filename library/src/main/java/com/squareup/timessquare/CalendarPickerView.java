@@ -71,6 +71,7 @@ public class CalendarPickerView extends ListView {
   final List<Calendar> highlightedCals = new ArrayList<>();
   private Locale locale;
   private TimeZone timeZone;
+  private int firstDayOfWeek;
   private DateFormat monthNameFormat;
   private DateFormat weekdayNameFormat;
   private DateFormat fullDateFormat;
@@ -157,6 +158,10 @@ public class CalendarPickerView extends ListView {
     }
   }
 
+  public FluentInitializer init(Date minDate, Date maxDate, TimeZone timeZone, Locale locale) {
+    return init(minDate, maxDate, timeZone, locale, -1);
+  }
+
   /**
    * Both date parameters must be non-null and their {@link Date#getTime()} must not return 0. Time
    * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
@@ -174,7 +179,8 @@ public class CalendarPickerView extends ListView {
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
-  public FluentInitializer init(Date minDate, Date maxDate, TimeZone timeZone, Locale locale) {
+  public FluentInitializer init(Date minDate, Date maxDate, TimeZone timeZone, Locale locale,
+      int firstDayOfWeek) {
     if (minDate == null || maxDate == null) {
       throw new IllegalArgumentException(
           "minDate and maxDate must be non-null.  " + dbg(minDate, maxDate));
@@ -189,6 +195,8 @@ public class CalendarPickerView extends ListView {
     if (timeZone == null) {
       throw new IllegalArgumentException("Time zone is null.");
     }
+
+    this.firstDayOfWeek = firstDayOfWeek;
 
     // Make sure that all calendar instances use the same time zone and locale.
     this.timeZone = timeZone;
@@ -266,13 +274,17 @@ public class CalendarPickerView extends ListView {
    * different locale or time zone, use
    * {@link #init(java.util.Date, java.util.Date, java.util.Locale)},
    * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone)} or
-   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale)}.
+   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale, int)}.
    *
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
   public FluentInitializer init(Date minDate, Date maxDate) {
-    return init(minDate, maxDate, TimeZone.getDefault(), Locale.getDefault());
+    return init(minDate, maxDate, TimeZone.getDefault(), Locale.getDefault(), -1);
+  }
+
+  public FluentInitializer init(Date minDate, Date maxDate, int firstDayOfWeek) {
+    return init(minDate, maxDate, TimeZone.getDefault(), Locale.getDefault(), firstDayOfWeek);
   }
 
   /**
@@ -289,13 +301,17 @@ public class CalendarPickerView extends ListView {
    * by {@link java.util.Locale#getDefault()}. This means that all dates will be in given time zone.
    * If you wish the calendar to be constructed using a different locale, use
    * {@link #init(java.util.Date, java.util.Date, java.util.Locale)} or
-   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale)}.
+   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale, int)}.
    *
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
   public FluentInitializer init(Date minDate, Date maxDate, TimeZone timeZone) {
-    return init(minDate, maxDate, timeZone, Locale.getDefault());
+    return init(minDate, maxDate, timeZone, Locale.getDefault(), -1);
+  }
+
+  public FluentInitializer init(Date minDate, Date maxDate, TimeZone timeZone, int firstDayOfWeek) {
+    return init(minDate, maxDate, timeZone, Locale.getDefault(), firstDayOfWeek);
   }
 
   /**
@@ -317,13 +333,17 @@ public class CalendarPickerView extends ListView {
    * in the language of the locale and the weeks start with the day specified by the locale.
    * If you wish the calendar to be constructed using a different time zone, use
    * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone)} or
-   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale)}.
+   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale, int)}.
    *
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
   public FluentInitializer init(Date minDate, Date maxDate, Locale locale) {
-    return init(minDate, maxDate, TimeZone.getDefault(), locale);
+    return init(minDate, maxDate, TimeZone.getDefault(), locale, -1);
+  }
+
+  public FluentInitializer init(Date minDate, Date maxDate, Locale locale, int firstDayOfWeek) {
+    return init(minDate, maxDate, TimeZone.getDefault(), locale, firstDayOfWeek);
   }
 
   public class FluentInitializer {
@@ -849,8 +869,8 @@ public class CalendarPickerView extends ListView {
       if (monthView == null //
           || !monthView.getTag(R.id.day_view_adapter_class).equals(dayViewAdapter.getClass())) {
         monthView =
-            MonthView.create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
-                dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader,
+            MonthView.create(parent, inflater, weekdayNameFormat, listener, today, firstDayOfWeek,
+                dividerColor, dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader,
                 headerTextColor, decorators, locale, dayViewAdapter);
         monthView.setTag(R.id.day_view_adapter_class, dayViewAdapter.getClass());
       } else {
@@ -870,8 +890,9 @@ public class CalendarPickerView extends ListView {
     cal.setTime(startCal.getTime());
     List<List<MonthCellDescriptor>> cells = new ArrayList<>();
     cal.set(DAY_OF_MONTH, 1);
-    int firstDayOfWeek = cal.get(DAY_OF_WEEK);
-    int offset = cal.getFirstDayOfWeek() - firstDayOfWeek;
+
+    int firstDayOfMonth = cal.get(DAY_OF_WEEK);
+    int offset = (firstDayOfWeek > -1 ? firstDayOfWeek : cal.getFirstDayOfWeek()) - firstDayOfMonth;
     if (offset > 0) {
       offset -= 7;
     }
