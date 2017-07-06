@@ -791,10 +791,10 @@ public class CalendarPickerView extends ListView {
 
   /** Hold a cell with a month-index. */
   private static class MonthCellWithMonthIndex {
-    public MonthCellDescriptor cell;
-    public int monthIndex;
+    MonthCellDescriptor cell;
+    int monthIndex;
 
-    public MonthCellWithMonthIndex(MonthCellDescriptor cell, int monthIndex) {
+    MonthCellWithMonthIndex(MonthCellDescriptor cell, int monthIndex) {
       this.cell = cell;
       this.monthIndex = monthIndex;
     }

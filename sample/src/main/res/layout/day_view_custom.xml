@@ -5,16 +5,17 @@
     android:orientation="vertical"
     android:padding="4dp"
     >
+  <TextView
+      android:id="@+id/day_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      style="@style/CalendarCell.CalendarDate"
+      />
 
-    <TextView
-        android:id="@+id/day_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/CalendarCell.CalendarDate"/>
-
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/icon"
-        android:scaleType="centerInside"/>
+  <ImageView
+      android:layout_width="20dp"
+      android:layout_height="20dp"
+      android:scaleType="centerInside"
+      android:src="@drawable/icon"
+      />
 </LinearLayout>
