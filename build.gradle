@@ -4,7 +4,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:2.3.0'
+    classpath 'com.android.tools.build:gradle:2.3.3'
   }
 }
 
@@ -22,11 +22,3 @@ ext {
   sourceCompatibilityVersion = JavaVersion.VERSION_1_7
   targetCompatibilityVersion = JavaVersion.VERSION_1_7
 }
-
-ext.deps = [
-    // Test dependencies
-    junit      : 'junit:junit:4.10',
-    festandroid: 'com.squareup:fest-android:1.0.7',
-    robolectric: 'org.robolectric:robolectric:2.2',
-    intellijannotations: 'com.intellij:annotations:12.0'
-]

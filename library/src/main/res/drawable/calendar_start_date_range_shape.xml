@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:topLeftRadius="32dp" android:bottomLeftRadius="32dp"/>
+    <solid android:color="@color/calendar_selected_day_bg" />
+    <stroke android:color="@color/calendar_selected_day_bg" />
+</shape>
