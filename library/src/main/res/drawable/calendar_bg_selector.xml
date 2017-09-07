@@ -6,12 +6,12 @@
   <item app:tsquare_state_range_middle="true">
     <color android:color="@color/calendar_selected_range_bg"/>
   </item>
-  <item android:state_selected="true">
-    <color android:color="@color/calendar_selected_day_bg"/>
-  </item>
-  <item android:state_pressed="true">
-    <color android:color="@color/calendar_selected_day_bg"/>
-  </item>
+  <item app:tsquare_state_range_first="true"
+      android:drawable="@drawable/calendar_start_date_range_shape" />
+  <item app:tsquare_state_range_last="true"
+      android:drawable="@drawable/calendar_end_date_range_shape" />
+  <item android:state_selected="true" android:drawable="@drawable/calendar_selected_day_shape" />
+  <item android:state_pressed="true" android:drawable="@drawable/calendar_selected_day_shape" />
   <item app:tsquare_state_current_month="false">
     <color android:color="@color/calendar_inactive_month_bg"/>
   </item>
