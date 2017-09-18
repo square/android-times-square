@@ -8,6 +8,15 @@
     <attr name="tsquare_titleTextColor" format="color"/>
     <attr name="tsquare_displayHeader" format="boolean"/>
     <attr name="tsquare_headerTextColor" format="color"/>
+    <attr name="tsquare_titleGravity" format="enum">
+      <enum name="top" value="48" />
+      <enum name="bottom" value="80" />
+      <enum name="center_vertical" value="16" />
+      <enum name="center_horizontal" value="1" />
+      <enum name="center" value="17" />
+      <enum name="start" value="3" />
+      <enum name="end" value="5" />
+    </attr>
   </declare-styleable>
 
   <declare-styleable name="calendar_cell">
