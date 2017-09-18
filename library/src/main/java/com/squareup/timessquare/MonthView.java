@@ -24,23 +24,26 @@ public class MonthView extends LinearLayout {
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
-      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
-      int headerTextColor, Locale locale, DayViewAdapter adapter) {
+      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, int titleGravity,
+                                 boolean displayHeader, int headerTextColor, Locale locale,
+                                 DayViewAdapter adapter) {
     return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
-        dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader, headerTextColor, null,
-        locale, adapter);
+        dayBackgroundResId, dayTextColorResId, titleTextColor, titleGravity ,displayHeader,
+            headerTextColor, null, locale, adapter);
   }
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
-      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
-      int headerTextColor, List<CalendarCellDecorator> decorators, Locale locale,
+      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, int titleGravity,
+                                 boolean displayHeader, int headerTextColor,
+                                 List<CalendarCellDecorator> decorators, Locale locale,
       DayViewAdapter adapter) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
     view.setDayViewAdapter(adapter);
     view.setDividerColor(dividerColor);
     view.setDayTextColor(dayTextColorResId);
     view.setTitleTextColor(titleTextColor);
+    view.setTitleGravity(titleGravity);
     view.setDisplayHeader(displayHeader);
     view.setHeaderTextColor(headerTextColor);
 
@@ -171,6 +174,9 @@ public class MonthView extends LinearLayout {
 
   public void setTitleTextColor(int color) {
     title.setTextColor(color);
+  }
+  public void setTitleGravity(int gravity) {
+    title.setGravity(gravity);
   }
 
   public void setDisplayHeader(boolean displayHeader) {
