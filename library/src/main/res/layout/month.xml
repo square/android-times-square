@@ -8,7 +8,6 @@
   <TextView
       android:id="@+id/title"
       style="@style/CalendarTitle"
-      android:fontFamily="@string/sofiapro.bold"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textSize="@dimen/calendar_text_title"
