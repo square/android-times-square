@@ -10,9 +10,8 @@
       style="@style/CalendarTitle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textSize="@dimen/calendar_text_title"
       android:layout_marginBottom="@dimen/calendar_month_title_bottommargin"
-      android:layout_marginStart="@dimen/calendar_month_margin"
+      android:layout_marginStart="@dimen/calendar_month_marginstart"
       android:layout_marginTop="@dimen/calendar_month_margin"
       android:gravity="start" />
 

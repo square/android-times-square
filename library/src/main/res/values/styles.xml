@@ -1,7 +1,7 @@
 <!-- Copyright 2012 Square, Inc. -->
 <resources xmlns:tools="http://schemas.android.com/tools">
   <style name="CalendarTitle">
-    <item name="android:textSize">@dimen/calendar_text_medium</item>
+    <item name="android:textSize">@dimen/calendar_text_title</item>
     <item name="android:textStyle">bold</item>
   </style>
 
