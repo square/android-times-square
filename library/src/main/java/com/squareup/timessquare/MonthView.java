@@ -37,8 +37,8 @@ public class MonthView extends LinearLayout {
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
-      int headerTextColor, boolean displayWeekView, List<CalendarCellDecorator> decorators,
-      Locale locale, DayViewAdapter adapter) {
+      int headerTextColor, boolean displayDayNamesHeaderRowView,
+      List<CalendarCellDecorator> decorators, Locale locale, DayViewAdapter adapter) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
     view.setDayViewAdapter(adapter);
     view.setDividerColor(dividerColor);
@@ -56,7 +56,7 @@ public class MonthView extends LinearLayout {
     int firstDayOfWeek = today.getFirstDayOfWeek();
     final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
 
-    if (displayWeekView) {
+    if (displayDayNamesHeaderRowView) {
       final int originalDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
       for (int offset = 0; offset < 7; offset++) {
         today.set(Calendar.DAY_OF_WEEK, getDayOfWeek(firstDayOfWeek, offset, view.isRtl));
