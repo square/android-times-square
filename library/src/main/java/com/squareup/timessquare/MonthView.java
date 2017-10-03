@@ -103,7 +103,7 @@ public class MonthView extends LinearLayout {
     super.onFinishInflate();
     title = (TextView) findViewById(R.id.title);
     grid = (CalendarGridView) findViewById(R.id.calendar_grid);
-    weekView = findViewById(R.id.week_row_view);
+    weekView = findViewById(R.id.day_names_header_row);
   }
 
   public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells,
