@@ -18,7 +18,7 @@ import java.util.Locale;
 public class MonthView extends LinearLayout {
   TextView title;
   CalendarGridView grid;
-  View weekView;
+  View dayNamesHeaderRowView;
   private Listener listener;
   private List<CalendarCellDecorator> decorators;
   private boolean isRtl;
@@ -27,10 +27,11 @@ public class MonthView extends LinearLayout {
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
-      int headerTextColor, boolean showWeekView, Locale locale, DayViewAdapter adapter) {
+      int headerTextColor, boolean showDayNamesHeaderRowView, Locale locale,
+      DayViewAdapter adapter) {
     return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
         dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader, headerTextColor,
-        showWeekView, null, locale, adapter);
+        showDayNamesHeaderRowView, null, locale, adapter);
   }
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
@@ -64,7 +65,7 @@ public class MonthView extends LinearLayout {
       }
       today.set(Calendar.DAY_OF_WEEK, originalDayOfWeek);
     } else {
-      view.weekView.setVisibility(View.GONE);
+      view.dayNamesHeaderRowView.setVisibility(View.GONE);
     }
 
     view.listener = listener;
@@ -103,7 +104,7 @@ public class MonthView extends LinearLayout {
     super.onFinishInflate();
     title = (TextView) findViewById(R.id.title);
     grid = (CalendarGridView) findViewById(R.id.calendar_grid);
-    weekView = findViewById(R.id.day_names_header_row);
+    dayNamesHeaderRowView = findViewById(R.id.day_names_header_row);
   }
 
   public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells,
