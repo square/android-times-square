@@ -42,6 +42,11 @@ public class CalendarCellView extends FrameLayout {
     super(context, attrs);
   }
 
+  /**
+   * Sets whether the Calendar Cell View is a selectable view.
+   *
+   * @param isSelectable boolean value stating if the Calendar Cell View is selectable
+   */
   public void setSelectable(boolean isSelectable) {
     if (this.isSelectable != isSelectable) {
       this.isSelectable = isSelectable;
@@ -49,6 +54,11 @@ public class CalendarCellView extends FrameLayout {
     }
   }
 
+  /**
+   * Sets the currently active month of the Calendar.
+   *
+   * @param isCurrentMonth boolean value stating if the Calendar Cell View is in the current month
+   */
   public void setCurrentMonth(boolean isCurrentMonth) {
     if (this.isCurrentMonth != isCurrentMonth) {
       this.isCurrentMonth = isCurrentMonth;
@@ -56,6 +66,11 @@ public class CalendarCellView extends FrameLayout {
     }
   }
 
+  /**
+   * Set the Calendar Cell View to represent TODAY on the calendar
+   *
+   * @param isToday boolean value stating if the Calendar Cell View is today
+   */
   public void setToday(boolean isToday) {
     if (this.isToday != isToday) {
       this.isToday = isToday;
@@ -63,6 +78,13 @@ public class CalendarCellView extends FrameLayout {
     }
   }
 
+  /**
+   * Set the range state of the Calendar Cell View. This sets whether the Calendar Cell View is at
+   * the beginning, in the middle, or at the end of the selected range of dates.
+   *
+   * @param rangeState {@link RangeState} representing the position of the Calendar Cell View in the
+   *                                     selected range.
+   */
   public void setRangeState(RangeState rangeState) {
     if (this.rangeState != rangeState) {
       this.rangeState = rangeState;
@@ -70,6 +92,12 @@ public class CalendarCellView extends FrameLayout {
     }
   }
 
+  /**
+   * Set if this cell view is highlighted or not, changes the state of the Calendar Cell View
+   * which can have effects on how it is displayed.
+   *
+   * @param isHighlighted boolean value stating if the Calendar Cell View is highlighted
+   */
   public void setHighlighted(boolean isHighlighted) {
     if (this.isHighlighted != isHighlighted) {
       this.isHighlighted = isHighlighted;
@@ -77,22 +105,50 @@ public class CalendarCellView extends FrameLayout {
     }
   }
 
+  /**
+   * Check if this Calendar Cell View is contained within the current month.
+   *
+   * @return boolean value stating if the Calendar Cell View is in the current month
+   */
   public boolean isCurrentMonth() {
     return isCurrentMonth;
   }
 
+  /**
+   * Check if this Calendar Cell View is today.
+   *
+   * @return boolean value stating if the Calendar Cell View represents today
+   */
   public boolean isToday() {
     return isToday;
   }
 
+  /**
+   * Check if this Calendar Cell View is available for selection
+   *
+   * @return boolean value stating if the Calendar Cell View is selectable
+   */
   public boolean isSelectable() {
     return isSelectable;
   }
 
+  /**
+   * Check if this Calendar Cell View is highlighted, for instance if the date has been selected
+   * by the user or the system.
+   *
+   * @return boolean value stating if the Calendar Cell View is highlighted
+   */
   public boolean isHighlighted() {
     return isHighlighted;
   }
 
+  /**
+   * Returns the Range State of the Calendar Cell View. If a cell view is highlighted it could
+   * be part of a range of selected dates, this method will tell you if the Calendar Cell View
+   * is at the beginning, in the middle, or at the end of the range of selected dates.
+   *
+   * @return {@link RangeState} of the Calendar Cell View
+   */
   public RangeState getRangeState() {
     return rangeState;
   }
@@ -127,10 +183,22 @@ public class CalendarCellView extends FrameLayout {
     return drawableState;
   }
 
+  /**
+   * Set the {@link TextView} that displays the day of the month in this Calendar Cell View
+   *
+   * @param textView TextView for displaying the day of the month.
+   */
   public void setDayOfMonthTextView(TextView textView) {
     dayOfMonthTextView = textView;
   }
 
+
+  /**
+   * Returns the {@link TextView} that will display the day of the month this Calendar Cell View
+   * is representing. Throws an {@link IllegalStateException} if no {@link TextView} is available.
+   *
+   * @return The TextView for this Calendar Cell View
+   */
   public TextView getDayOfMonthTextView() {
     if (dayOfMonthTextView == null) {
       throw new IllegalStateException(
