@@ -21,6 +21,7 @@
       android:layout_height="wrap_content"
       >
     <com.squareup.timessquare.CalendarRowView
+        android:id="@+id/day_names_header_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/calendar_day_headers_paddingbottom"
