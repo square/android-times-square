@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.7.4 *(2017-10-03)*
+----------------------------
+
+ * New: `tsquare_displayDayNamesHeaderRow` allows hiding the day names header row
+
 Version 1.7.3 *(2017-05-03)*
 ----------------------------
 
