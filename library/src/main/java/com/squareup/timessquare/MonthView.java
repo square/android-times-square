@@ -47,6 +47,7 @@ public class MonthView extends LinearLayout {
     view.grid = (CalendarGridView) view.findViewById(R.id.calendar_grid);
     view.dayNamesHeaderRowView = view.findViewById(R.id.day_names_header_row);
 
+    // Add the month title as the first child of MonthView
     view.addView(view.title, 0);
 
     view.setDayViewAdapter(adapter);

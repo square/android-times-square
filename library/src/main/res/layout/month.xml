@@ -6,6 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
+
+  <!-- This is the place where the month title is added -->
+
   <com.squareup.timessquare.CalendarGridView
       android:id="@+id/calendar_grid"
       android:layout_width="match_parent"
