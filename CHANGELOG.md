@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.7.5 *(2017-10-12)*
+----------------------------
+
+ * New: `tsquare_titleTextStyle` allows full styling of the month title view
+ * Removed: `tsquare_titleTextColor` (use `tsquare_titleTextStyle` instead)
+
 Version 1.7.4 *(2017-10-03)*
 ----------------------------
 
