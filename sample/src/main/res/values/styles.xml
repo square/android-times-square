@@ -1,0 +1,10 @@
+<!-- Copyright 2012 Square, Inc. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+  <style name="CustomCalendarTitle">
+    <item name="android:textSize">@dimen/calendar_text_medium</item>
+    <item name="android:gravity">start|left</item>
+    <item name="android:paddingBottom">@dimen/calendar_month_title_paddingbottom</item>
+    <item name="android:paddingTop">@dimen/calendar_month_title_paddingtop</item>
+    <item name="android:color">@color/custom_calendar_text_selector</item>
+  </style>
+</resources>

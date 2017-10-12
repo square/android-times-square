@@ -4,6 +4,7 @@ package com.squareup.timessquare;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,24 +27,31 @@ public class MonthView extends LinearLayout {
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
-      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
+      int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, boolean displayHeader,
       int headerTextColor, boolean showDayNamesHeaderRowView, Locale locale,
       DayViewAdapter adapter) {
     return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
-        dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader, headerTextColor,
+        dayBackgroundResId, dayTextColorResId, titleTextStyle, displayHeader, headerTextColor,
         showDayNamesHeaderRowView, null, locale, adapter);
   }
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
-      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
+      int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, boolean displayHeader,
       int headerTextColor, boolean displayDayNamesHeaderRowView,
       List<CalendarCellDecorator> decorators, Locale locale, DayViewAdapter adapter) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
+
+    // Set the views
+    view.title = new TextView(new ContextThemeWrapper(view.getContext(), titleTextStyle));
+    view.grid = (CalendarGridView) view.findViewById(R.id.calendar_grid);
+    view.dayNamesHeaderRowView = view.findViewById(R.id.day_names_header_row);
+
+    view.addView(view.title, 0);
+
     view.setDayViewAdapter(adapter);
     view.setDividerColor(dividerColor);
     view.setDayTextColor(dayTextColorResId);
-    view.setTitleTextColor(titleTextColor);
     view.setDisplayHeader(displayHeader);
     view.setHeaderTextColor(headerTextColor);
 
@@ -98,13 +106,6 @@ public class MonthView extends LinearLayout {
 
   public List<CalendarCellDecorator> getDecorators() {
     return decorators;
-  }
-
-  @Override protected void onFinishInflate() {
-    super.onFinishInflate();
-    title = (TextView) findViewById(R.id.title);
-    grid = (CalendarGridView) findViewById(R.id.calendar_grid);
-    dayNamesHeaderRowView = findViewById(R.id.day_names_header_row);
   }
 
   public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells,
@@ -176,10 +177,6 @@ public class MonthView extends LinearLayout {
 
   public void setDayViewAdapter(DayViewAdapter adapter) {
     grid.setDayViewAdapter(adapter);
-  }
-
-  public void setTitleTextColor(int color) {
-    title.setTextColor(color);
   }
 
   public void setDisplayHeader(boolean displayHeader) {
