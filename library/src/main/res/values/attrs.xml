@@ -8,6 +8,7 @@
     <attr name="tsquare_titleTextStyle" format="reference"/>
     <attr name="tsquare_displayHeader" format="boolean"/>
     <attr name="tsquare_displayDayNamesHeaderRow" format="boolean"/>
+    <attr name="tsquare_displayAlwaysDigitNumbers" format="boolean"/>
     <attr name="tsquare_headerTextColor" format="color"/>
   </declare-styleable>
 
