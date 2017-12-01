@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.os.Build;
+import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -619,6 +622,22 @@ public class CalendarPickerView extends ListView {
       scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex, smoothScroll);
     }
     return wasSelected;
+  }
+
+  /**
+   * Use {@link DateUtils} to format the dates. If the version is lower than API 9, we will format
+   * using the old way, that means, SimpleDateFormat.
+   *
+   * @see DateUtils
+   */
+  private String formatMonthDate(Date date, Locale locale, TimeZone timeZone) {
+    if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+      int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_MONTH_DAY;
+      Formatter formatter = new Formatter(new StringBuilder(50), locale);
+      return DateUtils.formatDateRange(getContext(), formatter, date.getTime(), date.getTime(),
+              flags, timeZone.getID()).toString();
+    }
+    return monthNameFormat.format(date);
   }
 
   private void validateDate(Date date) {
