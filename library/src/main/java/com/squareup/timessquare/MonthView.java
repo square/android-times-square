@@ -24,21 +24,22 @@ public class MonthView extends LinearLayout {
   private List<CalendarCellDecorator> decorators;
   private boolean isRtl;
   private Locale locale;
+  private boolean alwaysDigitNumbers;
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, boolean displayHeader,
       int headerTextColor, boolean showDayNamesHeaderRowView, Locale locale,
-      DayViewAdapter adapter) {
+      boolean showAlwaysDigitNumbers, DayViewAdapter adapter) {
     return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
         dayBackgroundResId, dayTextColorResId, titleTextStyle, displayHeader, headerTextColor,
-        showDayNamesHeaderRowView, null, locale, adapter);
+        showDayNamesHeaderRowView, showAlwaysDigitNumbers, null, locale, adapter);
   }
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, boolean displayHeader,
-      int headerTextColor, boolean displayDayNamesHeaderRowView,
+      int headerTextColor, boolean displayDayNamesHeaderRowView, boolean showAlwaysDigitNumbers,
       List<CalendarCellDecorator> decorators, Locale locale, DayViewAdapter adapter) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
 
@@ -62,6 +63,7 @@ public class MonthView extends LinearLayout {
 
     view.isRtl = isRtl(locale);
     view.locale = locale;
+    view.alwaysDigitNumbers = showAlwaysDigitNumbers;
     int firstDayOfWeek = today.getFirstDayOfWeek();
     final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
 
@@ -114,7 +116,12 @@ public class MonthView extends LinearLayout {
     Logr.d("Initializing MonthView (%d) for %s", System.identityHashCode(this), month);
     long start = System.currentTimeMillis();
     title.setText(month.getLabel());
-    NumberFormat numberFormatter = NumberFormat.getInstance(locale);
+    NumberFormat numberFormatter;
+      if (alwaysDigitNumbers) {
+      numberFormatter = NumberFormat.getInstance(Locale.US);
+    } else {
+      numberFormatter = NumberFormat.getInstance(locale);
+    }
 
     final int numRows = cells.size();
     grid.setNumRows(numRows);
