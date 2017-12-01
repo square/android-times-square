@@ -63,6 +63,7 @@ public class SampleTimesSquareActivity extends Activity {
     final Button decorator = (Button) findViewById(R.id.button_decorator);
     final Button hebrew = (Button) findViewById(R.id.button_hebrew);
     final Button arabic = (Button) findViewById(R.id.button_arabic);
+    final Button arabicDigits = (Button) findViewById(R.id.button_arabic_with_digits);
     final Button customView = (Button) findViewById(R.id.button_custom_view);
 
     modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator, customView));
@@ -191,6 +192,14 @@ public class SampleTimesSquareActivity extends Activity {
         dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("ar", "EG")) //
             .withSelectedDate(new Date());
       }
+    });
+
+    arabicDigits.setOnClickListener(new OnClickListener() {
+      @Override public void onClick(View view) {
+        showCalendarInDialog("I'm Arabic with Digits!", R.layout.dialog_digits);
+        dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("ar", "EG")) //
+           .withSelectedDate(new Date());
+       }
     });
 
     customView.setOnClickListener(new OnClickListener() {
