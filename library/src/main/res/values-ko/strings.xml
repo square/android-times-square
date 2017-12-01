@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="invalid_date">%1$s ~ %2$s 사이로 날짜를 선택해주세요.</string>
+  <string name="month_name_format">yyyy년 M월</string>
+</resources> 
