@@ -117,7 +117,7 @@ public class MonthView extends LinearLayout {
     long start = System.currentTimeMillis();
     title.setText(month.getLabel());
     NumberFormat numberFormatter;
-      if (alwaysDigitNumbers) {
+    if (alwaysDigitNumbers) {
       numberFormatter = NumberFormat.getInstance(Locale.US);
     } else {
       numberFormatter = NumberFormat.getInstance(locale);
