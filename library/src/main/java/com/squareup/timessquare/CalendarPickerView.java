@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -200,7 +199,7 @@ public class CalendarPickerView extends ListView {
     maxCal = Calendar.getInstance(timeZone, locale);
     monthCounter = Calendar.getInstance(timeZone, locale);
     for (MonthDescriptor month : months) {
-      month.setLabel(formatMonthDate(month.getDate(), locale, timeZone));
+      month.setLabel(formatMonthDate(month.getDate()));
     }
     weekdayNameFormat =
         new SimpleDateFormat(getContext().getString(R.string.day_name_format), locale);
@@ -238,7 +237,7 @@ public class CalendarPickerView extends ListView {
       Date date = monthCounter.getTime();
       MonthDescriptor month =
           new MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR),
-                  date, formatMonthDate(date, locale, timeZone));
+                  date, formatMonthDate(date));
       cells.put(monthKey(month), getMonthCells(month, monthCounter));
       Logr.d("Adding month %s", month);
       months.add(month);
@@ -622,12 +621,32 @@ public class CalendarPickerView extends ListView {
    *
    * @see DateUtils
    */
-  private String formatMonthDate(Date date, Locale locale, TimeZone timeZone) {
+  private String formatMonthDate(Date date) {
     int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
             | DateUtils.FORMAT_NO_MONTH_DAY;
-    Formatter formatter = new Formatter(new StringBuilder(50), locale);
-    return DateUtils.formatDateRange(getContext(), formatter, date.getTime(), date.getTime(),
-            flags, timeZone.getID()).toString();
+
+    // Save default Locale/Timezone
+    Locale defaultLocale = Locale.getDefault();
+    TimeZone defaultTimezone = TimeZone.getDefault();
+
+    // Set new default Locale/Timezone, the reason to do that is DateUtils.formatDateTime uses
+    // internally this method DateIntervalFormat.formatDateRange to format the date. And this
+    // method uses the default locale/timezone.
+    //
+    // More details about the methods:
+    // - DateUtils.formatDateTime: https://goo.gl/3YW52Q
+    // - DateIntervalFormat.formatDateRange: https://goo.gl/RRmfK7
+    Locale.setDefault(locale);
+    TimeZone.setDefault(timeZone);
+
+    // Format date using the new locale and timezone
+    String formattedDate = DateUtils.formatDateTime(getContext(), date.getTime(), flags);
+
+    // Restore default Locale/Timezone to avoid generating any side effects
+    Locale.setDefault(defaultLocale);
+    TimeZone.setDefault(defaultTimezone);
+
+    return formattedDate;
   }
 
   private void validateDate(Date date) {
