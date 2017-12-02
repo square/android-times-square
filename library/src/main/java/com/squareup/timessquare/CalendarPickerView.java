@@ -244,8 +244,8 @@ public class CalendarPickerView extends ListView {
         && monthCounter.get(YEAR) < maxYear + 1) { // But not > next yr.
       Date date = monthCounter.getTime();
       MonthDescriptor month =
-          new MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR), date,
-                  formatMonthDate(date, locale, timeZone));
+          new MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR),
+                  date, formatMonthDate(date, locale, timeZone));
       cells.put(monthKey(month), getMonthCells(month, monthCounter));
       Logr.d("Adding month %s", month);
       months.add(month);
@@ -632,7 +632,8 @@ public class CalendarPickerView extends ListView {
    */
   private String formatMonthDate(Date date, Locale locale, TimeZone timeZone) {
     if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
-      int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_NO_MONTH_DAY;
+      int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
+              | DateUtils.FORMAT_NO_MONTH_DAY;
       Formatter formatter = new Formatter(new StringBuilder(50), locale);
       return DateUtils.formatDateRange(getContext(), formatter, date.getTime(), date.getTime(),
               flags, timeZone.getID()).toString();
