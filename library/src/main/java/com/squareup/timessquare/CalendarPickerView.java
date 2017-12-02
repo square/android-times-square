@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -74,7 +73,6 @@ public class CalendarPickerView extends ListView {
   final List<Calendar> highlightedCals = new ArrayList<>();
   private Locale locale;
   private TimeZone timeZone;
-  private DateFormat monthNameFormat;
   private DateFormat weekdayNameFormat;
   private DateFormat fullDateFormat;
   private Calendar minCal;
@@ -147,8 +145,6 @@ public class CalendarPickerView extends ListView {
     minCal = Calendar.getInstance(timeZone, locale);
     maxCal = Calendar.getInstance(timeZone, locale);
     monthCounter = Calendar.getInstance(timeZone, locale);
-    monthNameFormat = new SimpleDateFormat(context.getString(R.string.month_name_format), locale);
-    monthNameFormat.setTimeZone(timeZone);
     weekdayNameFormat = new SimpleDateFormat(context.getString(R.string.day_name_format), locale);
     weekdayNameFormat.setTimeZone(timeZone);
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
@@ -203,9 +199,6 @@ public class CalendarPickerView extends ListView {
     minCal = Calendar.getInstance(timeZone, locale);
     maxCal = Calendar.getInstance(timeZone, locale);
     monthCounter = Calendar.getInstance(timeZone, locale);
-    monthNameFormat =
-        new SimpleDateFormat(getContext().getString(R.string.month_name_format), locale);
-    monthNameFormat.setTimeZone(timeZone);
     for (MonthDescriptor month : months) {
       month.setLabel(formatMonthDate(month.getDate(), locale, timeZone));
     }
@@ -625,20 +618,16 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
-   * Use {@link DateUtils} to format the dates. If the version is lower than API 9, we will format
-   * using the old way, that means, SimpleDateFormat.
+   * Use {@link DateUtils} to format the dates.
    *
    * @see DateUtils
    */
   private String formatMonthDate(Date date, Locale locale, TimeZone timeZone) {
-    if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
-      int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
-              | DateUtils.FORMAT_NO_MONTH_DAY;
-      Formatter formatter = new Formatter(new StringBuilder(50), locale);
-      return DateUtils.formatDateRange(getContext(), formatter, date.getTime(), date.getTime(),
-              flags, timeZone.getID()).toString();
-    }
-    return monthNameFormat.format(date);
+    int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
+            | DateUtils.FORMAT_NO_MONTH_DAY;
+    Formatter formatter = new Formatter(new StringBuilder(50), locale);
+    return DateUtils.formatDateRange(getContext(), formatter, date.getTime(), date.getTime(),
+            flags, timeZone.getID()).toString();
   }
 
   private void validateDate(Date date) {
