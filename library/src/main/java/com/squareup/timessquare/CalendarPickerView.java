@@ -643,7 +643,7 @@ public class CalendarPickerView extends ListView {
     // - DateIntervalFormat.formatDateRange: https://goo.gl/RRmfK7
     Locale.setDefault(locale);
 
-    // Format date using the new locale and timezone
+    // Format date using the new Locale
     String formattedDate = DateUtils.formatDateRange(getContext(), monthFormatter, date.getTime(),
             date.getTime(), flags, timeZone.getID()).toString();
 
@@ -651,7 +651,7 @@ public class CalendarPickerView extends ListView {
     // the results
     monthBuilder.setLength(0);
 
-    // Restore default Locale/Timezone to avoid generating any side effects
+    // Restore default Locale to avoid generating any side effects
     Locale.setDefault(defaultLocale);
 
     return formattedDate;
