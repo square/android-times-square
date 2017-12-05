@@ -101,7 +101,7 @@ public class CalendarPickerView extends ListView {
 
   private boolean monthsReverseOrder;
 
-  private StringBuilder monthBuilder = new StringBuilder(50);
+  private final StringBuilder monthBuilder = new StringBuilder(50);
   private Formatter monthFormatter;
 
   public void setDecorators(List<CalendarCellDecorator> decorators) {
@@ -152,7 +152,6 @@ public class CalendarPickerView extends ListView {
     weekdayNameFormat.setTimeZone(timeZone);
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
     fullDateFormat.setTimeZone(timeZone);
-    monthFormatter = new Formatter(monthBuilder, locale);
 
     if (isInEditMode()) {
       Calendar nextYear = Calendar.getInstance(timeZone, locale);
