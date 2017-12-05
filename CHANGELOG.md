@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.7.6 *(2017-12-04)*
+----------------------------
+
+ * Improved: better month name formatting for Chinese/Japenese.
+ * New: `tsquare_displayAlwaysDigitNumbers` to override the locale setting and show digits on day cells.
+
+
 Version 1.7.5 *(2017-10-12)*
 ----------------------------
 
