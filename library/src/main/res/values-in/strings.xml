@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2012 Square, Inc. -->
+
+<resources>
+  <string name="day_name_format">EEE</string>
+  <string name="invalid_date">Tanggal harus di antara %1$s dan %2$s.</string>
+  <string name="month_name_format">MMMM yyyy</string>
+</resources>
