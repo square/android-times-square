@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.7.7 *(2017-12-08)*
+----------------------------
+
+ * Improved: `tsquare_displayAlwaysDigitNumbers` now also applies to the year in Burmese/Arabic
+
 Version 1.7.6 *(2017-12-04)*
 ----------------------------
 
