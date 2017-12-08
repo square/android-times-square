@@ -63,9 +63,9 @@ public class CalendarPickerView extends ListView {
     RANGE
   }
 
-  // List of that require manually creation of YYYY MMMM date format
-  private static final ArrayList<String> manuallyHandledLocalesLanguages =
-          new ArrayList<>(Arrays.asList("ar", "my"));
+  // List of languages that require manually creation of YYYY MMMM date format
+  private static final ArrayList<String> explicitlyNumericYearLocaleLanguages =
+      new ArrayList<>(Arrays.asList("ar", "my"));
 
   private final CalendarPickerView.MonthAdapter adapter;
   private final IndexedLinkedHashMap<String, List<List<MonthCellDescriptor>>> cells =
@@ -652,7 +652,7 @@ public class CalendarPickerView extends ListView {
 
     String dateFormatted;
     if (displayAlwaysDigitNumbers
-      && manuallyHandledLocalesLanguages.contains(locale.getLanguage())) {
+      && explicitlyNumericYearLocaleLanguages.contains(locale.getLanguage())) {
       StringBuilder sb = new StringBuilder();
       SimpleDateFormat sdfMonth = new SimpleDateFormat(getContext()
         .getString(R.string.month_only_name_format), locale);
