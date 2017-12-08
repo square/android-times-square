@@ -18,6 +18,7 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,6 +62,10 @@ public class CalendarPickerView extends ListView {
      */
     RANGE
   }
+
+  // List of that require manually creation of YYYY MMMM date format
+  private static final ArrayList<String> manuallyHandledLocalesLanguages =
+          new ArrayList<>(Arrays.asList("ar", "my"));
 
   private final CalendarPickerView.MonthAdapter adapter;
   private final IndexedLinkedHashMap<String, List<List<MonthCellDescriptor>>> cells =
@@ -645,10 +650,20 @@ public class CalendarPickerView extends ListView {
     // - DateIntervalFormat.formatDateRange: https://goo.gl/RRmfK7
     Locale.setDefault(locale);
 
-    // Format date using the new Locale
-    String formattedDate = DateUtils.formatDateRange(getContext(), monthFormatter, date.getTime(),
-            date.getTime(), flags, timeZone.getID()).toString();
-
+    String formattedDate;
+    if (displayAlwaysDigitNumbers && manuallyHandledLocalesLanguages.contains(locale.getLanguage())) {
+      StringBuilder sb = new StringBuilder();
+      SimpleDateFormat sdfMonth = new SimpleDateFormat
+        (getContext().getString(R.string.month_only_name_format), locale);
+      SimpleDateFormat sdfYear = new SimpleDateFormat
+        (getContext().getString(R.string.year_only_format), Locale.ENGLISH);
+        sb.append(sdfMonth.format(date.getTime())).append(" ").append(sdfYear.format(date.getTime()));
+      formattedDate = sb.toString();
+    } else {
+      // Format date using the new Locale
+      formattedDate = DateUtils.formatDateRange(getContext(), monthFormatter, date.getTime(),
+              date.getTime(), flags, timeZone.getID()).toString();
+    }
     // Call setLength(0) on StringBuilder passed to the Formatter constructor to not accumulate
     // the results
     monthBuilder.setLength(0);
@@ -1015,6 +1030,12 @@ public class CalendarPickerView extends ListView {
 
   public void setOnDateSelectedListener(OnDateSelectedListener listener) {
     dateListener = listener;
+  }
+
+  private boolean isLocaleRTL() {
+    final int directionality = Character.getDirectionality(locale.getDisplayName().charAt(0));
+    return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
+            directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
   }
 
   /**
