@@ -5,4 +5,6 @@
   <string name="day_name_format">EEE</string>
   <string name="invalid_date">Date must be between %1$s and %2$s.</string>
   <string name="month_name_format">MMMM yyyy</string>
+  <string name="month_only_name_format">MMMM</string>
+  <string name="year_only_format">yyyy</string>
 </resources>
