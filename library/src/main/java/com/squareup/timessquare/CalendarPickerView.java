@@ -657,11 +657,7 @@ public class CalendarPickerView extends ListView {
               (getContext().getString(R.string.month_only_name_format), locale);
       SimpleDateFormat sdfYear = new SimpleDateFormat
               (getContext().getString(R.string.year_only_format), Locale.ENGLISH);
-      if (isLocaleRTL()) {
-        sb.append(sdfYear.format(date.getTime())).append(" ").append(sdfMonth.format(date.getTime()));
-      } else {
         sb.append(sdfMonth.format(date.getTime())).append(" ").append(sdfYear.format(date.getTime()));
-      }
       formattedDate = sb.toString();
     } else {
       // Format date using the new Locale
