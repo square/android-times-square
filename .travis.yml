@@ -1,0 +1,33 @@
+language: android
+
+android:
+  components:
+    - tools
+    - tools
+    - platform-tools
+    - build-tools-25.0.2
+    - android-25
+
+jdk:
+  - oraclejdk8
+
+after_success:
+  - .buildscript/deploy_snapshot.sh
+
+env:
+  global:
+    - secure: "mokP2uluF4Yeg7ZvhjVOoo6E5lXWWyhhqGMZ4EbZ3xbl8W/a6oObwoLkVhxaMpdFz597VfBdiC0wX+y9ri2HBY2g2CCf2B4FFNsPFzA9MAKchFwfeqd/Z5GxfZVvEdYdSSueIRpeNJnjVVxt3WApCtNn7wsu9j3P4AtD76KxGL0="
+    - secure: "nfVaFnrXdHiPWjArMUFO9+5OX/jIKcUrue+xXDg1rNlVsevuGMC+DMBfOGgHBAITD1Vsp0XRWrvzVFntLoigZ4rMBbNvt0dBRPhlr49CqxIFwKw/kAcDqbNjvMpOvvghOqqNNW2HDzLvIiy2G93ZNz+p+DkcYTT8mi7d1UFhKqQ="
+
+branches:
+  except:
+    - gh-pages
+
+notifications:
+  email: false
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.m2

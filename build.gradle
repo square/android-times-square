@@ -1,0 +1,32 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:2.3.0'
+  }
+}
+
+allprojects {
+  repositories {
+    mavenCentral()
+  }
+}
+
+ext {
+  minSdkVersion = 9
+  targetSdkVersion = 25
+  compileSdkVersion = 25
+  buildToolsVersion = '25.0.2'
+  sourceCompatibilityVersion = JavaVersion.VERSION_1_7
+  targetCompatibilityVersion = JavaVersion.VERSION_1_7
+}
+
+ext.deps = [
+    // Test dependencies
+    junit      : 'junit:junit:4.10',
+    festandroid: 'com.squareup:fest-android:1.0.7',
+    robolectric: 'org.robolectric:robolectric:2.2',
+    intellijannotations: 'com.intellij:annotations:12.0'
+]

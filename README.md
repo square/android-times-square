@@ -5,6 +5,7 @@ Standalone Android widget for picking a single date from a calendar view.
 
 ![Screenshot](timesSquareScreenshot.png)
 
+
 Usage
 -----
 
@@ -31,12 +32,18 @@ Calendar nextYear = Calendar.getInstance();
 nextYear.add(Calendar.YEAR, 1);
 
 CalendarPickerView calendar = (CalendarPickerView) findViewById(R.id.calendar_view);
-calendar.init(new Date(), nextYear.getTime());
+Date today = new Date();
+calendar.init(today, nextYear.getTime())
+    .withSelectedDate(today);
 ```
 
-To retrieve the currently selected date, call `getSelectedDate()` on the view.
-To create a view with a previously selected date, call `selectDate()`.
+The default mode of the view is to have one selectable date.  If you want the user to be able to
+select multiple dates or a date range, use the inMode() method:
 
+```java
+calendar.init(today, nextYear.getTime())
+    .inMode(RANGE);
+```
 
 
 Download
@@ -46,16 +53,20 @@ The latest version can be downloaded in [zip][zip] and referenced by your applic
 project.
 
 You can also depend on the library through Maven:
-
 ```xml
 <dependency>
-    <groupId>com.squareup</groupId>
-    <artifactId>android-times-square</artifactId>
-    <version>(insert latest version)</version>
-    <type>apklib</type>
+  <groupId>com.squareup</groupId>
+  <artifactId>android-times-square</artifactId>
+  <version>1.6.5</version>
+  <type>apklib</type>
 </dependency>
 ```
+or Gradle:
+```groovy
+compile 'com.squareup:android-times-square:1.6.5@aar'
+```
 
+Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
 
 
 License
@@ -78,3 +89,4 @@ License
 
 
  [zip]: https://github.com/square/android-times-square/archive/master.zip
+ [snap]: https://oss.sonatype.org/content/repositories/snapshots/
