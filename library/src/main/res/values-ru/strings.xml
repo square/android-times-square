@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 Square, Inc. -->
+
+<resources>
+  <string name="invalid_date">Дата должна быть между %1$s и %2$s.</string>
+</resources>

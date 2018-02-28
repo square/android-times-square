@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="CalendarPickerView">
+    <attr name="android:background"/>
+    <attr name="tsquare_dividerColor" format="color"/>
+    <attr name="tsquare_dayBackground" format="reference"/>
+    <attr name="tsquare_dayTextColor" format="color"/>
+    <attr name="tsquare_titleTextStyle" format="reference"/>
+    <attr name="tsquare_displayHeader" format="boolean"/>
+    <attr name="tsquare_displayDayNamesHeaderRow" format="boolean"/>
+    <attr name="tsquare_displayAlwaysDigitNumbers" format="boolean"/>
+    <attr name="tsquare_headerTextColor" format="color"/>
+  </declare-styleable>
+
+  <declare-styleable name="calendar_cell">
+    <attr name="tsquare_state_selectable" format="boolean" />
+    <attr name="tsquare_state_current_month" format="boolean" />
+    <attr name="tsquare_state_today" format="boolean" />
+    <attr name="tsquare_state_range_first" format="boolean" />
+    <attr name="tsquare_state_range_middle" format="boolean" />
+    <attr name="tsquare_state_range_last" format="boolean" />
+    <attr name="tsquare_state_highlighted" format="boolean" />
+  </declare-styleable>
+</resources>
