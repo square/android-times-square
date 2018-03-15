@@ -766,6 +766,12 @@ public class CalendarPickerView extends ListView {
   private String monthKey(MonthDescriptor month) {
     return month.getYear() + "-" + month.getMonth();
   }
+  
+  public void clearSelections() {
+    clearOldSelections();
+    // Update the adapter.
+    validateAndUpdate();
+  }
 
   private void clearOldSelections() {
     for (MonthCellDescriptor selectedCell : selectedCells) {
