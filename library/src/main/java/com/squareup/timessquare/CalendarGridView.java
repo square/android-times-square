@@ -118,9 +118,11 @@ public class CalendarGridView extends ViewGroup {
     widthMeasureSize = cellSize * 7;
     int totalHeight = 0;
     final int rowWidthSpec = makeMeasureSpec(widthMeasureSize, EXACTLY);
-    final int rowHeightSpec = makeMeasureSpec(cellSize, EXACTLY);
+    // Most cells are gonna be cellSize tall, but we want to allow custom cells to be taller.
+    final int rowHeightSpec = makeMeasureSpec(widthMeasureSize, AT_MOST);
     for (int c = 0, numChildren = getChildCount(); c < numChildren; c++) {
       final View child = getChildAt(c);
+      child.setMinimumHeight(cellSize);
       if (child.getVisibility() == View.VISIBLE) {
         if (c == 0) { // It's the header: height should be wrap_content.
           measureChild(child, rowWidthSpec, makeMeasureSpec(cellSize, AT_MOST));

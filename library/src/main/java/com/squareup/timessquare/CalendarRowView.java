@@ -31,14 +31,17 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
     long start = System.currentTimeMillis();
     final int totalWidth = MeasureSpec.getSize(widthMeasureSpec);
     int rowHeight = 0;
+    int cellHeightSpec = makeMeasureSpec(totalWidth, AT_MOST);
     for (int c = 0, numChildren = getChildCount(); c < numChildren; c++) {
       final View child = getChildAt(c);
       // Calculate width cells, making sure to cover totalWidth.
-      int l = ((c + 0) * totalWidth) / 7;
+      int l = (c * totalWidth) / 7;
       int r = ((c + 1) * totalWidth) / 7;
       int cellSize = r - l;
+      if (!isHeaderRow) {
+        child.setMinimumHeight(cellSize);
+      }
       int cellWidthSpec = makeMeasureSpec(cellSize, EXACTLY);
-      int cellHeightSpec = isHeaderRow ? makeMeasureSpec(cellSize, AT_MOST) : cellWidthSpec;
       child.measure(cellWidthSpec, cellHeightSpec);
       // The row height is the height of the tallest cell.
       if (child.getMeasuredHeight() > rowHeight) {
@@ -54,10 +57,10 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
   @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
     long start = System.currentTimeMillis();
     int cellHeight = bottom - top;
-    int width = (right - left);
+    int width = right - left;
     for (int c = 0, numChildren = getChildCount(); c < numChildren; c++) {
       final View child = getChildAt(c);
-      int l = ((c + 0) * width) / 7;
+      int l = (c * width) / 7;
       int r = ((c + 1) * width) / 7;
       child.layout(l, 0, r, cellHeight);
     }

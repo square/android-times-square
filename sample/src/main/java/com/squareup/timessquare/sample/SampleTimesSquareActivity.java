@@ -14,7 +14,6 @@ import com.squareup.timessquare.CalendarCellDecorator;
 import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
 import com.squareup.timessquare.DefaultDayViewAdapter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -107,14 +106,12 @@ public class SampleTimesSquareActivity extends Activity {
 
         calendar.setCustomDayView(new DefaultDayViewAdapter());
         calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
-        calendar.init(getDateWithYear(2000), getDateWithYear(2020)) // 20 years, enough to show performance failure
-                .inMode(SelectionMode.SINGLE)
-                .withSelectedDate(c.getTime());
+        // 20 years, enough to show performance failure.
+        calendar.init(getDateWithYear(2000), getDateWithYear(2020))
+            .inMode(SelectionMode.SINGLE).withSelectedDate(c.getTime());
 
         calendar.highlightDates(getHighlightedDaysForMonth( // Adds some highlighted days
-                c.get(Calendar.MONTH) - 1,
-                c.get(Calendar.MONTH),
-                c.get(Calendar.MONTH) + 1));
+            c.get(Calendar.MONTH) - 1, c.get(Calendar.MONTH), c.get(Calendar.MONTH) + 1));
       }
     });
 
@@ -161,8 +158,7 @@ public class SampleTimesSquareActivity extends Activity {
     customized.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View view) {
         showCalendarInDialog("Pimp my calendar!", R.layout.dialog_customized);
-        dialogView.init(lastYear.getTime(), nextYear.getTime())
-            .withSelectedDate(new Date());
+        dialogView.init(lastYear.getTime(), nextYear.getTime()).withSelectedDate(new Date());
       }
     });
 
@@ -182,7 +178,7 @@ public class SampleTimesSquareActivity extends Activity {
       @Override public void onClick(View view) {
         showCalendarInDialog("I'm Hebrew!", R.layout.dialog);
         dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("iw", "IL")) //
-                .withSelectedDate(new Date());
+            .withSelectedDate(new Date());
       }
     });
 
@@ -198,8 +194,8 @@ public class SampleTimesSquareActivity extends Activity {
       @Override public void onClick(View view) {
         showCalendarInDialog("I'm Arabic with Digits!", R.layout.dialog_digits);
         dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("ar", "EG")) //
-           .withSelectedDate(new Date());
-       }
+            .withSelectedDate(new Date());
+      }
     });
 
     customView.setOnClickListener(new OnClickListener() {
@@ -209,8 +205,8 @@ public class SampleTimesSquareActivity extends Activity {
         calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
         calendar.setCustomDayView(new SampleDayViewAdapter());
         calendar.init(lastYear.getTime(), nextYear.getTime())
-                .inMode(SelectionMode.SINGLE)
-                .withSelectedDate(new Date());
+            .inMode(SelectionMode.SINGLE)
+            .withSelectedDate(new Date());
       }
     });
 
