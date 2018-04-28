@@ -12,8 +12,8 @@
     android:scrollbarStyle="outsideOverlay"
     app:tsquare_dayBackground="@drawable/custom_calendar_bg_selector"
     app:tsquare_dayTextColor="@color/custom_calendar_text_selector"
-    app:tsquare_displayDayNamesHeaderRow="false"
     app:tsquare_dividerColor="@color/transparent"
     app:tsquare_headerTextColor="@color/custom_header_text"
+    app:tsquare_headerTextAppearance="@style/CustomMonthTitle"
     app:tsquare_titleTextStyle="@style/CustomCalendarTitle"
     />
