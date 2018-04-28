@@ -92,6 +92,7 @@ public class CalendarPickerView extends ListView {
   private int titleTextStyle;
   private boolean displayHeader;
   private int headerTextColor;
+  private int headerTextAppearance;
   private boolean displayDayNamesHeaderRow;
   private boolean displayAlwaysDigitNumbers;
   private Typeface titleTypeface;
@@ -139,6 +140,8 @@ public class CalendarPickerView extends ListView {
     displayHeader = a.getBoolean(R.styleable.CalendarPickerView_tsquare_displayHeader, true);
     headerTextColor = a.getColor(R.styleable.CalendarPickerView_tsquare_headerTextColor,
         res.getColor(R.color.calendar_text_active));
+    headerTextAppearance = a.getResourceId(R.styleable.CalendarPickerView_tsquare_headerTextAppearance,
+            R.style.CalendarCell_DayHeader);
     displayDayNamesHeaderRow =
             a.getBoolean(R.styleable.CalendarPickerView_tsquare_displayDayNamesHeaderRow, true);
     displayAlwaysDigitNumbers =
@@ -908,7 +911,7 @@ public class CalendarPickerView extends ListView {
         monthView =
             MonthView.create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
                 dayBackgroundResId, dayTextColorResId, titleTextStyle, displayHeader,
-                headerTextColor, displayDayNamesHeaderRow, displayAlwaysDigitNumbers,
+                headerTextColor, headerTextAppearance, displayDayNamesHeaderRow, displayAlwaysDigitNumbers,
                 decorators, locale, dayViewAdapter);
         monthView.setTag(R.id.day_view_adapter_class, dayViewAdapter.getClass());
       } else {

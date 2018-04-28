@@ -29,17 +29,17 @@ public class MonthView extends LinearLayout {
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, boolean displayHeader,
-      int headerTextColor, boolean showDayNamesHeaderRowView, Locale locale,
+      int headerTextColor, int headerTextAppearance, boolean showDayNamesHeaderRowView, Locale locale,
       boolean showAlwaysDigitNumbers, DayViewAdapter adapter) {
     return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
         dayBackgroundResId, dayTextColorResId, titleTextStyle, displayHeader, headerTextColor,
-        showDayNamesHeaderRowView, showAlwaysDigitNumbers, null, locale, adapter);
+        headerTextAppearance, showDayNamesHeaderRowView, showAlwaysDigitNumbers, null, locale, adapter);
   }
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, boolean displayHeader,
-      int headerTextColor, boolean displayDayNamesHeaderRowView, boolean showAlwaysDigitNumbers,
+      int headerTextColor, int headerTextAppearance, boolean displayDayNamesHeaderRowView, boolean showAlwaysDigitNumbers,
       List<CalendarCellDecorator> decorators, Locale locale, DayViewAdapter adapter) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
 
@@ -56,6 +56,7 @@ public class MonthView extends LinearLayout {
     view.setDayTextColor(dayTextColorResId);
     view.setDisplayHeader(displayHeader);
     view.setHeaderTextColor(headerTextColor);
+    view.setHeaderTextAppearance(headerTextAppearance);
 
     if (dayBackgroundResId != 0) {
       view.setDayBackground(dayBackgroundResId);
@@ -194,6 +195,10 @@ public class MonthView extends LinearLayout {
   public void setHeaderTextColor(int color) {
     grid.setHeaderTextColor(color);
   }
+
+    public void setHeaderTextAppearance(int color) {
+        grid.setHeaderTextAppearance(color);
+    }
 
   public interface Listener {
     void handleClick(MonthCellDescriptor cell);
