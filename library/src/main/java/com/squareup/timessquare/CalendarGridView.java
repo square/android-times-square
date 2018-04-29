@@ -65,6 +65,10 @@ public class CalendarGridView extends ViewGroup {
     ((CalendarRowView) getChildAt(0)).setCellTextColor(color);
   }
 
+  public void setHeaderTextAppearance(int resId) {
+    ((CalendarRowView) getChildAt(0)).setCellTextStyle(resId);
+  }
+
   public void setTypeface(Typeface typeface) {
     for (int i = 0; i < getChildCount(); i++) {
       ((CalendarRowView) getChildAt(i)).setTypeface(typeface);
