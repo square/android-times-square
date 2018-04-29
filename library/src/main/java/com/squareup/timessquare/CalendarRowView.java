@@ -121,7 +121,8 @@ public class CalendarRowView extends ViewGroup implements View.OnClickListener {
   public void setCellTextStyle(int resId) {
     for (int i = 0; i < getChildCount(); i++) {
       if (getChildAt(i) instanceof CalendarCellView) {
-        ((CalendarCellView) getChildAt(i)).getDayOfMonthTextView().setTextAppearance(getContext(), resId);
+        ((CalendarCellView) getChildAt(i)).getDayOfMonthTextView()
+                .setTextAppearance(getContext(), resId);
       } else {
         ((TextView) getChildAt(i)).setTextAppearance(getContext(), resId);
       }

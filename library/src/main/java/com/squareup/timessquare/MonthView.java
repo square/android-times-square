@@ -29,18 +29,20 @@ public class MonthView extends LinearLayout {
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, boolean displayHeader,
-      int headerTextColor, int headerTextAppearance, boolean showDayNamesHeaderRowView, Locale locale,
-      boolean showAlwaysDigitNumbers, DayViewAdapter adapter) {
+      int headerTextColor, int headerTextAppearance, boolean showDayNamesHeaderRowView,
+      Locale locale, boolean showAlwaysDigitNumbers, DayViewAdapter adapter) {
     return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
         dayBackgroundResId, dayTextColorResId, titleTextStyle, displayHeader, headerTextColor,
-        headerTextAppearance, showDayNamesHeaderRowView, showAlwaysDigitNumbers, null, locale, adapter);
+        headerTextAppearance, showDayNamesHeaderRowView, showAlwaysDigitNumbers,
+        null, locale, adapter);
   }
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, boolean displayHeader,
-      int headerTextColor, int headerTextAppearance, boolean displayDayNamesHeaderRowView, boolean showAlwaysDigitNumbers,
-      List<CalendarCellDecorator> decorators, Locale locale, DayViewAdapter adapter) {
+      int headerTextColor, int headerTextAppearance, boolean displayDayNamesHeaderRowView,
+      boolean showAlwaysDigitNumbers, List<CalendarCellDecorator> decorators,
+      Locale locale, DayViewAdapter adapter) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
 
     // Set the views
