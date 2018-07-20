@@ -16,9 +16,10 @@ class MonthCellDescriptor {
   private boolean isHighlighted;
   private RangeState rangeState;
   private boolean isHoliday;
+  private String holidayName;
 
   MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
-      boolean today, boolean highlighted, int value, RangeState rangeState, boolean holiday) {
+      boolean today, boolean highlighted, int value, RangeState rangeState, boolean holiday, String holidayName) {
     this.date = date;
     isCurrentMonth = currentMonth;
     isSelectable = selectable;
@@ -28,6 +29,7 @@ class MonthCellDescriptor {
     isHoliday = holiday;
     this.value = value;
     this.rangeState = rangeState;
+    this.holidayName = holidayName;
   }
 
   public Date getDate() {
@@ -80,6 +82,14 @@ class MonthCellDescriptor {
 
   public void setHoliday(boolean holiday) {
     isHoliday = holiday;
+  }
+
+  public String getHolidayName() {
+    return holidayName;
+  }
+
+  public void setHolidayName(String holidayName) {
+    this.holidayName = holidayName;
   }
 
   @Override public String toString() {

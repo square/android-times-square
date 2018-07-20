@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -20,25 +21,29 @@ public class MonthView extends LinearLayout {
   TextView title;
   CalendarGridView grid;
   View dayNamesHeaderRowView;
+  LinearLayout holidaysContainer;
   private Listener listener;
   private List<CalendarCellDecorator> decorators;
   private boolean isRtl;
   private Locale locale;
   private boolean alwaysDigitNumbers;
+  private int holidayNameTextStyle;
+  private int holidayDateTextStyle;
+  private int holidayContainerStyle;
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
-      int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, boolean displayHeader,
+      int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, int holidayNameTextStyle, int holidayDateTextStyle, int holidayContainerStyle, boolean displayHeader,
       int headerTextColor, boolean showDayNamesHeaderRowView, Locale locale,
       boolean showAlwaysDigitNumbers, DayViewAdapter adapter) {
     return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
-        dayBackgroundResId, dayTextColorResId, titleTextStyle, displayHeader, headerTextColor,
+        dayBackgroundResId, dayTextColorResId, titleTextStyle, holidayNameTextStyle, holidayDateTextStyle, holidayContainerStyle, displayHeader, headerTextColor,
         showDayNamesHeaderRowView, showAlwaysDigitNumbers, null, locale, adapter);
   }
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
-      int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, boolean displayHeader,
+      int dayBackgroundResId, int dayTextColorResId, int titleTextStyle, int holidayNameTextStyle, int holidayDateTextStyle, int holidayContainerStyle, boolean displayHeader,
       int headerTextColor, boolean displayDayNamesHeaderRowView, boolean showAlwaysDigitNumbers,
       List<CalendarCellDecorator> decorators, Locale locale, DayViewAdapter adapter) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
@@ -47,9 +52,16 @@ public class MonthView extends LinearLayout {
     view.title = new TextView(new ContextThemeWrapper(view.getContext(), titleTextStyle));
     view.grid = (CalendarGridView) view.findViewById(R.id.calendar_grid);
     view.dayNamesHeaderRowView = view.findViewById(R.id.day_names_header_row);
+    view.holidaysContainer = new LinearLayout(new ContextThemeWrapper(view.getContext(), holidayContainerStyle));
+    view.holidayNameTextStyle = holidayNameTextStyle;
+    view.holidayDateTextStyle = holidayDateTextStyle;
+    view.holidayContainerStyle = holidayContainerStyle;
 
     // Add the month title as the first child of MonthView
     view.addView(view.title, 0);
+
+    // Add the holidays container as the las child of MonthView
+    view.addView(view.holidaysContainer);
 
     view.setDayViewAdapter(adapter);
     view.setDividerColor(dividerColor);
@@ -125,6 +137,9 @@ public class MonthView extends LinearLayout {
 
     final int numRows = cells.size();
     grid.setNumRows(numRows);
+
+    ArrayList<Holiday> holidays = new ArrayList<>();
+
     for (int i = 0; i < 6; i++) {
       CalendarRowView weekRow = (CalendarRowView) grid.getChildAt(i + 1);
       weekRow.setListener(listener);
@@ -151,6 +166,12 @@ public class MonthView extends LinearLayout {
           cellView.setHighlighted(cell.isHighlighted());
           cellView.setTag(cell);
 
+          if(cell.isHoliday()){
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(cell.getDate());
+            holidays.add(new Holiday(cal, cell.getHolidayName()));
+          }
+
           if (null != decorators) {
             for (CalendarCellDecorator decorator : decorators) {
               decorator.decorate(cellView, cell.getDate());
@@ -159,6 +180,28 @@ public class MonthView extends LinearLayout {
         }
       } else {
         weekRow.setVisibility(GONE);
+      }
+    }
+
+    holidaysContainer.removeAllViews();
+
+    if(holidays.size() > 0){
+      for(Holiday holiday : holidays){
+        LinearLayout holidayItem = new LinearLayout(getContext());
+        holidayItem.setOrientation(HORIZONTAL);
+        holidayItem.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+
+        TextView holidayDate = new TextView(new ContextThemeWrapper(getContext(), holidayDateTextStyle));
+        TextView holidayName = new TextView(new ContextThemeWrapper(getContext(), holidayNameTextStyle));
+
+        holidayDate.setText(holiday.getDate().get(Calendar.DAY_OF_MONTH) + " " + holiday.getDate().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
+        holidayName.setText(holiday.getName());
+
+        holidayItem.addView(holidayDate);
+        holidayItem.addView(holidayName);
+
+        holidaysContainer.addView(holidayItem);
       }
     }
 

@@ -91,6 +91,9 @@ public class CalendarPickerView extends ListView {
   private int dayBackgroundResId;
   private int dayTextColorResId;
   private int titleTextStyle;
+  private int holidayNameTextStyle;
+  private int holidayDateTextStyle;
+  private int holidayContainerStyle;
   private boolean displayHeader;
   private int headerTextColor;
   private boolean displayDayNamesHeaderRow;
@@ -137,6 +140,12 @@ public class CalendarPickerView extends ListView {
         R.color.calendar_text_selector);
     titleTextStyle = a.getResourceId(R.styleable.CalendarPickerView_tsquare_titleTextStyle,
         R.style.CalendarTitle);
+    holidayNameTextStyle = a.getResourceId(R.styleable.CalendarPickerView_tsquare_holidayNameTextStyle,
+            R.style.HolidayNameText);
+    holidayDateTextStyle = a.getResourceId(R.styleable.CalendarPickerView_tsquare_holidayDateTextStyle,
+            R.style.HolidayDateText);
+    holidayContainerStyle = a.getResourceId(R.styleable.CalendarPickerView_tsquare_holidayContainerStyle,
+            R.style.HolidayContainer);
     displayHeader = a.getBoolean(R.styleable.CalendarPickerView_tsquare_displayHeader, true);
     headerTextColor = a.getColor(R.styleable.CalendarPickerView_tsquare_headerTextColor,
         res.getColor(R.color.calendar_text_active));
@@ -1010,7 +1019,8 @@ public class CalendarPickerView extends ListView {
           || !monthView.getTag(R.id.day_view_adapter_class).equals(dayViewAdapter.getClass())) {
         monthView =
             MonthView.create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
-                dayBackgroundResId, dayTextColorResId, titleTextStyle, displayHeader,
+                dayBackgroundResId, dayTextColorResId, titleTextStyle, holidayNameTextStyle, holidayDateTextStyle,
+                holidayContainerStyle, displayHeader,
                 headerTextColor, displayDayNamesHeaderRow, displayAlwaysDigitNumbers,
                 decorators, locale, dayViewAdapter);
         monthView.setTag(R.id.day_view_adapter_class, dayViewAdapter.getClass());
@@ -1026,17 +1036,17 @@ public class CalendarPickerView extends ListView {
     }
   }
 
-  private boolean isHoliday(Calendar cal){
+  private Holiday getHoliday(Calendar cal){
 
     if(cal == null || holidays == null)
-      return false;
+      return null;
 
     for(Holiday holiday : holidays){
       if(sameDate(cal, holiday.getDate()))
-        return true;
+        return holiday;
     }
 
-    return false;
+    return null;
 
   }
 
@@ -1068,7 +1078,10 @@ public class CalendarPickerView extends ListView {
             isCurrentMonth && betweenDates(cal, minCal, maxCal) && isDateSelectable(date);
         boolean isToday = sameDate(cal, today);
         boolean isHighlighted = containsDate(highlightedCals, cal);
-        boolean isHoliday = isHoliday(cal);
+
+        Holiday holiday = getHoliday(cal);
+
+        boolean isHoliday = holiday != null;
         int value = cal.get(DAY_OF_MONTH);
 
         RangeState rangeState = RangeState.NONE;
@@ -1084,7 +1097,7 @@ public class CalendarPickerView extends ListView {
 
         weekCells.add(
             new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday,
-                isHighlighted, value, rangeState, isHoliday));
+                isHighlighted, value, rangeState, isHoliday, isHoliday ? holiday.getName() : ""));
         cal.add(DATE, 1);
       }
     }

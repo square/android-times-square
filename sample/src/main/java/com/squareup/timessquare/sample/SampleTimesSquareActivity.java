@@ -241,7 +241,7 @@ public class SampleTimesSquareActivity extends Activity {
 
     ArrayList<Holiday> holidays = new ArrayList<>();
 
-    for(int i = 0; i <= 5; i++){
+    for(int i = 1; i <= 5; i++){
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       cal.add(Calendar.DAY_OF_MONTH, i);

@@ -5,4 +5,8 @@
   <dimen name="calendar_month_title_bottommargin">4dp</dimen>
   <dimen name="calendar_text_medium">18sp</dimen>
   <dimen name="calendar_text_small">14sp</dimen>
+  <dimen name="calendar_holiday_topmargin">16dp</dimen>
+  <dimen name="calendar_holiday_bottommargin">4dp</dimen>
+  <dimen name="calendar_holiday_text_topmargin">2dp</dimen>
+  <dimen name="calendar_holiday_text_bottommargin">2dp</dimen>
 </resources>

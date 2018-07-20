@@ -14,4 +14,5 @@
   <color name="calendar_text_unselectable">#7f778088</color>
   <color name="calendar_text_highlighted">#ff778088</color>
   <color name="calendar_text_holiday">#ffffffff</color>
+  <color name="calendar_text_holiday_date">#ffc2de83</color>
 </resources>
