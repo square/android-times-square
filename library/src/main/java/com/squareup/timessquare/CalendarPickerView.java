@@ -78,6 +78,7 @@ public class CalendarPickerView extends ListView {
   final List<Calendar> highlightedCals = new ArrayList<>();
   private Locale locale;
   private TimeZone timeZone;
+  private ArrayList<Holiday> holidays;
   private DateFormat weekdayNameFormat;
   private DateFormat fullDateFormat;
   private Calendar minCal;
@@ -90,6 +91,9 @@ public class CalendarPickerView extends ListView {
   private int dayBackgroundResId;
   private int dayTextColorResId;
   private int titleTextStyle;
+  private int holidayNameTextStyle;
+  private int holidayDateTextStyle;
+  private int holidayContainerStyle;
   private boolean displayHeader;
   private int headerTextColor;
   private boolean displayDayNamesHeaderRow;
@@ -136,6 +140,12 @@ public class CalendarPickerView extends ListView {
         R.color.calendar_text_selector);
     titleTextStyle = a.getResourceId(R.styleable.CalendarPickerView_tsquare_titleTextStyle,
         R.style.CalendarTitle);
+    holidayNameTextStyle = a.getResourceId(R.styleable.CalendarPickerView_tsquare_holidayNameTextStyle,
+            R.style.HolidayNameText);
+    holidayDateTextStyle = a.getResourceId(R.styleable.CalendarPickerView_tsquare_holidayDateTextStyle,
+            R.style.HolidayDateText);
+    holidayContainerStyle = a.getResourceId(R.styleable.CalendarPickerView_tsquare_holidayContainerStyle,
+            R.style.HolidayContainer);
     displayHeader = a.getBoolean(R.styleable.CalendarPickerView_tsquare_displayHeader, true);
     headerTextColor = a.getColor(R.styleable.CalendarPickerView_tsquare_headerTextColor,
         res.getColor(R.color.calendar_text_active));
@@ -187,7 +197,7 @@ public class CalendarPickerView extends ListView {
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
-  public FluentInitializer init(Date minDate, Date maxDate, TimeZone timeZone, Locale locale) {
+  public FluentInitializer init(Date minDate, Date maxDate, TimeZone timeZone, Locale locale, ArrayList<Holiday> holidays) {
     if (minDate == null || maxDate == null) {
       throw new IllegalArgumentException(
           "minDate and maxDate must be non-null.  " + dbg(minDate, maxDate));
@@ -206,6 +216,7 @@ public class CalendarPickerView extends ListView {
     // Make sure that all calendar instances use the same time zone and locale.
     this.timeZone = timeZone;
     this.locale = locale;
+    this.holidays = holidays;
     today = Calendar.getInstance(timeZone, locale);
     minCal = Calendar.getInstance(timeZone, locale);
     maxCal = Calendar.getInstance(timeZone, locale);
@@ -282,6 +293,56 @@ public class CalendarPickerView extends ListView {
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
+  public FluentInitializer init(Date minDate, Date maxDate, TimeZone timeZone, Locale locale) {
+    return init(minDate, maxDate, timeZone, locale, null);
+  }
+
+  /**
+   * Both date parameters must be non-null and their {@link Date#getTime()} must not return 0. Time
+   * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
+   * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
+   * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
+   * <p>
+   * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
+   * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
+   * {@link FluentInitializer} this method returns.
+   * <p>
+   * The calendar will be constructed using the default locale as returned by
+   * {@link java.util.Locale#getDefault()} and default time zone as returned by
+   * {@link java.util.TimeZone#getDefault()}. If you wish the calendar to be constructed using a
+   * different locale or time zone, use
+   * {@link #init(java.util.Date, java.util.Date, java.util.Locale)},
+   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone)} or
+   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale)}.
+   *
+   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
+   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
+   */
+  public FluentInitializer init(Date minDate, Date maxDate, ArrayList<Holiday> holidays) {
+    return init(minDate, maxDate, TimeZone.getDefault(), Locale.getDefault(), holidays);
+  }
+
+  /**
+   * Both date parameters must be non-null and their {@link Date#getTime()} must not return 0. Time
+   * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
+   * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
+   * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
+   * <p>
+   * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
+   * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
+   * {@link FluentInitializer} this method returns.
+   * <p>
+   * The calendar will be constructed using the default locale as returned by
+   * {@link java.util.Locale#getDefault()} and default time zone as returned by
+   * {@link java.util.TimeZone#getDefault()}. If you wish the calendar to be constructed using a
+   * different locale or time zone, use
+   * {@link #init(java.util.Date, java.util.Date, java.util.Locale)},
+   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone)} or
+   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale)}.
+   *
+   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
+   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
+   */
   public FluentInitializer init(Date minDate, Date maxDate) {
     return init(minDate, maxDate, TimeZone.getDefault(), Locale.getDefault());
   }
@@ -319,6 +380,29 @@ public class CalendarPickerView extends ListView {
    * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
    * {@link FluentInitializer} this method returns.
    * <p>
+   * The calendar will be constructed using the given time zone and the default locale as returned
+   * by {@link java.util.Locale#getDefault()}. This means that all dates will be in given time zone.
+   * If you wish the calendar to be constructed using a different locale, use
+   * {@link #init(java.util.Date, java.util.Date, java.util.Locale)} or
+   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale)}.
+   *
+   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
+   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
+   */
+  public FluentInitializer init(Date minDate, Date maxDate, TimeZone timeZone, ArrayList<Holiday> holidays) {
+    return init(minDate, maxDate, timeZone, Locale.getDefault(), holidays);
+  }
+
+  /**
+   * Both date parameters must be non-null and their {@link Date#getTime()} must not return 0. Time
+   * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
+   * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
+   * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
+   * <p>
+   * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
+   * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
+   * {@link FluentInitializer} this method returns.
+   * <p>
    * The calendar will be constructed using the given locale. This means that all names
    * (months, days) will be in the language of the locale and the weeks start with the day
    * specified by the locale.
@@ -335,6 +419,34 @@ public class CalendarPickerView extends ListView {
    */
   public FluentInitializer init(Date minDate, Date maxDate, Locale locale) {
     return init(minDate, maxDate, TimeZone.getDefault(), locale);
+  }
+
+  /**
+   * Both date parameters must be non-null and their {@link Date#getTime()} must not return 0. Time
+   * of day will be ignored.  For instance, if you pass in {@code minDate} as 11/16/2012 5:15pm and
+   * {@code maxDate} as 11/16/2013 4:30am, 11/16/2012 will be the first selectable date and
+   * 11/15/2013 will be the last selectable date ({@code maxDate} is exclusive).
+   * <p>
+   * This will implicitly set the {@link SelectionMode} to {@link SelectionMode#SINGLE}.  If you
+   * want a different selection mode, use {@link FluentInitializer#inMode(SelectionMode)} on the
+   * {@link FluentInitializer} this method returns.
+   * <p>
+   * The calendar will be constructed using the given locale. This means that all names
+   * (months, days) will be in the language of the locale and the weeks start with the day
+   * specified by the locale.
+   * <p>
+   * The calendar will be constructed using the given locale and the default time zone as returned
+   * by {@link java.util.TimeZone#getDefault()}. This means that all names (months, days) will be
+   * in the language of the locale and the weeks start with the day specified by the locale.
+   * If you wish the calendar to be constructed using a different time zone, use
+   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone)} or
+   * {@link #init(java.util.Date, java.util.Date, java.util.TimeZone, java.util.Locale)}.
+   *
+   * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
+   * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
+   */
+  public FluentInitializer init(Date minDate, Date maxDate, Locale locale, ArrayList<Holiday> holidays) {
+    return init(minDate, maxDate, TimeZone.getDefault(), locale, holidays);
   }
 
   public class FluentInitializer {
@@ -907,7 +1019,8 @@ public class CalendarPickerView extends ListView {
           || !monthView.getTag(R.id.day_view_adapter_class).equals(dayViewAdapter.getClass())) {
         monthView =
             MonthView.create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
-                dayBackgroundResId, dayTextColorResId, titleTextStyle, displayHeader,
+                dayBackgroundResId, dayTextColorResId, titleTextStyle, holidayNameTextStyle, holidayDateTextStyle,
+                holidayContainerStyle, displayHeader,
                 headerTextColor, displayDayNamesHeaderRow, displayAlwaysDigitNumbers,
                 decorators, locale, dayViewAdapter);
         monthView.setTag(R.id.day_view_adapter_class, dayViewAdapter.getClass());
@@ -921,6 +1034,20 @@ public class CalendarPickerView extends ListView {
           titleTypeface, dateTypeface);
       return monthView;
     }
+  }
+
+  private Holiday getHoliday(Calendar cal){
+
+    if(cal == null || holidays == null)
+      return null;
+
+    for(Holiday holiday : holidays){
+      if(sameDate(cal, holiday.getDate()))
+        return holiday;
+    }
+
+    return null;
+
   }
 
   List<List<MonthCellDescriptor>> getMonthCells(MonthDescriptor month, Calendar startCal) {
@@ -951,6 +1078,10 @@ public class CalendarPickerView extends ListView {
             isCurrentMonth && betweenDates(cal, minCal, maxCal) && isDateSelectable(date);
         boolean isToday = sameDate(cal, today);
         boolean isHighlighted = containsDate(highlightedCals, cal);
+
+        Holiday holiday = getHoliday(cal);
+
+        boolean isHoliday = holiday != null;
         int value = cal.get(DAY_OF_MONTH);
 
         RangeState rangeState = RangeState.NONE;
@@ -966,7 +1097,7 @@ public class CalendarPickerView extends ListView {
 
         weekCells.add(
             new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday,
-                isHighlighted, value, rangeState));
+                isHighlighted, value, rangeState, isHoliday, isHoliday ? holiday.getName() : ""));
         cal.add(DATE, 1);
       }
     }

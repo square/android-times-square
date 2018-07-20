@@ -21,6 +21,9 @@
   <item app:tsquare_state_today="true">
     <color android:color="@color/calendar_text_active"/>
   </item>
+  <item app:tsquare_state_holiday="true">
+    <color android:color="@color/calendar_holiday_bg"/>
+  </item>
   <item>
     <color android:color="@color/calendar_active_month_bg"/>
   </item>
