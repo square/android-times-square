@@ -15,7 +15,6 @@ import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
 import com.squareup.timessquare.DefaultDayViewAdapter;
 import com.squareup.timessquare.Holiday;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
