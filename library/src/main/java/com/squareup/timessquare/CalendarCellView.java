@@ -17,6 +17,9 @@ public class CalendarCellView extends FrameLayout {
   private static final int[] STATE_TODAY = {
       R.attr.tsquare_state_today
   };
+  private static final int[] STATE_HOLIDAY = {
+          R.attr.tsquare_state_holiday
+  };
   private static final int[] STATE_HIGHLIGHTED = {
       R.attr.tsquare_state_highlighted
   };
@@ -34,6 +37,7 @@ public class CalendarCellView extends FrameLayout {
   private boolean isCurrentMonth = false;
   private boolean isToday = false;
   private boolean isHighlighted = false;
+  private boolean isHoliday = false;
   private RangeState rangeState = RangeState.NONE;
   private TextView dayOfMonthTextView;
 
@@ -77,6 +81,13 @@ public class CalendarCellView extends FrameLayout {
     }
   }
 
+  public void setHoliday(boolean isHoliday) {
+    if(this.isHoliday != isHoliday){
+      this.isHoliday = isHoliday;
+      refreshDrawableState();
+    }
+  }
+
   public boolean isCurrentMonth() {
     return isCurrentMonth;
   }
@@ -93,12 +104,16 @@ public class CalendarCellView extends FrameLayout {
     return isHighlighted;
   }
 
+  public boolean isHoliday() {
+    return isHoliday;
+  }
+
   public RangeState getRangeState() {
     return rangeState;
   }
 
   @Override protected int[] onCreateDrawableState(int extraSpace) {
-    final int[] drawableState = super.onCreateDrawableState(extraSpace + 5);
+    final int[] drawableState = super.onCreateDrawableState(extraSpace + 6);
 
     if (isSelectable) {
       mergeDrawableStates(drawableState, STATE_SELECTABLE);
@@ -110,6 +125,10 @@ public class CalendarCellView extends FrameLayout {
 
     if (isToday) {
       mergeDrawableStates(drawableState, STATE_TODAY);
+    }
+
+    if (isHoliday) {
+      mergeDrawableStates(drawableState, STATE_HOLIDAY);
     }
 
     if (isHighlighted) {

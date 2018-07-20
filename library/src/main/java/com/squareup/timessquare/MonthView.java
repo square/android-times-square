@@ -146,6 +146,7 @@ public class MonthView extends LinearLayout {
           cellView.setSelected(cell.isSelected());
           cellView.setCurrentMonth(cell.isCurrentMonth());
           cellView.setToday(cell.isToday());
+          cellView.setHoliday(cell.isHoliday());
           cellView.setRangeState(cell.getRangeState());
           cellView.setHighlighted(cell.isHighlighted());
           cellView.setTag(cell);

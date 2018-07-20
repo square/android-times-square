@@ -41,6 +41,13 @@
           />
 
       <Button
+          android:id="@+id/button_holiday"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Holiday"
+          />
+
+      <Button
           android:id="@+id/button_range"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

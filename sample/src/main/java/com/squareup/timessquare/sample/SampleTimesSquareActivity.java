@@ -14,6 +14,8 @@ import com.squareup.timessquare.CalendarCellDecorator;
 import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
 import com.squareup.timessquare.DefaultDayViewAdapter;
+import com.squareup.timessquare.Holiday;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -55,6 +57,7 @@ public class SampleTimesSquareActivity extends Activity {
     final Button single = (Button) findViewById(R.id.button_single);
     final Button multi = (Button) findViewById(R.id.button_multi);
     final Button highlight = (Button) findViewById(R.id.button_highlight);
+    final Button holiday = (Button) findViewById(R.id.button_holiday);
     final Button range = (Button) findViewById(R.id.button_range);
     final Button displayOnly = (Button) findViewById(R.id.button_display_only);
     final Button dialog = (Button) findViewById(R.id.button_dialog);
@@ -65,7 +68,7 @@ public class SampleTimesSquareActivity extends Activity {
     final Button arabicDigits = (Button) findViewById(R.id.button_arabic_with_digits);
     final Button customView = (Button) findViewById(R.id.button_custom_view);
 
-    modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator, customView));
+    modeButtons.addAll(Arrays.asList(single, multi, range, displayOnly, decorator, customView, holiday));
 
     single.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View v) {
@@ -112,6 +115,21 @@ public class SampleTimesSquareActivity extends Activity {
 
         calendar.highlightDates(getHighlightedDaysForMonth( // Adds some highlighted days
             c.get(Calendar.MONTH) - 1, c.get(Calendar.MONTH), c.get(Calendar.MONTH) + 1));
+      }
+    });
+
+    holiday.setOnClickListener(new OnClickListener() {
+      @Override public void onClick(View view) {
+        setButtonsEnabled(holiday);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+
+        calendar.setCustomDayView(new DefaultDayViewAdapter());
+        calendar.setDecorators(Collections.<CalendarCellDecorator>emptyList());
+        // 20 years, enough to show performance failure.
+        calendar.init(getDateWithYear(2000), getDateWithYear(2020), createDummyHolidays())
+                .inMode(SelectionMode.SINGLE).withSelectedDate(c.getTime());
       }
     });
 
@@ -217,6 +235,21 @@ public class SampleTimesSquareActivity extends Activity {
         Toast.makeText(SampleTimesSquareActivity.this, toast, LENGTH_SHORT).show();
       }
     });
+  }
+
+  private ArrayList<Holiday> createDummyHolidays(){
+
+    ArrayList<Holiday> holidays = new ArrayList<>();
+
+    for(int i = 0; i <= 5; i++){
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(new Date());
+      cal.add(Calendar.DAY_OF_MONTH, i);
+      holidays.add(new Holiday(cal, "Holiday " + i + ". day"));
+    }
+
+    return holidays;
+
   }
 
   private void showCalendarInDialog(String title, int layoutResId) {
