@@ -18,4 +18,9 @@ public class DefaultDayViewAdapter implements DayViewAdapter {
         new FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, CENTER_VERTICAL));
     parent.setDayOfMonthTextView(textView);
   }
+
+  @Override
+  public void updateCellView(CalendarCellView parent, MonthCellDescriptor cellDescriptor) {
+
+  }
 }
