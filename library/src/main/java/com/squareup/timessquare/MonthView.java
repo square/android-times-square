@@ -25,6 +25,8 @@ public class MonthView extends LinearLayout {
   private boolean isRtl;
   private Locale locale;
   private boolean alwaysDigitNumbers;
+  private DayViewAdapter adapter;
+  
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
@@ -149,6 +151,7 @@ public class MonthView extends LinearLayout {
           cellView.setRangeState(cell.getRangeState());
           cellView.setHighlighted(cell.isHighlighted());
           cellView.setTag(cell);
+          this.adapter.updateCellView(cellView, cell);
 
           if (null != decorators) {
             for (CalendarCellDecorator decorator : decorators) {
@@ -185,6 +188,7 @@ public class MonthView extends LinearLayout {
 
   public void setDayViewAdapter(DayViewAdapter adapter) {
     grid.setDayViewAdapter(adapter);
+    this.adapter = adapter;
   }
 
   public void setDisplayHeader(boolean displayHeader) {
