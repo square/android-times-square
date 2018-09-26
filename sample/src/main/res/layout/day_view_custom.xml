@@ -1,21 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:orientation="vertical"
-    android:padding="4dp"
-    >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp" android:layout_height="60dp">
+
   <TextView
       android:id="@+id/day_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       style="@style/CalendarCell.CalendarDate"
-      />
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="10dp"
+      android:layout_marginTop="4dp"
+      android:gravity="right"
+      android:text="24"
+      android:textColor="#9b9b9b"
+      android:textSize="16sp"
+      android:textStyle="bold" />
 
-  <ImageView
-      android:layout_width="20dp"
-      android:layout_height="20dp"
-      android:scaleType="centerInside"
-      android:src="@drawable/icon"
-      />
-</LinearLayout>
+  <TextView
+      android:id="@+id/hour_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/day_view"
+      android:layout_marginTop="4dp"
+      android:layout_marginLeft="8dp"
+      android:textSize="12sp"
+      android:textColor="#9b9b9b"
+      android:gravity="left"
+      android:text="8"
+      style="@style/CalendarCell.DayHeader"
+      android:visibility="visible"/>
+
+  <!--<ImageView-->
+  <!--android:layout_width="20dp"-->
+  <!--android:layout_height="20dp"-->
+  <!--android:scaleType="centerInside"-->
+  <!--android:src="@drawable/icon"-->
+  <!--/>-->
+
+</RelativeLayout>

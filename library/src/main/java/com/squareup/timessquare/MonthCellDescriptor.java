@@ -5,7 +5,7 @@ package com.squareup.timessquare;
 import java.util.Date;
 
 /** Describes the state of a particular date cell in a {@link MonthView}. */
-class MonthCellDescriptor {
+public class MonthCellDescriptor {
 
   private final Date date;
   private final int value;
