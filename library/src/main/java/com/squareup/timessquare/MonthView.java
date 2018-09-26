@@ -150,7 +150,7 @@ public class MonthView extends LinearLayout {
           cellView.setRangeState(cell.getRangeState());
           cellView.setHighlighted(cell.isHighlighted());
           cellView.setTag(cell);
-          this.adapter.updateCellView(cellView, cell);
+          this.adapter.updateCellView(cellView);
 
           if (null != decorators) {
             for (CalendarCellDecorator decorator : decorators) {

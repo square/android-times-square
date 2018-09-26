@@ -20,7 +20,5 @@ public class DefaultDayViewAdapter implements DayViewAdapter {
   }
 
   @Override
-  public void updateCellView(CalendarCellView parent, MonthCellDescriptor cellDescriptor) {
-
-  }
+  public void updateCellView(CalendarCellView parent) { }
 }

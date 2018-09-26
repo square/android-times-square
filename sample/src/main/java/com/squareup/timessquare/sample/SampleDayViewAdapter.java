@@ -17,7 +17,8 @@ public class SampleDayViewAdapter implements DayViewAdapter {
   }
   
   @Override
-  public void updateCellView(CalendarCellView parent, MonthCellDescriptor cellDescriptor) {
+  public void updateCellView(CalendarCellView parent) {
+    MonthCellDescriptor cellDescriptor = (MonthCellDescriptor) parent.getTag();
     if (parent.findViewById(R.id.hour_view) != null) {
       TextView hoursView = (TextView) parent.findViewById(R.id.hour_view);
       if(cellDescriptor != null && cellDescriptor.getDate() != null) {
