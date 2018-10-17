@@ -630,6 +630,55 @@ public class CalendarPickerView extends ListView {
   }
 
   /**
+   * Select a new range of dates. If you are in {@link SelectionMode#MULTIPLE}, the new dates will
+   * be added to the list of selected dates.
+   * <p>
+   * If the selection was made (selectable date, in range), the view will scroll to the newly
+   * selected dates if it's not already visible.
+   *
+   * @return - whether we were able to set the dates
+   */
+    public boolean selectDates(Collection<Date> selectedDates) {
+      return selectDates(selectedDates, false);
+  }
+
+  /**
+   * Select a new range of dates. If you are in {@link SelectionMode#MULTIPLE}, the new dates will
+   * be added to the list of selected dates.
+   * <p>
+   * If the selection was made (selectable date, in range), the view will scroll to the newly
+   * selected date if it's not already visible.
+   *
+   * @return - whether we were able to set the dates
+   */
+  public boolean selectDates(Collection<Date> selectedDates, boolean smoothScroll) {
+    boolean wasSelected = false;
+
+    int monthIndex = 1;
+
+    if (selectedDates != null) {
+      for (Date date : selectedDates) {
+        validateDate(date);
+
+        MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
+        monthIndex = monthCellWithMonthIndex != null ? monthCellWithMonthIndex.monthIndex : 1;
+
+        if (monthCellWithMonthIndex == null || !isDateSelectable(date)) {
+          return false;
+        }
+
+        wasSelected = doSelectDate(date, monthCellWithMonthIndex.cell);
+      }
+    }
+
+    if (wasSelected) {
+      scrollToSelectedMonth(monthIndex, smoothScroll);
+    }
+
+    return wasSelected;
+  }
+
+  /**
    * Use {@link DateUtils} to format the dates.
    *
    * @see DateUtils
