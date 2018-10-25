@@ -652,8 +652,8 @@ public class CalendarPickerView extends ListView {
    * @return - whether we were able to set the dates
    */
   public boolean selectDates(Collection<Date> selectedDates, boolean smoothScroll) {
-    boolean wasSelected = false;
-
+    boolean firstDateThatWasSelected = false;
+    int firstMonthIndex = 1;
     int monthIndex = 1;
 
     if (selectedDates != null) {
@@ -667,15 +667,19 @@ public class CalendarPickerView extends ListView {
           return false;
         }
 
-        wasSelected = doSelectDate(date, monthCellWithMonthIndex.cell);
+        if(!firstDateThatWasSelected) {
+          firstDateThatWasSelected = doSelectDate(date, monthCellWithMonthIndex.cell);
+          firstMonthIndex = monthIndex;
+        }
+
       }
     }
 
-    if (wasSelected) {
-      scrollToSelectedMonth(monthIndex, smoothScroll);
+    if (firstDateThatWasSelected) {
+      scrollToSelectedMonth(firstMonthIndex, smoothScroll);
     }
 
-    return wasSelected;
+    return firstDateThatWasSelected;
   }
 
   /**
