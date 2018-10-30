@@ -633,8 +633,7 @@ public class CalendarPickerView extends ListView {
    * Select a new range of dates. If you are in {@link SelectionMode#MULTIPLE}, the new dates will
    * be added to the list of selected dates.
    * <p>
-   * If the selection was made (selectable date, in range), the view will scroll to the newly
-   * selected dates if it's not already visible.
+   * If the selection was made (selectable date, in range), the view will scroll to first date.
    *
    * @return - whether we were able to set the dates
    */
@@ -646,8 +645,7 @@ public class CalendarPickerView extends ListView {
    * Select a new range of dates. If you are in {@link SelectionMode#MULTIPLE}, the new dates will
    * be added to the list of selected dates.
    * <p>
-   * If the selection was made (selectable date, in range), the view will scroll to the newly
-   * selected date if it's not already visible.
+   * If the selection was made (selectable date, in range), the view will scroll to first date.
    *
    * @return - whether we were able to set the dates
    */
@@ -661,11 +659,12 @@ public class CalendarPickerView extends ListView {
         validateDate(date);
 
         MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
-        monthIndex = monthCellWithMonthIndex != null ? monthCellWithMonthIndex.monthIndex : 1;
 
         if (monthCellWithMonthIndex == null || !isDateSelectable(date)) {
           return false;
         }
+
+        monthIndex = monthCellWithMonthIndex.monthIndex;
 
         if(!firstDateThatWasSelected) {
           firstDateThatWasSelected = doSelectDate(date, monthCellWithMonthIndex.cell);
