@@ -666,7 +666,7 @@ public class CalendarPickerView extends ListView {
 
         monthIndex = monthCellWithMonthIndex.monthIndex;
 
-        if(!firstDateThatWasSelected) {
+        if (!firstDateThatWasSelected) {
           firstDateThatWasSelected = doSelectDate(date, monthCellWithMonthIndex.cell);
           firstMonthIndex = monthIndex;
         }
