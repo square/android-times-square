@@ -177,7 +177,7 @@ public class SampleTimesSquareActivity extends Activity {
     hebrew.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View view) {
         showCalendarInDialog("I'm Hebrew!", R.layout.dialog);
-        dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("iw", "IL")) //
+        dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("iw", "IL"), null) //
             .withSelectedDate(new Date());
       }
     });
@@ -185,7 +185,7 @@ public class SampleTimesSquareActivity extends Activity {
     arabic.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View view) {
         showCalendarInDialog("I'm Arabic!", R.layout.dialog);
-        dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("ar", "EG")) //
+        dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("ar", "EG"), null) //
             .withSelectedDate(new Date());
       }
     });
@@ -193,7 +193,7 @@ public class SampleTimesSquareActivity extends Activity {
     arabicDigits.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View view) {
         showCalendarInDialog("I'm Arabic with Digits!", R.layout.dialog_digits);
-        dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("ar", "EG")) //
+        dialogView.init(lastYear.getTime(), nextYear.getTime(), new Locale("ar", "EG"), null) //
             .withSelectedDate(new Date());
       }
     });
