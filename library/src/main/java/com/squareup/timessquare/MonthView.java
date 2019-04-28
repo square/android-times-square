@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class MonthView extends LinearLayout {
+public class MonthView extends LinearLayout implements View.OnClickListener {
     TextView monthHeader;
     TextView yearHeader;
     GridLayout grid;
@@ -130,13 +130,10 @@ public class MonthView extends LinearLayout {
         }
 
         final int numRows = cells.size();// Weeks with days
-        Logr.d("total = %d", numRows);
         for (int i = 0; i < 6; i++) {
             if (i < numRows) {
                 List<MonthCellDescriptor> week = cells.get(i);
-                Logr.d("week total = %d", week.size());
                 for (int c = 0; c < week.size(); c++) {
-                    Logr.d("i %d; c %d; total = %d", i, c, (i + 1) * 7 + c);
                     CalendarCellView cellView = (CalendarCellView) grid.getChildAt((i + 1) * 7 + c);
                     cellView.setVisibility(View.VISIBLE);
                     MonthCellDescriptor cell = week.get(isRtl ? 6 - c : c);
@@ -155,6 +152,7 @@ public class MonthView extends LinearLayout {
                     cellView.setRangeState(cell.getRangeState());
                     cellView.setHighlighted(cell.isHighlighted());
                     cellView.setTag(cell);
+                    cellView.setOnClickListener(this);
 
                     if (null != decorators) {
                         for (CalendarCellDecorator decorator : decorators) {
@@ -164,7 +162,8 @@ public class MonthView extends LinearLayout {
                 }
             } else {
                 for (int c = 0; c < 7; c++) {
-                    CalendarCellView cellView = (CalendarCellView) grid.getChildAt(c * i + 7);
+                    CalendarCellView cellView = (CalendarCellView) grid.getChildAt((i + 1) * 7 + c);
+                    cellView.setOnClickListener(null);
                     cellView.setVisibility(GONE);
                 }
             }
@@ -172,6 +171,14 @@ public class MonthView extends LinearLayout {
 
 
         Logr.d("MonthView.init took %d ms", System.currentTimeMillis() - start);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (listener != null) {
+            listener.handleClick((MonthCellDescriptor) v.getTag());
+        }
+
     }
 
     public interface Listener {
