@@ -53,11 +53,6 @@ public class MonthView extends LinearLayout implements View.OnClickListener {
 
         view.grid = view.findViewById(R.id.calendar_grid);
 
-        for (int i = 7; i < 49; i++) {
-            CalendarCellView cellView = (CalendarCellView) view.grid.getChildAt(i);
-            adapter.makeCellView(cellView);
-        }
-
         // Add the month title as the first child of MonthView
         view.addView(headerLayout, 0);
 
