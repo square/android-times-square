@@ -22,6 +22,7 @@
         android:layout_width="14dp"
         android:layout_height="12dp"
         android:layout_marginStart="20dp"
+        android:layout_alignEnd="@+id/calendar_day_text_view"
         android:layout_marginTop="22dp"
         android:src="@drawable/ic_heart"/>
 
