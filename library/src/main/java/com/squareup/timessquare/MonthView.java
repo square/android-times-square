@@ -8,6 +8,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,8 +22,7 @@ import java.util.Locale;
 public class MonthView extends LinearLayout {
     TextView monthHeader;
     TextView yearHeader;
-    CalendarGridView grid;
-    View dayNamesHeaderRowView;
+    GridLayout grid;
     private Listener listener;
     private List<CalendarCellDecorator> decorators;
     private boolean isRtl;
@@ -37,7 +37,7 @@ public class MonthView extends LinearLayout {
         final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
 
 
-        if(headerCreator == null){
+        if (headerCreator == null) {
             headerCreator = new DefaultHeaderCreator(titleTextStyle);
         }
 
@@ -51,39 +51,38 @@ public class MonthView extends LinearLayout {
         headerLayout.addView(view.monthHeader);
         headerLayout.addView(view.yearHeader);
 
-        view.grid = (CalendarGridView) view.findViewById(R.id.calendar_grid);
-        view.dayNamesHeaderRowView = view.findViewById(R.id.day_names_header_row);
+        view.grid = view.findViewById(R.id.calendar_grid);
+
+        for (int i = 7; i < 49; i++) {
+            CalendarCellView cellView = (CalendarCellView) view.grid.getChildAt(i);
+            adapter.makeCellView(cellView);
+        }
 
         // Add the month title as the first child of MonthView
         view.addView(headerLayout, 0);
-
-        view.setDayViewAdapter(adapter);
-        view.setDividerColor(dividerColor);
-        view.setDayTextColor(dayTextColorResId);
-        view.setDisplayHeader(displayHeader);
-        view.setHeaderTextColor(headerTextColor);
-
-        if (dayBackgroundResId != 0) {
-            view.setDayBackground(dayBackgroundResId);
-        }
 
         view.isRtl = isRtl(locale);
         view.locale = locale;
         view.alwaysDigitNumbers = showAlwaysDigitNumbers;
         int firstDayOfWeek = today.getFirstDayOfWeek();
-        final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
+        final TextView[] headerRow = {
+                (TextView) view.grid.getChildAt(0),
+                (TextView) view.grid.getChildAt(1),
+                (TextView) view.grid.getChildAt(2),
+                (TextView) view.grid.getChildAt(3),
+                (TextView) view.grid.getChildAt(4),
+                (TextView) view.grid.getChildAt(5),
+                (TextView) view.grid.getChildAt(6)
+        };
 
-        if (displayDayNamesHeaderRowView) {
-            final int originalDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
-            for (int offset = 0; offset < 7; offset++) {
-                today.set(Calendar.DAY_OF_WEEK, getDayOfWeek(firstDayOfWeek, offset, view.isRtl));
-                final TextView textView = (TextView) headerRow.getChildAt(offset);
-                textView.setText(weekdayNameFormat.format(today.getTime()).substring(0, 1));
-            }
-            today.set(Calendar.DAY_OF_WEEK, originalDayOfWeek);
-        } else {
-            view.dayNamesHeaderRowView.setVisibility(View.GONE);
+        final int originalDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
+        for (int offset = 0; offset < 7; offset++) {
+            today.set(Calendar.DAY_OF_WEEK, getDayOfWeek(firstDayOfWeek, offset, view.isRtl));
+            final TextView textView = headerRow[offset];
+            textView.setText(weekdayNameFormat.format(today.getTime()).substring(0, 1));
         }
+        today.set(Calendar.DAY_OF_WEEK, originalDayOfWeek);
+
 
         view.listener = listener;
         view.decorators = decorators;
@@ -130,17 +129,17 @@ public class MonthView extends LinearLayout {
             numberFormatter = NumberFormat.getInstance(locale);
         }
 
-        final int numRows = cells.size();
-        grid.setNumRows(numRows);
+        final int numRows = cells.size();// Weeks with days
+        Logr.d("total = %d", numRows);
         for (int i = 0; i < 6; i++) {
-            CalendarRowView weekRow = (CalendarRowView) grid.getChildAt(i + 1);
-            weekRow.setListener(listener);
             if (i < numRows) {
-                weekRow.setVisibility(VISIBLE);
                 List<MonthCellDescriptor> week = cells.get(i);
+                Logr.d("week total = %d", week.size());
                 for (int c = 0; c < week.size(); c++) {
+                    Logr.d("i %d; c %d; total = %d", i, c, (i + 1) * 7 + c);
+                    CalendarCellView cellView = (CalendarCellView) grid.getChildAt((i + 1) * 7 + c);
+                    cellView.setVisibility(View.VISIBLE);
                     MonthCellDescriptor cell = week.get(isRtl ? 6 - c : c);
-                    CalendarCellView cellView = (CalendarCellView) weekRow.getChildAt(c);
 
                     String cellDate = numberFormatter.format(cell.getValue());
                     if (!cellView.getDayOfMonthTextView().getText().equals(cellDate)) {
@@ -164,39 +163,15 @@ public class MonthView extends LinearLayout {
                     }
                 }
             } else {
-                weekRow.setVisibility(GONE);
+                for (int c = 0; c < 7; c++) {
+                    CalendarCellView cellView = (CalendarCellView) grid.getChildAt(c * i + 7);
+                    cellView.setVisibility(GONE);
+                }
             }
         }
 
-        if (dateTypeface != null) {
-            grid.setTypeface(dateTypeface);
-        }
 
         Logr.d("MonthView.init took %d ms", System.currentTimeMillis() - start);
-    }
-
-    public void setDividerColor(int color) {
-        grid.setDividerColor(color);
-    }
-
-    public void setDayBackground(int resId) {
-        grid.setDayBackground(resId);
-    }
-
-    public void setDayTextColor(int resId) {
-        grid.setDayTextColor(resId);
-    }
-
-    public void setDayViewAdapter(DayViewAdapter adapter) {
-        grid.setDayViewAdapter(adapter);
-    }
-
-    public void setDisplayHeader(boolean displayHeader) {
-        grid.setDisplayHeader(displayHeader);
-    }
-
-    public void setHeaderTextColor(int color) {
-        grid.setHeaderTextColor(color);
     }
 
     public interface Listener {
