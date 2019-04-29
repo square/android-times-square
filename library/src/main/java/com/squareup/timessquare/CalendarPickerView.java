@@ -372,7 +372,7 @@ public class CalendarPickerView extends ListView {
     }
   }
 
-  private void validateAndUpdate() {
+  public void validateAndUpdate() {
     if (getAdapter() == null) {
       setAdapter(adapter);
     }
