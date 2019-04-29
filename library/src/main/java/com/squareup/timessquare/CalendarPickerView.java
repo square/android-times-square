@@ -625,10 +625,8 @@ public class CalendarPickerView extends ListView {
     if (displayAlwaysDigitNumbers
             && explicitlyNumericYearLocaleLanguages.contains(locale.getLanguage())) {
       StringBuilder sb = new StringBuilder();
-      SimpleDateFormat sdfMonth = new SimpleDateFormat(getContext()
-              .getString(R.string.month_only_name_format), locale);
-      SimpleDateFormat sdfYear = new SimpleDateFormat(getContext()
-              .getString(R.string.year_only_format), Locale.ENGLISH);
+      SimpleDateFormat sdfMonth = new SimpleDateFormat("MMMM", locale);
+      SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy", Locale.ENGLISH);
       dateFormatted = sb.append(sdfMonth.format(date.getTime())).append(" ")
               .append(sdfYear.format(date.getTime())).toString();
     } else {
