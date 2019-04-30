@@ -4,7 +4,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                tools:layout_width="100dp">
+                tools:layout_width="50dp">
 
 
     <TextView
@@ -29,7 +29,7 @@
         android:id="@+id/calendar_day_image_view_point"
         android:layout_width="4dp"
         android:layout_height="4dp"
-        android:layout_marginBottom="2dp"
+        android:layout_marginBottom="1dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:src="@drawable/ic_point"/>
