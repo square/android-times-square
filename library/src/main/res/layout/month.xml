@@ -2,6 +2,7 @@
 
 <com.squareup.timessquare.MonthView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -19,9 +20,39 @@
 
         <TextView
             android:layout_width="0dp"
+            android:layout_height="24dp"
             android:layout_columnWeight="1"
             android:layout_gravity="fill_horizontal"
-            android:gravity="center"/>
+            android:gravity="top|center_horizontal"
+            tools:text="M"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="top|center_horizontal"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="top|center_horizontal"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="top|center_horizontal"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="top|center_horizontal"/>
 
         <TextView
             android:layout_width="0dp"
@@ -31,340 +62,315 @@
 
         <TextView
             android:layout_width="0dp"
+            android:layout_height="24dp"
             android:layout_columnWeight="1"
             android:layout_gravity="fill_horizontal"
-            android:gravity="center"/>
-
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill_horizontal"
-            android:gravity="center"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill_horizontal"
-            android:gravity="center"/>
-
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill_horizontal"
-            android:gravity="center"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill_horizontal"
-            android:gravity="center"/>
+            android:gravity="top|center_horizontal"/>
 
         <!-- Week 1 -->
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <!-- Week 2 -->
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <!-- Week 3 -->
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <!-- Week 4 -->
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <!-- Week 5 -->
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <!-- Week 6 -->
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
         <com.squareup.timessquare.CalendarCellView
             android:layout_width="0dp"
-            android:layout_gravity="fill_horizontal"
-            android:layout_columnWeight="1"
             android:layout_height="35dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
             />
 
 
