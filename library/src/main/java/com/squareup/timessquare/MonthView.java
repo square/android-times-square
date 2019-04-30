@@ -113,6 +113,7 @@ public class MonthView extends LinearLayout implements View.OnClickListener {
 
     public void init(MonthDescriptor month, List<List<MonthCellDescriptor>> cells,
                      boolean displayOnly, Typeface titleTypeface, Typeface dateTypeface) {
+        if(cells == null)  return;
         Logr.d("Initializing MonthView (%d) for %s", System.identityHashCode(this), month);
         long start = System.currentTimeMillis();
         monthHeader.setText(new SimpleDateFormat("MMMM", locale).format(month.getDate()));
