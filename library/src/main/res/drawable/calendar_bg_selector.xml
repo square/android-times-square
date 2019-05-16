@@ -19,7 +19,7 @@
     <color android:color="@color/calendar_highlighted_day_bg"/>
   </item>
   <item app:tsquare_state_today="true">
-    <color android:color="@color/calendar_text_active"/>
+    <color android:color="@color/calendar_text_today"/>
   </item>
   <item>
     <color android:color="@color/calendar_active_month_bg"/>
