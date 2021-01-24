@@ -19,7 +19,6 @@ afterEvaluate {
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
-  buildToolsVersion rootProject.ext.buildToolsVersion
 
   defaultConfig {
     minSdkVersion rootProject.ext.minSdkVersion
@@ -33,10 +32,10 @@ android {
 }
 
 dependencies {
-  testCompile deps.festandroid
-  testCompile deps.junit
-  testCompile deps.robolectric
-  testCompile deps.intellijannotations
+  testImplementation deps.festandroid
+  testImplementation deps.junit
+  testImplementation deps.robolectric
+  testImplementation deps.intellijannotations
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

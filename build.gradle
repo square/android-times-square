@@ -1,26 +1,38 @@
 buildscript {
   repositories {
-    mavenCentral()
+    google()
     jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+    maven {
+      url "https://jitpack.io"
+    }
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:2.3.0'
+    classpath 'com.android.tools.build:gradle:7.0.0-alpha04'
   }
 }
 
 allprojects {
   repositories {
-    mavenCentral()
+    google()
+    jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+    maven {
+      url "https://jitpack.io"
+    }
   }
 }
 
 ext {
   minSdkVersion = 9
-  targetSdkVersion = 25
-  compileSdkVersion = 25
-  buildToolsVersion = '25.0.2'
-  sourceCompatibilityVersion = JavaVersion.VERSION_1_7
-  targetCompatibilityVersion = JavaVersion.VERSION_1_7
+  targetSdkVersion = 30
+  compileSdkVersion = 30
+  sourceCompatibilityVersion = JavaVersion.VERSION_11
+  targetCompatibilityVersion = JavaVersion.VERSION_11
 }
 
 ext.deps = [
