@@ -3,9 +3,9 @@
 
     <style name="MyTheme">
 
-        <item name="textDefault">#000000</item>
-        <item name="textDisabled">#CCCCCC</item>
-        <item name="textSelected">#FFFFFFFF</item>
+        <item name="textDefault">@color/custom_background_today</item>
+        <item name="textDisabled">@color/custom_text_inactive</item>
+        <item name="textSelected">@color/custom_text_selected</item>
 
     </style>
 </resources>
