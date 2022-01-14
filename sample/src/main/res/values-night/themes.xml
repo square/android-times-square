@@ -1,0 +1,11 @@
+<!-- Copyright 2012 Square, Inc. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="MyTheme">
+
+        <item name="textDefault">#FFFFFF</item>
+        <item name="textDisabled">#AAAAAA</item>
+        <item name="textSelected">#FFFFFF</item>
+
+    </style>
+</resources>

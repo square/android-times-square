@@ -1,19 +1,18 @@
-<com.squareup.timessquare.CalendarPickerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.squareup.timessquare.CalendarPickerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/calendar_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/custom_background"
     android:clipToPadding="false"
-    android:paddingBottom="16dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
+    android:paddingBottom="16dp"
     android:scrollbarStyle="outsideOverlay"
+    android:theme="@style/MyTheme"
     app:tsquare_dayBackground="@drawable/custom_calendar_bg_selector"
     app:tsquare_dayTextColor="@color/custom_calendar_text_selector"
     app:tsquare_displayDayNamesHeaderRow="false"
     app:tsquare_dividerColor="@color/transparent"
     app:tsquare_headerTextColor="@color/custom_header_text"
-    app:tsquare_titleTextStyle="@style/CustomCalendarTitle"
-    />
+    app:tsquare_titleTextStyle="@style/CustomCalendarTitle" />

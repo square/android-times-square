@@ -10,6 +10,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import static android.os.Build.VERSION;
+import static android.os.Build.VERSION_CODES;
 import static android.view.View.MeasureSpec.AT_MOST;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
@@ -52,7 +54,12 @@ public class CalendarGridView extends ViewGroup {
 
   public void setDayTextColor(int resId) {
     for (int i = 0; i < getChildCount(); i++) {
-      ColorStateList colors = getResources().getColorStateList(resId);
+      ColorStateList colors;
+      if (VERSION.SDK_INT >= VERSION_CODES.M) {
+        colors = getContext().getColorStateList(resId);
+      } else {
+        colors = getResources().getColorStateList(resId);
+      }
       ((CalendarRowView) getChildAt(i)).setCellTextColor(colors);
     }
   }
