@@ -44,6 +44,7 @@ import static java.util.Calendar.YEAR;
  * {@link FluentInitializer} methods returned.  The currently selected date can be retrieved with
  * {@link #getSelectedDate()}.
  */
+@SuppressWarnings("unused")
 public class CalendarPickerView extends ListView {
   public enum SelectionMode {
     /**
@@ -945,6 +946,7 @@ public class CalendarPickerView extends ListView {
       cells.add(weekCells);
       for (int c = 0; c < 7; c++) {
         Date date = cal.getTime();
+        @SuppressWarnings("MagicConstant")
         boolean isCurrentMonth = cal.get(MONTH) == month.getMonth();
         boolean isSelected = isCurrentMonth && containsDate(selectedCals, cal);
         boolean isSelectable =
@@ -1021,6 +1023,7 @@ public class CalendarPickerView extends ListView {
         && date.before(maxCal.getTime()); // && < maxCal
   }
 
+  @SuppressWarnings("MagicConstant")
   private static boolean sameMonth(Calendar cal, MonthDescriptor month) {
     return (cal.get(MONTH) == month.getMonth() && cal.get(YEAR) == month.getYear());
   }

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2012 Square, Inc. -->
-
-<resources>
-  <string name="month_name_format">LLLL yyyy</string>
-</resources>

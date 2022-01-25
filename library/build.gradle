@@ -29,13 +29,24 @@ android {
     textReport true
     textOutput 'stdout'
   }
+
+  testOptions {
+    unitTests {
+      includeAndroidResources = true
+    }
+    unitTests.all {
+      testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        exceptionFormat "full"
+      }
+    }
+  }
 }
 
 dependencies {
-  testImplementation deps.festandroid
+  implementation deps.androidXCore
   testImplementation deps.junit
   testImplementation deps.robolectric
   testImplementation deps.intellijannotations
+  testImplementation deps.truth
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
