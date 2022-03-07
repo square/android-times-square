@@ -1,0 +1,25 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: gradle/wrapper-validation-action@v1.0.4
+    - name: set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: 11
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Build with Gradle
+      run: ./gradlew build

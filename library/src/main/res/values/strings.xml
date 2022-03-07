@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2012 Square, Inc. -->
 
-<resources>
-  <string name="day_name_format">EEE</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+  <string name="day_name_format" tools:ignore="MissingTranslation">EEE</string>
   <string name="invalid_date">Date must be between %1$s and %2$s.</string>
-  <string name="month_name_format">MMMM yyyy</string>
-  <string name="month_only_name_format">MMMM</string>
-  <string name="year_only_format">yyyy</string>
+  <string name="month_only_name_format" tools:ignore="MissingTranslation">MMMM</string>
+  <string name="year_only_format" tools:ignore="MissingTranslation">yyyy</string>
 </resources>

@@ -1,6 +1,8 @@
 // Copyright 2012 Square, Inc.
 package com.squareup.timessquare;
 
+import static androidx.core.text.TextUtilsCompat.getLayoutDirectionFromLocale;
+
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
@@ -10,12 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.core.view.ViewCompat;
+
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings("unused")
 public class MonthView extends LinearLayout {
   TextView title;
   CalendarGridView grid;
@@ -61,7 +67,7 @@ public class MonthView extends LinearLayout {
       view.setDayBackground(dayBackgroundResId);
     }
 
-    view.isRtl = isRtl(locale);
+    view.isRtl = getLayoutDirectionFromLocale(locale) == ViewCompat.LAYOUT_DIRECTION_RTL;
     view.locale = locale;
     view.alwaysDigitNumbers = showAlwaysDigitNumbers;
     int firstDayOfWeek = today.getFirstDayOfWeek();
@@ -90,13 +96,6 @@ public class MonthView extends LinearLayout {
       return 8 - dayOfWeek;
     }
     return dayOfWeek;
-  }
-
-  private static boolean isRtl(Locale locale) {
-    // TODO convert the build to gradle and use getLayoutDirection instead of this (on 17+)?
-    final int directionality = Character.getDirectionality(locale.getDisplayName(locale).charAt(0));
-    return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT
-        || directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
   }
 
   public MonthView(Context context, AttributeSet attrs) {
