@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.7.11 *(2022-04-06)*
+----------------------------
+
+ * Adds support for using a theme attribute for tsquare_dayTextColor
+
 Version 1.7.10 *(2018-07-23)*
 ----------------------------
 
