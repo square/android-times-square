@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'checkstyle'
+apply plugin: 'com.vanniktech.maven.publish'
 
 task checkstyle(type: Checkstyle) {
   configFile rootProject.file('checkstyle.xml')
@@ -49,4 +50,12 @@ dependencies {
   testImplementation deps.robolectric
   testImplementation deps.intellijannotations
   testImplementation deps.truth
+}
+
+allprojects {
+  plugins.withId("com.vanniktech.maven.publish") {
+    mavenPublish {
+      sonatypeHost = "S01"
+    }
+  }
 }
