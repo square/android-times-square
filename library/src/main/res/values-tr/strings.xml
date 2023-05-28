@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 Square, Inc. -->
+
+<resources>
+  <string name="invalid_date">Tarih %1$s ve %2$s arasında olmalıdır.</string>
+</resources>
